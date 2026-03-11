@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planifest - Agentic Tool Runbook - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>Planifest - Agentic Tool Runbook</h1>
+<hr>
+<blockquote>
+<p>How to run the Planifest pipeline using each supported agentic development tool. v1.0 delivers the pipeline as Agent Skills - the orchestrator skill (<code>planifest-framework/skills/orchestrator/SKILL.md</code>) is the entry point. Tool-specific adapters in <code>planifest-framework/adapters/</code> load the skills via each tool&#39;s native compliance mechanism. MCP server infrastructure described in earlier versions of this document is a future roadmap item - see <a href="p014-planifest-roadmap.html">RC-001</a> through <a href="p014-planifest-roadmap.html">RC-004</a>.</p>
+</blockquote>
+<p><em>Related: <a href="p001-planifest-master-plan.html">Master Plan</a> | <a href="p014-planifest-roadmap.html">Roadmap</a></em></p>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#1-the-pipeline-manifest--the-shared-source-of-truth">1. The Pipeline Manifest - the shared source of truth</a></li>
+<li><a href="#2-tool-comparison">2. Tool Comparison</a></li>
+<li><a href="#3-claude-code">3. Claude Code</a></li>
+<li><a href="#4-cursor">4. Cursor</a></li>
+<li><a href="#5-antigravity">5. Antigravity</a></li>
+<li><a href="#6-github-copilot">6. GitHub Copilot</a></li>
+<li><a href="#7-hard-limits--all-tools">7. Hard Limits - all tools</a></li>
+<li><a href="#8-context-limit-strategy">8. Context Limit Strategy</a></li>
+<li><a href="#9-reconciling-a-local-run-with-your-vcs">9. Reconciling a Local Run with your VCS</a></li>
+</ul>
+<hr>
+<h2>1. The Orchestrator Skill - the shared source of truth</h2>
+<p><code>planifest-framework/skills/orchestrator/SKILL.md</code> is the entry point for all Planifest work, regardless of which agentic tool is used. It defines the coaching conversation, the pipeline phases, their sequencing, and the hard limits. Every tool loads this skill (or its tool-specific adapter) and follows it. The runtime differs; the steps do not.</p>
+<p>The orchestrator skill:</p>
+<ul>
+<li>Assesses the Initiative Brief against what a complete Planifest specification requires</li>
+<li>Coaches the human through gaps - one question at a time, in priority order</li>
+<li>Produces the validated <strong>Planifest</strong> (<code>initiatives/{initiative-id}/planifest.md</code>) - the plan for what will be built and the manifest of what it builds against</li>
+<li>Sequences the phase skills: spec-agent -&gt; adr-agent -&gt; codegen-agent -&gt; validate-agent -&gt; security-agent -&gt; docs-agent</li>
+</ul>
+<p>For changes to existing initiatives, the orchestrator invokes the change-agent skill instead of the full pipeline.</p>
+<hr>
+<h2>2. Tool Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Claude Code</th>
+<th>Cursor</th>
+<th>Antigravity</th>
+<th>GitHub Copilot</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MCP support</td>
+<td>Native - stdio (future, when MCP servers are built)</td>
+<td>Via MCP extension (future)</td>
+<td>Native (future)</td>
+<td>Limited / via extensions</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td>Claude Code session - no API key needed</td>
+<td>API key or Cursor account</td>
+<td>Antigravity account</td>
+<td>GitHub account</td>
+</tr>
+<tr>
+<td>Runs full pipeline</td>
+<td>Yes - loads orchestrator skill, executes phases</td>
+<td>Yes - with adapter + skills</td>
+<td>Yes - pipeline-native</td>
+<td>Partial - prompt-driven per phase</td>
+</tr>
+<tr>
+<td>Domain Knowledge Store</td>
+<td>Reads <code>docs/</code> folder directly</td>
+<td>Reads <code>docs/</code> folder directly</td>
+<td>Reads <code>docs/</code> folder directly</td>
+<td>Reads <code>docs/</code> folder via workspace indexing</td>
+</tr>
+<tr>
+<td>PR creation</td>
+<td>Manual push + pipeline-run.md</td>
+<td>Manual push + pipeline-run.md</td>
+<td>Native</td>
+<td>Via CLI or extension</td>
+</tr>
+<tr>
+<td>Rules file</td>
+<td><code>planifest-framework/adapters/claude-code/CLAUDE.md</code></td>
+<td><code>planifest-framework/adapters/cursor/.cursorrules</code></td>
+<td>Antigravity config</td>
+<td><code>planifest-framework/adapters/copilot/copilot-instructions.md</code></td>
+</tr>
+<tr>
+<td>Context management</td>
+<td>Manual chunking per session</td>
+<td>Per-file context, references by path</td>
+<td>Managed by Antigravity</td>
+<td>Limited - per-file or workspace</td>
+</tr>
+<tr>
+<td>Hard limits enforced</td>
+<td>Prompt-level + PR gate</td>
+<td>Prompt-level + PR gate</td>
+<td>Prompt-level + PR gate</td>
+<td>Prompt-level + PR gate</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Claude Code</h2>
+<p>Claude Code is one of the supported local runtimes. It loads the orchestrator skill via <code>planifest-framework/adapters/claude-code/CLAUDE.md</code>, which points it at the skill set.</p>
+<h3>Setup</h3>
+<p>The adapter file is loaded automatically when Claude Code opens the project root. No MCP servers are required for v1.0 - the agent reads and writes files directly.</p>
+<h3>Running the initiative pipeline</h3>
+<p>Paste this instruction into Claude Code:</p>
+<pre><code>Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
+
+Initiative brief: initiatives/{{initiative_id}}/initiative-brief.md
+Initiative ID: {{initiative_id}}
+Adoption mode: greenfield | retrofit | agent-interface
+</code></pre>
+<p>The orchestrator will assess the brief, coach you through any gaps, produce the Planifest, and then sequence through the phase skills.</p>
+<h3>Running the change pipeline</h3>
+<pre><code>Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Change Pipeline.
+
+Initiative ID: {{initiative_id}}
+Component ID: {{component_id}}
+Change request: {{description}}
+</code></pre>
+<h3>pipeline-run.md</h3>
+<p>Claude Code writes <code>pipeline-run.md</code> at the component root after every local run. This replaces the PR description for local sessions and serves as the audit trail.</p>
+<pre><code class="language-markdown"># Pipeline Run - {{initiative_id}}
+Date: {{timestamp}}
+Tool: Claude Code (local)
+
+## Phases completed
+- [x] Specification
+- [x] ADRs (n generated)
+- [x] Code generation
+- [x] Validation (n self-correct cycles)
+- [x] Security review
+- [x] Docs sync
+
+## Self-correct log
+(what failed and how it was fixed)
+
+## Quirks
+(anything unusual noticed during the run)
+
+## Recommended improvements
+(what should be reviewed before the PR)
+
+## Next step
+git push origin initiative/{{initiative_id}}
+</code></pre>
+<hr>
+<h2>4. Cursor</h2>
+<p>Cursor loads the Planifest framework via <code>planifest-framework/adapters/cursor/.cursorrules</code>, which points it at the orchestrator skill and encodes the hard limits.</p>
+<h3>Setup</h3>
+<p>Copy or symlink the adapter file to the monorepo root:</p>
+<pre><code class="language-bash">cp planifest-framework/adapters/cursor/.cursorrules .cursorrules
+</code></pre>
+<p>Cursor loads <code>.cursorrules</code> automatically. No MCP servers are required for v1.0.</p>
+<h3>Running the pipeline</h3>
+<p>Open Cursor at the monorepo root. The <code>.cursorrules</code> file is loaded automatically. Give the same instruction as Claude Code - the orchestrator skill will guide the process.</p>
+<hr>
+<h2>5. Antigravity</h2>
+<p>Antigravity is a pipeline-native agentic tool - it is designed to run multi-step agent workflows, making it a natural fit for the Planifest pipeline. The orchestrator skill maps directly to an Antigravity workflow definition.</p>
+<h3>Setup</h3>
+<p>Configure Antigravity to point at the monorepo root. The adapter at <code>planifest-framework/adapters/antigravity/planifest.yaml</code> maps the skill set to Antigravity&#39;s workflow format.</p>
+<p><em>Antigravity configuration detail to be completed as the integration is built.</em></p>
+<h3>Running the pipeline</h3>
+<p>Antigravity reads the workflow config and sequences the phase skills. Each phase becomes a workflow step. Antigravity manages step sequencing, retries, and state persistence natively - removing the need for manual phase management that Claude Code and Cursor require. This makes Antigravity the closest to the future CI platform model in the local tool set.</p>
+<hr>
+<h2>6. GitHub Copilot</h2>
+<p>GitHub Copilot has more limited agent capabilities than the other tools in this set. The Planifest framework can be applied with Copilot, but with constraints:</p>
+<ul>
+<li>Hard limits are enforced via the instructions file and human discipline rather than structurally</li>
+<li>The Domain Knowledge Store is not queryable via tools - agents must read the <code>docs/</code> folder directly or rely on Copilot&#39;s workspace indexing</li>
+<li>The pipeline runs phase by phase with explicit prompting per phase rather than skill-driven execution</li>
+</ul>
+<h3>Setup</h3>
+<p>Copy or symlink the adapter file:</p>
+<pre><code class="language-bash">cp planifest-framework/adapters/copilot/copilot-instructions.md .github/copilot-instructions.md
+</code></pre>
+<h3>Running the pipeline</h3>
+<p>With Copilot, the pipeline phases are run manually - prompt Copilot for each phase in sequence, referencing the orchestrator skill for the correct inputs, outputs, and instructions. The hard limits in the instructions file constrain what Copilot will do, but enforcement is prompt-level rather than structural.</p>
+<hr>
+<h2>7. Hard Limits - all tools</h2>
+<p>These apply regardless of which tool is used. In v1.0, enforcement is via the Agent Skills (prompt-level constraints) and human review at the PR gate. When MCP servers are built (see <a href="p014-planifest-roadmap.html">Roadmap</a>), tools with MCP support will additionally enforce these at the infrastructure level.</p>
+<table>
+<thead>
+<tr>
+<th>Hard Limit</th>
+<th>v1.0 Enforcement</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Spec must be complete before codegen</td>
+<td>Agent skill instruction + human gate</td>
+</tr>
+<tr>
+<td>No direct schema modification</td>
+<td>Agent writes migration proposal + stops. Human reviews at PR gate</td>
+</tr>
+<tr>
+<td>Destructive schema ops require human approval</td>
+<td>Agent writes migration proposal flagged as destructive + stops</td>
+</tr>
+<tr>
+<td>Data contract owned by one component</td>
+<td>Agent checks data contract before writing. Human verifies at PR gate</td>
+</tr>
+<tr>
+<td>Code and docs committed atomically</td>
+<td>Agent skill instruction. Human verifies at PR gate</td>
+</tr>
+<tr>
+<td>Credentials never in agent context</td>
+<td>Credentials managed by OS / CI - never in prompts or files</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Context Limit Strategy</h2>
+<p>Applies to all local tools. The file system is the memory - write outputs to disk after each phase and reference them by path rather than holding everything in context.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A{Phase complete?} --&gt;|Yes| B[Write outputs to disk\nvia filesystem MCP]
+    B --&gt; C[Log to pipeline-run.md]
+    C --&gt; D[Reference by path\nin next phase]
+    D --&gt; E[Next phase reads\nonly what it needs]
+    A --&gt;|No| F[Continue in session]
+
+    style B fill:#fff8e1,stroke:#f0a500
+</code></pre>
+<p><strong>Practical rules:</strong></p>
+<ul>
+<li>Write and reference, don&#39;t repeat - outputs go to disk after each phase; the next phase reads by path</li>
+<li>Chunk large codegen - scaffold first, then implement routes, then tests, then IaC</li>
+<li>Summarise completed phases - once a phase is written and logged, drop it from active context</li>
+<li>If context runs out mid-phase - commit what exists, start a new session, and resume from <code>pipeline-run.md</code>; the phase structure makes this clean</li>
+</ul>
+<hr>
+<h2>9. Reconciling a Local Run with your VCS</h2>
+<p>A local run produces a local branch with the same files a CI platform run would produce. The final step is pushing and opening a PR.</p>
+<pre><code class="language-bash"># Review what was produced
+cat initiatives/{{initiative_id}}/pipeline-run.md
+
+# Run the same checks the CI platform will run
+npm run ci:full --workspace=initiatives/{{initiative_id}}
+
+# Push and open PR - GitHub
+git push origin initiative/{{initiative_id}}
+gh pr create --title &quot;feat: {{initiative_id}}&quot; --body &quot;$(cat initiatives/{{initiative_id}}/pipeline-run.md)&quot;
+
+# Push and open MR - GitLab
+git push origin initiative/{{initiative_id}}
+glab mr create --title &quot;feat: {{initiative_id}}&quot; --description &quot;$(cat initiatives/{{initiative_id}}/pipeline-run.md)&quot;
+</code></pre>
+<p>The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.</p>
+
+      </main>
+    </div>
+  </body>
+</html>

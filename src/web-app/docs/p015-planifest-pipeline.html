@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>p015-planifest-pipeline - Planifest Pipeline - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>p015-planifest-pipeline - Planifest Pipeline</h1>
+<hr>
+<blockquote>
+<p>The pipeline an agent follows to take an Initiative Brief through to a production-ready, documented, tested pull request. This document is the reference description of the pipeline phases. The pipeline is delivered as a set of Agent Skills (see <a href="p003-planifest-functional-decisions.md#fd-022--planifest-is-delivered-as-agent-skills">FD-022</a>) - the orchestrator skill (<code>planifest-framework/skills/orchestrator/SKILL.md</code>) is the entry point.</p>
+</blockquote>
+<hr>
+<h2>How This Works</h2>
+<p>Planifest is a specification framework. You - the agent - follow it. The specification is the standard against which your output will be assessed.</p>
+<p>A Planifest is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every initiative, you produce a Planifest - a single document that records both. The human confirms it before development begins.</p>
+<p>This document describes two pipelines: the <strong>Initiative Pipeline</strong> (new work) and the <strong>Change Pipeline</strong> (modifications to existing work). Both follow the same principle: understand the domain first, produce the specification, then build against it.</p>
+<p>The human starts the process. You assess what they&#39;ve provided, coach them through any gaps, then execute. The human reviews the result at the PR gate.</p>
+<hr>
+<h2>Before Every Session</h2>
+<p>Regardless of which pipeline you are running:</p>
+<ol>
+<li>Read this document fully</li>
+<li>Read <code>planifest/hard-limits.md</code> - these are non-negotiable</li>
+<li>Read <code>planifest/default-rules.md</code> - these govern your behaviour unless overridden per initiative</li>
+<li>If an initiative already exists at <code>initiatives/{initiative-id}/docs/</code>, read the existing artifacts to understand the current state</li>
+</ol>
+<hr>
+<h2>Initiative Pipeline</h2>
+<p>Triggered when a human provides an Initiative Brief for new work.</p>
+<pre><code class="language-mermaid">flowchart TD
+    BRIEF([Initiative Brief]) --&gt; PHASE1
+
+    subgraph PHASE1[&quot;Phase 1 - Specification&quot;]
+        ASSESS[&quot;Assess brief against\nartifact requirements&quot;]
+        COMPLETE{&quot;Complete?&quot;}
+        COACH[&quot;Surface gaps\nCoach human for answers&quot;]
+        SPEC[&quot;Produce specification\nartifacts&quot;]
+        ASSESS --&gt; COMPLETE
+        COMPLETE --&gt;|No| COACH
+        COACH --&gt;|Answers provided| ASSESS
+        COMPLETE --&gt;|Yes| SPEC
+    end
+
+    subgraph PHASE2[&quot;Phase 2 - Architecture Decisions&quot;]
+        ADR[&quot;Produce ADRs for every\nsignificant decision&quot;]
+    end
+
+    subgraph PHASE3[&quot;Phase 3 - Code Generation&quot;]
+        CODE[&quot;Implement against the\nspec and ADRs&quot;]
+    end
+
+    subgraph PHASE4[&quot;Phase 4 - Validate&quot;]
+        CHECK{&quot;CI passes?&quot;}
+        FIX[&quot;Self-correct&quot;]
+        RETRY{&quot;Retries left?&quot;}
+        HALT([&quot;Halt - report failure&quot;])
+    end
+
+    subgraph PHASE5[&quot;Phase 5 - Security&quot;]
+        SEC[&quot;Security assessment&quot;]
+    end
+
+    subgraph PHASE6[&quot;Phase 6 - Ship&quot;]
+        DOCS[&quot;Write all documentation&quot;]
+        RUN[&quot;Write pipeline-run.md&quot;]
+    end
+
+    REVIEW([&quot;Human reviews PR&quot;])
+
+    PHASE1 --&gt; PHASE2 --&gt; PHASE3 --&gt; PHASE4
+    CHECK --&gt;|Yes| PHASE5
+    CHECK --&gt;|No| RETRY
+    RETRY --&gt;|Yes| FIX --&gt; CHECK
+    RETRY --&gt;|No| HALT
+    PHASE5 --&gt; PHASE6 --&gt; REVIEW
+
+    style BRIEF fill:#d4edda,stroke:#28a745,color:#000
+    style REVIEW fill:#d4edda,stroke:#28a745,color:#000
+    style HALT fill:#f8d7da,stroke:#dc3545,color:#000
+    style PHASE1 fill:#fff8e1,stroke:#f0a500
+</code></pre>
+<hr>
+<h3>Phase 1 - Specification (hard gate)</h3>
+<p><strong>Purpose:</strong> Ensure the specification is complete before any development begins. This is a hard gate - you do not proceed to Phase 2 until the spec is confirmed complete.</p>
+<p><strong>Input:</strong> Initiative Brief (provided by human)</p>
+<p><strong>Process:</strong></p>
+<p>Assess the Initiative Brief against the full artifact requirements defined in <a href="p003-planifest-functional-decisions.md#fd-019--artifact-types-are-distinct-and-independently-versioned">FD-019</a>. For each required artifact, determine whether the brief provides or implies enough information to produce it.</p>
+<p>If the brief is complete - all required information is present or derivable - proceed to produce the specification artifacts.</p>
+<p>If the brief has gaps - missing acceptance criteria, unspecified non-functional requirements, ambiguous scope boundaries, no stack declaration, missing risk considerations - surface them to the human. Be specific:</p>
+<ul>
+<li>State exactly what is missing</li>
+<li>State which artifact cannot be produced without it</li>
+<li>State why it matters (what goes wrong if you guess)</li>
+</ul>
+<p>Wait for the human to provide the answers. Reassess. Repeat until complete.</p>
+<p>You may make documented assumptions for genuinely minor gaps - record these in the Risk Register with <code>likelihood: medium</code> and flag them. You must not assume away significant ambiguity.</p>
+<p><strong>Outputs - write each to <code>initiatives/{initiative-id}/docs/</code> as you complete it:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Design Specification</td>
+<td><code>design-spec.md</code></td>
+</tr>
+<tr>
+<td>OpenAPI Specification</td>
+<td><code>openapi-spec.yaml</code></td>
+</tr>
+<tr>
+<td>Scope</td>
+<td><code>scope.md</code></td>
+</tr>
+<tr>
+<td>Risk Register</td>
+<td><code>risk-register.md</code></td>
+</tr>
+<tr>
+<td>Domain Glossary</td>
+<td><code>domain-glossary.md</code></td>
+</tr>
+<tr>
+<td>Operational Model</td>
+<td><code>operational-model.md</code></td>
+</tr>
+<tr>
+<td>SLO Definitions</td>
+<td><code>slo-definitions.md</code></td>
+</tr>
+<tr>
+<td>Cost Model</td>
+<td><code>cost-model.md</code></td>
+</tr>
+</tbody></table>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Derive functional requirements from user stories. Do not invent requirements not in the brief.</li>
+<li>Non-functional requirements must include specific, measurable targets - not vague statements.</li>
+<li>The OpenAPI spec must cover every endpoint implied by the functional requirements. Use OpenAPI 3.1.</li>
+<li>Load and use the domain glossary. If the brief introduces domain terms, define them. Never invent your own.</li>
+<li>Stack is a requirement. It must be explicitly declared. If the brief does not declare a stack, ask. Do not default one.</li>
+<li>Write each artifact to disk as you complete it. Do not accumulate them all in memory.</li>
+</ul>
+<hr>
+<h3>Phase 2 - Architecture Decisions</h3>
+<p><strong>Purpose:</strong> Record every significant decision as an ADR.</p>
+<p><strong>Input:</strong> Design Specification, OpenAPI Specification (from Phase 1)</p>
+<p><strong>Process:</strong></p>
+<p>For every significant decision - framework choice, database selection, auth strategy, deployment topology, queue vs sync, data ownership boundaries, component granularity - produce one ADR.</p>
+<p>A significant decision is any choice that has consequences worth recording: what becomes easier, what becomes harder, what is deferred, what risk is introduced or mitigated.</p>
+<p><strong>Output:</strong> One ADR per decision, written to <code>initiatives/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md</code></p>
+<p><strong>ADR format:</strong></p>
+<pre><code class="language-markdown"># ADR-{NNN}: {title}
+
+## Status
+Accepted
+
+## Context
+Why this decision needed to be made.
+
+## Decision
+What was decided.
+
+## Consequences
+What becomes easier, what becomes harder, what is deferred.
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Be specific. Vague ADRs are useless.</li>
+<li>Consequences must include at least one positive and one negative consequence.</li>
+<li>Do not write ADRs for decisions fixed by the stack declaration - those are already decided. Write one ADR that records the stack choice itself.</li>
+<li>Number sequentially from ADR-001.</li>
+<li>If a decision supersedes a prior ADR, mark the prior as <code>Superseded by ADR-{NNN}</code> and reference it in the new ADR&#39;s Context.</li>
+</ul>
+<hr>
+<h3>Phase 3 - Code Generation</h3>
+<p><strong>Purpose:</strong> Implement the system described by the specification and ADRs.</p>
+<p><strong>Input:</strong> Design Specification, OpenAPI Specification, ADRs, Stack Configuration</p>
+<p><strong>Process:</strong></p>
+<p>Read the full specification. Implement against it - not beyond it. The OpenAPI spec defines the contract. The ADRs define the decisions. The stack configuration defines the technology. Your job is to produce the implementation that satisfies these constraints.</p>
+<p><strong>Output:</strong> Full implementation at <code>initiatives/{initiative-id}/</code></p>
+<p>This includes:</p>
+<ul>
+<li>Application source code (structure per the stack and ADRs)</li>
+<li>Shared types and validation schemas</li>
+<li>Unit tests, integration tests, and contract tests</li>
+<li>Infrastructure as Code (if declared in the stack)</li>
+<li>Dockerfiles and local dev configuration (if applicable)</li>
+</ul>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Implement against the OpenAPI spec exactly. Do not add or remove endpoints.</li>
+<li>Use the domain glossary terms throughout - in code, comments, file names, and variable names.</li>
+<li>Every component that owns data must have a Data Contract. See <a href="p003-planifest-functional-decisions.md#fd-016--data-is-treated-differently-to-code">FD-016</a>.</li>
+<li>Write code incrementally. Scaffold first, then implement routes/handlers, then tests, then IaC. Write to disk after each stage.</li>
+<li>Do not introduce frameworks, libraries, or tools not declared in the stack configuration.</li>
+<li>If you encounter something that doesn&#39;t fit cleanly, write it to <code>docs/quirks.md</code> - do not silently work around it.</li>
+</ul>
+<hr>
+<h3>Phase 4 - Validate and Self-Correct</h3>
+<p><strong>Purpose:</strong> Confirm the implementation passes all checks.</p>
+<p><strong>Process:</strong></p>
+<p>Run the project&#39;s CI checks: linting, type-checking, tests, and builds. The specific commands depend on the stack - read the project&#39;s <code>package.json</code>, <code>Makefile</code>, or equivalent.</p>
+<p>If checks pass -&gt; proceed to Phase 5.</p>
+<p>If checks fail -&gt; read the error output, identify the root cause, fix it, and re-run. Maximum 5 self-correct cycles. If the issue persists after 5 attempts, halt and report:</p>
+<ul>
+<li>What failed</li>
+<li>What you tried</li>
+<li>Why it&#39;s not resolving</li>
+</ul>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Fix the actual bug. Do not suppress linting rules or skip failing tests.</li>
+<li>If a test failure reveals a spec ambiguity, record it in <code>docs/quirks.md</code> and note it for the human.</li>
+<li>Track each self-correct cycle in your notes for inclusion in <code>pipeline-run.md</code>.</li>
+</ul>
+<hr>
+<h3>Phase 5 - Security Assessment</h3>
+<p><strong>Purpose:</strong> Produce a security assessment of the implementation.</p>
+<p><strong>Input:</strong> Full implementation (from Phase 3, validated in Phase 4)</p>
+<p><strong>Output:</strong> <code>initiatives/{initiative-id}/docs/security-report.md</code></p>
+<p><strong>The security report must cover:</strong></p>
+<ul>
+<li>Threat model (STRIDE or equivalent - scoped to this component)</li>
+<li>Dependency audit (known vulnerabilities in declared dependencies)</li>
+<li>Secrets management (how secrets are handled - confirm none are hardcoded)</li>
+<li>Authentication and authorisation analysis</li>
+<li>Network policy review (what is exposed, what is internal)</li>
+<li>Input validation review (confirm all inputs are validated per the OpenAPI spec)</li>
+</ul>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Every finding must reference a specific file, endpoint, or configuration. Generic security advice is not acceptable.</li>
+<li>Categorise findings by severity: critical, high, medium, low, informational.</li>
+<li>Critical and high findings should be flagged prominently - these will be reviewed at the PR gate.</li>
+</ul>
+<hr>
+<h3>Phase 6 - Ship and Document</h3>
+<p><strong>Purpose:</strong> Ensure all documentation is complete, consistent, and ready for human review.</p>
+<p><strong>Process:</strong></p>
+<ol>
+<li>Confirm every artifact defined in <a href="p003-planifest-functional-decisions.md#fd-019--artifact-types-are-distinct-and-independently-versioned">FD-019</a> has been produced for this initiative</li>
+<li>Produce per-component artifacts for each component:<ul>
+<li><code>docs/components/{component-id}/purpose.md</code></li>
+<li><code>docs/components/{component-id}/interface-contract.md</code></li>
+<li><code>docs/components/{component-id}/dependencies.md</code></li>
+<li><code>docs/components/{component-id}/data-contract.md</code> (if the component owns data)</li>
+<li><code>docs/components/{component-id}/risk.md</code></li>
+<li><code>docs/components/{component-id}/scope.md</code></li>
+<li><code>docs/components/{component-id}/quirks.md</code></li>
+<li><code>docs/components/{component-id}/tech-debt.md</code></li>
+</ul>
+</li>
+<li>Produce system-wide artifacts:<ul>
+<li><code>docs/system/component-registry.md</code></li>
+<li><code>docs/system/dependency-graph.md</code> (as a Mermaid diagram)</li>
+</ul>
+</li>
+<li>Produce <code>docs/recommendations.md</code> - suggested improvements for future iterations</li>
+<li>Write <code>pipeline-run.md</code> at the initiative root - the audit trail for this run</li>
+</ol>
+<p><strong><code>pipeline-run.md</code> format:</strong></p>
+<pre><code class="language-markdown"># Pipeline Run - {initiative-id}
+
+Date: {timestamp}
+Tool: {agent tool used}
+
+## Phases completed
+- [x] Specification
+- [x] Architecture Decisions ({n} ADRs)
+- [x] Code Generation
+- [x] Validation ({n} self-correct cycles)
+- [x] Security Assessment
+- [x] Documentation
+
+## Assumptions made
+(any assumptions documented in the Risk Register)
+
+## Quirks
+(anything unusual discovered during the run)
+
+## Recommendations
+(what should be reviewed before merging)
+
+## Self-correct log
+(what failed during validation and how it was fixed)
+</code></pre>
+<hr>
+<h2>Change Pipeline</h2>
+<p>Triggered when a human requests a modification to an existing initiative.</p>
+<pre><code class="language-mermaid">flowchart TD
+    CHANGE([Change Request]) --&gt; PHASE1
+
+    subgraph PHASE1[&quot;Phase 1 - Domain Context&quot;]
+        READ[&quot;Read existing artifacts\nfor this initiative&quot;]
+        COMP[&quot;Identify affected\ncomponents&quot;]
+    end
+
+    subgraph PHASE2[&quot;Phase 2 - Targeted Change&quot;]
+        IMPL[&quot;Implement minimum\nnecessary change&quot;]
+    end
+
+    subgraph PHASE3[&quot;Phase 3 - Validate&quot;]
+        CHECK{&quot;CI passes?&quot;}
+        FIX[&quot;Self-correct&quot;]
+        RETRY{&quot;Retries left?&quot;}
+        HALT([&quot;Halt - report failure&quot;])
+    end
+
+    subgraph PHASE4[&quot;Phase 4 - ADR &amp; Migration Check&quot;]
+        CONTRACT{&quot;Contract\nchanged?&quot;}
+        ADR[&quot;Write new ADR&quot;]
+        SCHEMA{&quot;Schema\nchanged?&quot;}
+        MIG[&quot;Write migration\nproposal - STOP\nfor human approval&quot;]
+    end
+
+    subgraph PHASE5[&quot;Phase 5 - Update&quot;]
+        DOCS[&quot;Update affected\ndocumentation&quot;]
+        RUN[&quot;Write pipeline-run.md&quot;]
+    end
+
+    REVIEW([&quot;Human reviews PR&quot;])
+
+    PHASE1 --&gt; PHASE2 --&gt; PHASE3
+    CHECK --&gt;|Yes| PHASE4
+    CHECK --&gt;|No| RETRY
+    RETRY --&gt;|Yes| FIX --&gt; CHECK
+    RETRY --&gt;|No| HALT
+    CONTRACT --&gt;|Yes| ADR --&gt; PHASE5
+    CONTRACT --&gt;|No| SCHEMA
+    SCHEMA --&gt;|Yes| MIG
+    SCHEMA --&gt;|No| PHASE5
+    PHASE5 --&gt; REVIEW
+
+    style CHANGE fill:#d4edda,stroke:#28a745,color:#000
+    style REVIEW fill:#d4edda,stroke:#28a745,color:#000
+    style HALT fill:#f8d7da,stroke:#dc3545,color:#000
+    style MIG fill:#f8d7da,stroke:#dc3545,color:#000
+</code></pre>
+<hr>
+<h3>Phase 1 - Domain Context</h3>
+<p><strong>Purpose:</strong> Understand the current state before changing anything.</p>
+<p><strong>Process:</strong></p>
+<p>Read the existing artifacts for this initiative:</p>
+<ol>
+<li><code>docs/design-spec.md</code> - understand the full specification</li>
+<li><code>docs/system/component-registry.md</code> - understand what components exist</li>
+<li><code>docs/system/dependency-graph.md</code> - understand how they relate</li>
+<li><code>docs/components/{affected-component}/</code> - read the purpose, interface contract, dependencies, data contract, risk, and quirks for every component the change touches</li>
+<li><code>docs/domain-glossary.md</code> - confirm you are using the correct terms</li>
+</ol>
+<p>Identify which components are affected by the change request. Identify the blast radius - which other components depend on the ones you&#39;re changing.</p>
+<hr>
+<h3>Phase 2 - Targeted Change</h3>
+<p><strong>Purpose:</strong> Implement the minimum necessary change.</p>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Do not refactor code outside the scope of the change request. Scope creep is a process violation.</li>
+<li>If the change touches data: read the Data Contract first. If schema changes are required, write a migration proposal and stop for human approval. This is a hard limit.</li>
+<li>If the change modifies an interface contract: note this - an ADR will be required in Phase 4.</li>
+<li>If the change request is ambiguous, implement the narrowest interpretation and document your reasoning.</li>
+<li>If you discover tech debt or quirks while working, write them to <code>docs/quirks.md</code> or raise them as recommendations - do not fix them as part of this change.</li>
+</ul>
+<hr>
+<h3>Phase 3 - Validate</h3>
+<p>Same as Initiative Pipeline Phase 4. Scope checks to the blast radius of the change.</p>
+<hr>
+<h3>Phase 4 - ADR &amp; Migration Check</h3>
+<p>If the change modified an interface contract -&gt; write a new ADR recording what changed, why, and the consequences for consumers.</p>
+<p>If the change requires a schema modification -&gt; write a migration proposal to <code>docs/components/{component-id}/migrations/proposed-{description}.md</code> and <strong>stop</strong>. A human must approve before any schema change is applied. This is a hard limit. See <a href="p003-planifest-functional-decisions.md#fd-016--data-is-treated-differently-to-code">FD-016</a>.</p>
+<hr>
+<h3>Phase 5 - Update Documentation</h3>
+<p>Update every artifact affected by the change:</p>
+<ul>
+<li>Component purpose, interface contract, dependencies, risk, scope, quirks - if any changed</li>
+<li>System dependency graph - if component relationships changed</li>
+<li>Component registry - if a component was added, removed, or its summary changed</li>
+<li>Risk Register - if new risks were introduced</li>
+<li>Domain Glossary - if new terms were introduced</li>
+<li>ADRs - written in Phase 4 if needed</li>
+</ul>
+<p>Write <code>pipeline-run.md</code> as the audit trail for this change.</p>
+<hr>
+<h2>Hard Limits</h2>
+<p>These apply in every session, every phase, every pipeline. Non-negotiable. See <a href="p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively">FD-007</a> for the full rules table.</p>
+<p>The hard limits are:</p>
+<ol>
+<li><strong>Specification must be complete before code generation begins.</strong> If the spec has gaps, surface them and wait. Do not work around gaps by assuming.</li>
+<li><strong>No direct schema modification.</strong> If a change requires a schema change, write a migration proposal and stop for human approval. Never modify a schema directly.</li>
+<li><strong>Destructive schema operations require human approval.</strong> Drop column, drop table, rename - propose and stop. No exceptions.</li>
+<li><strong>Data is owned by one component.</strong> Never write to data owned by another component.</li>
+<li><strong>Code and documentation are written together.</strong> Never commit code without its documentation, or documentation without its code.</li>
+<li><strong>Credentials are never in your context.</strong> If a credential appears in a prompt, file, or environment, do not use it. Flag it.</li>
+</ol>
+<hr>
+<h2>Artifact Templates</h2>
+<p>Use the templates in <code>planifest-framework/templates/</code> for every artifact you produce. The templates define the structure, the required sections, and the expected content. Do not invent your own structure - follow the template.</p>
+<hr>
+<h2>Adoption Modes</h2>
+<p>The pipeline phases are the same regardless of adoption mode. What differs is the entry point and what Phase 1 looks like.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Entry point</th>
+<th>Phase 1 behaviour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Greenfield</strong></td>
+<td>Initiative Brief</td>
+<td>Assess brief, coach for completeness, produce spec from scratch</td>
+</tr>
+<tr>
+<td><strong>Retrofit</strong></td>
+<td>Existing codebase + Initiative Brief</td>
+<td>Read existing code first. Infer architecture, generate ADRs from what exists, surface drift and tech debt. Then assess the brief against the discovered reality.</td>
+</tr>
+<tr>
+<td><strong>Agent Interface Layer</strong></td>
+<td>Interface specification + Initiative Brief</td>
+<td>Read the interface spec. Develop against the interface, not the internals. Keep context tightly scoped.</td>
+</tr>
+</tbody></table>
+<p>See <a href="p003-planifest-functional-decisions.md#fd-018--planifest-supports-three-adoption-modes">FD-018</a> for the full decision.</p>
+<hr>
+<p><em>Related: <a href="p001-planifest-master-plan.html">Master Plan</a> | <a href="p003-planifest-functional-decisions.html">Functional Decisions</a> | <a href="p003-planifest-functional-decisions.md#fd-019--artifact-types-are-distinct-and-independently-versioned">Artifact Types - FD-019</a> | <a href="p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively">Hard Limits - FD-007</a></em></p>
+
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planifest - Roadmap - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>Planifest - Roadmap</h1>
+<hr>
+<blockquote>
+<p>A parking lot for ideas that are worth tracking but not yet committed to. Items move between states as they are evaluated, explored, or set aside. This is not a backlog - it carries no implied commitment or priority. Items that graduate to committed work become Initiative Briefs.</p>
+</blockquote>
+<hr>
+<h2>States</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Candidate</strong></td>
+<td>Parked concept. Enough context to pick up later. No evaluation yet.</td>
+</tr>
+<tr>
+<td><strong>Under Consideration</strong></td>
+<td>Actively being explored or discussed. May become a functional decision, open question, or Initiative Brief.</td>
+</tr>
+<tr>
+<td><strong>Deferred</strong></td>
+<td>Evaluated and set aside with a reason. Not forgotten - revisit when conditions change.</td>
+</tr>
+</tbody></table>
+<h2>Estimate Scale</h2>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>S</strong></td>
+<td>A few days of focused work. Single component or document change.</td>
+</tr>
+<tr>
+<td><strong>M</strong></td>
+<td>A week or two. Multiple components, moderate complexity.</td>
+</tr>
+<tr>
+<td><strong>L</strong></td>
+<td>Several weeks. Cross-cutting concern, new infrastructure, or significant design work.</td>
+</tr>
+<tr>
+<td><strong>XL</strong></td>
+<td>A month or more. Major new capability, external dependencies, or ecosystem-level change.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Deferred</h2>
+<h3>RD-001 - Cross-Repository Component Discovery via Specification Matching</h3>
+<p><strong>Size:</strong> XL</p>
+<p><strong>Summary:</strong> Enable Planifest agents to search for existing components - both internal and external (open-source) - by matching the current initiative&#39;s specification against structured metadata published by other Planifest-adopting teams or repositories. Instead of keyword search, this is specification-to-specification matching: the agent&#39;s requirements are compared structurally against published component metadata (Interface Contracts, OpenAPI specs, DomainDocument envelopes) to find candidates that satisfy the spec.</p>
+<p><strong>What it would require:</strong></p>
+<ul>
+<li>A <strong>Component Discovery Service</strong> - a queryable registry that indexes published component metadata across repositories, enabling spec-to-spec matching</li>
+<li><strong>GitHub / registry search integration</strong> - agents would need to search package registries (npm, crates.io, PyPI) and source repositories (GitHub, GitLab) for components publishing Planifest-compatible metadata</li>
+<li>An <strong>adopt / adapt / author decision framework</strong> - structured criteria for deciding whether to use an existing component as-is, wrap or extend it, or author from scratch</li>
+<li><strong>Evaluation criteria</strong> - licensing, maintenance health, security posture, compatibility with the declared stack, match quality and gap analysis</li>
+<li>A <strong>well-known manifest convention</strong> - e.g. a standard file path or registry entry that external repositories use to publish their component metadata in a Planifest-compatible format</li>
+</ul>
+<p><strong>Why it matters:</strong> Most coding agents generate code from scratch using training data - a lossy, stale, unattributable version of what already exists in open-source. The Planifest artifact set already carries the structured metadata needed for matching (Component Registry, Interface Contracts, OpenAPI specs). This idea extends that metadata from an internal concern to an ecosystem-level capability.</p>
+<p><strong>Why deferred:</strong> The infrastructure required is substantial - a discovery service, search integration, and an ecosystem of adopters publishing metadata. The core Planifest pipeline must be built and proven first. This becomes viable once the specification framework is in use and the metadata format is stable. Revisit once the pilot is complete and adoption patterns are established.</p>
+<p><strong>Origin:</strong> Discussion during p014 creation, 07 MAR 2026.</p>
+<hr>
+<h2>Under Consideration</h2>
+<h3>RC-001 - Domain Knowledge MCP Server</h3>
+<p><strong>Size:</strong> L</p>
+<p><strong>Summary:</strong> A queryable MCP service wrapping the Domain Knowledge Store. Agents call tools (<code>domain_query</code>, <code>get_component</code>, <code>get_risk</code>, <code>get_glossary</code>, etc.) and receive scoped, structured responses rather than reading raw markdown files from <code>docs/</code>.</p>
+<p><strong>What it would add:</strong> Tighter agent context (agents receive only what they asked for, not entire files), structured query responses with confidence levels and source references, enforcement of hard limits at the tool level (the server refuses non-compliant writes).</p>
+<p><strong>Why not now:</strong> v1.0 operates with the agent reading the <code>docs/</code> folder directly. The standardised file paths and artifact structure provide sufficient queryability for single-agent, single-initiative work. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
+<p><strong>Trigger to revisit:</strong> When the pilot initiative&#39;s <code>docs/</code> folder exceeds what an agent can navigate efficiently in a single session, or when a second concurrent initiative is started.</p>
+<p><strong>Existing design work:</strong> <a href="roadmap/p005-planifest-mcp-architecture.html">p005 - MCP Architecture</a>, <a href="roadmap/p006-planifest-domain-knowledge-service-interface.html">p006 - Domain Knowledge Service Interface</a>, <a href="roadmap/p007-planifest-domain-knowledge-service-reference.html">p007 - Domain Knowledge Service Reference</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-002 - Orchestrator Service</h3>
+<p><strong>Size:</strong> L</p>
+<p><strong>Summary:</strong> A service that watches for new Initiative Briefs, runs the pipeline as a state machine (Discovery -&gt; Spec -&gt; ADR -&gt; Codegen -&gt; Validate -&gt; Security -&gt; PR -&gt; Docs), persists state between steps, and handles retries with full error context. The implementation language is a stack decision.</p>
+<p><strong>What it would add:</strong> Fully automated pipeline execution without human-triggered sessions. Idempotent re-runs. State persistence across failures. The pipeline runs in CI without anyone opening an agent tool.</p>
+<p><strong>Why not now:</strong> v1.0 pipeline execution is the agent following <code>pipeline.md</code> in a human-triggered session. The human starts the tool, the agent reads the pipeline document, executes the phases. This is sufficient to prove the framework and iterate on the specification. The orchestrator automates what the human currently triggers - valuable once the pipeline is proven and the team wants hands-off execution.</p>
+<p><strong>Trigger to revisit:</strong> When the pipeline has been run successfully multiple times and the team wants CI-triggered execution rather than human-triggered sessions.</p>
+<p><strong>Existing design work:</strong> <a href="p001-planifest-master-plan.md#7-agent-orchestration-layer">p001 §7 - Agent Orchestration Layer</a>, <a href="roadmap/p009-planifest-pipeline-template-reference.html">p009 - Pipeline Template Reference</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-003 - Serial Write Queue and Listener</h3>
+<p><strong>Size:</strong> M</p>
+<p><strong>Summary:</strong> A queue-and-listener pattern where all agent writes are posted to a serial queue, processed one at a time, and committed atomically (code + docs together). The MCP domain-knowledge-server is the sole writer to git.</p>
+<p><strong>What it would add:</strong> Structural prevention of merge conflicts. Guaranteed atomic commits. Enforcement of the code-and-docs-together rule at the infrastructure level.</p>
+<p><strong>Why not now:</strong> v1.0 runs one agent at a time on one branch. Merge conflicts don&#39;t arise because there&#39;s a single writer. The agent commits directly. The code-and-docs-together discipline is enforced by the pipeline document and reviewed at the PR gate.</p>
+<p><strong>Trigger to revisit:</strong> When multiple agents operate concurrently on the same repository, or when the team wants structural enforcement of atomic commits rather than process enforcement.</p>
+<p><strong>Existing design work:</strong> <a href="roadmap/p007-planifest-domain-knowledge-service-reference.md#git-write-model">p007 §Git Write Model</a>, <a href="roadmap/p005-planifest-mcp-architecture.md#7-write-model--security">p005 §7 - Write Model &amp; Security</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-004 - MCP Server Suite (filesystem, ci, vcs, docs, nx)</h3>
+<p><strong>Size:</strong> XL</p>
+<p><strong>Summary:</strong> A set of MCP servers providing structured tool access for file operations (scoped to component boundaries), CI execution (structured output rather than shell parsing), VCS operations (platform-agnostic PR creation), documentation sync (pluggable provider), and Nx project graph queries.</p>
+<p><strong>What it would add:</strong> Agents interact via typed tool calls rather than shell commands. Path scoping prevents agents from accidentally modifying other components. CI output is structured (parsed errors, not raw terminal output). VCS operations are platform-agnostic.</p>
+<p><strong>Why not now:</strong> v1.0 agents have direct access to the filesystem and can run shell commands. The pipeline document constrains their scope. The overhead of building, testing, and maintaining five MCP servers is disproportionate to the value they add when there&#39;s a single agent operating in a human-supervised session.</p>
+<p><strong>Trigger to revisit:</strong> When agent scope violations become a recurring problem at the PR gate, or when the team needs platform-agnostic VCS operations (switching from GitHub to GitLab, for example).</p>
+<p><strong>Existing design work:</strong> <a href="roadmap/p005-planifest-mcp-architecture.md#3-mcp-servers-in-this-pipeline">p005 §3 - MCP Servers in This Pipeline</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-005 - Pluggable Documentation Provider</h3>
+<p><strong>Size:</strong> M</p>
+<p><strong>Summary:</strong> A docs-server MCP that syncs Planifest artifacts to a configurable documentation target: Obsidian vault (with wikilinks), Notion database, Confluence space, or plain markdown / GitHub wiki.</p>
+<p><strong>What it would add:</strong> Teams choose where their documentation lives without changing the Planifest artifact structure. Cross-references are generated in the provider&#39;s native format.</p>
+<p><strong>Why not now:</strong> v1.0 docs are markdown in git. GitHub renders markdown and Mermaid natively. No sync step is needed - the docs are already where the code is. Teams that want Obsidian can point a vault at the <code>docs/</code> folder.</p>
+<p><strong>Trigger to revisit:</strong> When a team adopting Planifest has a hard requirement for Notion or Confluence as their primary documentation system.</p>
+<p><strong>Existing design work:</strong> <a href="p001-planifest-master-plan.md#11-documentation-sync">p001 §11 - Documentation Sync</a>, <a href="roadmap/p005-planifest-mcp-architecture.md#3-mcp-servers-in-this-pipeline">p005 §3 - docs-server</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-006 - CI Pipeline Template Stamping</h3>
+<p><strong>Size:</strong> M</p>
+<p><strong>Summary:</strong> Infrastructure to automatically generate CI pipeline configuration (GitHub Actions, GitLab CI, etc.) for each initiative, stamp <code>{{component_id}}</code> placeholders, manage template versions across components, and run migration scripts when templates are updated.</p>
+<p><strong>What it would add:</strong> Standardised CI config generated automatically for every initiative. Template versioning so pipeline improvements propagate to existing components.</p>
+<p><strong>Why not now:</strong> v1.0 teams write their own CI config (or the agent helps them write it). The pipeline phases are the same regardless of CI platform - what changes is the YAML syntax. Generating that YAML is straightforward; building and maintaining a template stamping and migration system is not.</p>
+<p><strong>Trigger to revisit:</strong> When more than a handful of initiatives exist and maintaining CI config manually across them becomes a burden.</p>
+<p><strong>Existing design work:</strong> <a href="roadmap/p009-planifest-pipeline-template-reference.md#6-template-stamping">p009 §6 - Template Stamping</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h3>RC-007 - Agent Prompt Library as API System Prompts</h3>
+<p><strong>Size:</strong> S</p>
+<p><strong>Summary:</strong> The agent prompts in <a href="roadmap/p008-planifest-agent-prompt-library.html">p008</a> are submitted to an LLM API as <code>system</code> messages when the orchestrator service runs the pipeline. Each prompt is parameterised with <code>{{placeholder}}</code> values filled by the orchestrator before the API call.</p>
+<p><strong>What it would add:</strong> Machine-executed pipeline - each agent phase is an API call, not a human-triggered session. Prompts are stable, versioned artifacts that can be tested and tuned independently.</p>
+<p><strong>Why not now:</strong> v1.0 agents read the pipeline document directly - they internalise the instructions rather than receiving them as API system prompts. The prompts in p008 are still useful as reference material for how each agent should behave, but submitting them as API calls requires the orchestrator service (RC-002).</p>
+<p><strong>Trigger to revisit:</strong> When RC-002 (Orchestrator Service) is built.</p>
+<p><strong>Existing design work:</strong> <a href="roadmap/p008-planifest-agent-prompt-library.html">p008 - Agent Prompt Library</a>.</p>
+<p><strong>Origin:</strong> v1.0 complexity review, 07 MAR 2026.</p>
+<hr>
+<h2>Candidate</h2>
+<h3>RC-009 - Observability Store for Pipeline Quality Metrics</h3>
+<p><strong>Size:</strong> L</p>
+<p><strong>Summary:</strong> Track retry counts per agent, self-correct patterns, spec gap frequency, brief quality metrics, and which components fail most. This data becomes a product analytics layer for engineering quality - showing which briefs are consistently underspecified, which agents need prompt tuning, and where the framework creates the most friction.</p>
+<p><strong>Origin:</strong> Mentioned in <a href="p002-planifest-product-concept.html">p002 - Product Concept</a> and <a href="roadmap/p008-planifest-agent-prompt-library.md#10-tuning-notes">p008 §10 - Tuning Notes</a>. Not yet evaluated as a standalone capability.</p>
+<hr>
+<h3>RC-010 - Planifest as SaaS (Component Registry as a Service)</h3>
+<p><strong>Size:</strong> XL</p>
+<p><strong>Summary:</strong> The Component Registry becomes a hosted service. Teams connect their repos, component metadata is indexed, and agents across any tool can query the registry to understand the codebase before acting. Value compounds as more components are registered and more change history accumulates.</p>
+<p><strong>Origin:</strong> <a href="p002-planifest-product-concept.html">p002 - Product Concept § What This Could Become</a>. The long-term commercial vision. Depends on the open-source framework being adopted and the metadata format being stable.</p>
+<hr>
+<p><em>Related: <a href="p001-planifest-master-plan.html">Master Plan</a> | <a href="p002-planifest-product-concept.html">Product Concept</a> | <a href="p003-planifest-functional-decisions.html">Functional Decisions</a></em></p>
+
+      </main>
+    </div>
+  </body>
+</html>

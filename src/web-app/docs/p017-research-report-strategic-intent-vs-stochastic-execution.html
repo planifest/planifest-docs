@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Research Report: Strategic Intent vs. Stochastic Execution - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>Research Report: Strategic Intent vs. Stochastic Execution</h1>
+<hr>
+<p><strong>Date:</strong> March 11, 2026<br><strong>Subject:</strong> Critical Analysis of Sequential Intent-Mapping in Agentic Workflows<br><strong>Status:</strong> Technical Evaluation of &quot;Plan-to-Manifest&quot; Logic  </p>
+<hr>
+<h2>1. The Core Thesis: Closing the Semantic Gap</h2>
+<p>In 2026, the primary challenge in software engineering is no longer <strong>syntactic</strong> (writing code) but <strong>semantic</strong> (ensuring the code matches human intent). As Large Language Models (LLMs) like Claude 4.6 and GPT-5.3 Codex evolve, their ability to perform autonomous &quot;Deep Research&quot; on codebases has introduced a new risk: <strong>Stochastic Drift.</strong></p>
+<p>Without a pre-execution &quot;Plan&quot; to serve as a deterministic anchor, agents default to the statistical average of their training data. The subsequent creation of a &quot;Manifest&quot; provides the necessary post-execution visibility to audit this drift.</p>
+<hr>
+<h2>2. Phase 1: The &quot;Plan&quot; as a Constraint Logic</h2>
+<p>A &quot;Plan&quot; in this context is not a traditional project management tool, but a <strong>high-density constraints set</strong>. </p>
+<ul>
+<li><strong>The Problem with &quot;AI-First&quot; Research:</strong> When an agent researches a codebase before a human provides an anchor, it adopts the &quot;legacy perspective&quot; of the existing code. It becomes an echo chamber of existing technical debt.</li>
+<li><strong>The Strategic Necessity:</strong> The human must provide the &quot;intentional state&quot;-the quirky, non-obvious, or future-facing requirements that do not yet exist in the codebase. This &quot;Plan&quot; forces the LLM&#39;s attention mechanism to prioritize human-defined variables over the &quot;most likely&quot; code patterns found in the wild.</li>
+</ul>
+<hr>
+<h2>3. Phase 2: The &quot;Manifest&quot; as an Observability Layer</h2>
+<p>The &quot;Manifest&quot; is the machine-readable and human-readable artifact of an autonomous build. It serves as the definitive documentation for a component that has already been constructed.</p>
+<ul>
+<li><strong>Hybrid Understanding:</strong> The Manifest is designed for both humans and agents. It provides a high-level abstraction of the component&#39;s logic, dependencies, and original intent, allowing an agent to &quot;understand&quot; a module without re-parsing the entire raw source code during future tasks.</li>
+<li><strong>Long-term Maintenance:</strong> When a new feature is required or a bug is identified, the agent returns to the codebase. The Manifest acts as the entry point, ensuring that future agentic research is anchored in the original requirements rather than just the current code state.</li>
+<li><strong>The Audit Loop:</strong> The Manifest allows for a &quot;Semantic Diff.&quot; A human (or a secondary auditor agent) compares the Manifest (what was built) against the Plan (what was intended).</li>
+</ul>
+<hr>
+<h2>4. Critical Technical Challenges and Mitigations</h2>
+<h3>A. Problem: Context Inflation &amp; Attention Decay</h3>
+<p>High-density Plans increase the &quot;Token Tax.&quot; Even with 2M+ token context windows, models suffer from <strong>Attention Decay</strong>. If a Plan is too detailed, it competes for the model&#39;s limited attention during the &quot;Deep Research&quot; phase, leading the agent to ignore non-negotiable constraints in favor of discovered code patterns.</p>
+<ul>
+<li><strong>Mitigation: Selective Application</strong> The framework should not be used as a blanket solution for all development tasks. It is applied specifically when the complexity or novelty of the problem warrants high-context anchoring. For routine or standard tasks, leaner iterative prompts are utilized to preserve the context window and reduce compute costs.</li>
+</ul>
+<h3>B. Problem: The &quot;Static Plan&quot; Fallacy (Rigidity)</h3>
+<p>Software engineering is inherently discovery-driven. A sequential &quot;Plan-then-Manifest&quot; model risks <strong>Autonomous Sunk Cost</strong>, where an agent adheres to a flawed pre-set Plan despite discovering fundamental architectural blockers during the research phase.</p>
+<ul>
+<li><strong>Mitigation: The Deviation &amp; Escalation Protocol</strong> The framework empowers the agent to manage technical friction in real-time. If a blocker is identified, the agent can choose to:<ol>
+<li><strong>Documented Deviation:</strong> Proceed with an alternative path, ensuring the specific deviation and its justification are flagged in the final Manifest.</li>
+<li><strong>Escalation (Stop-and-Ask):</strong> Pause the build if continuing would be wasteful or deviate too far from the original intent, requesting a human review of the Plan before proceeding.</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2>5. Comparative Evaluation of 2026 Approaches</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Approach</th>
+<th align="left">Logic</th>
+<th align="left">Primary Weakness</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Iterative (HITL)</strong></td>
+<td align="left">Constant micro-corrections.</td>
+<td align="left">Human bottlenecking; low scalability.</td>
+</tr>
+<tr>
+<td align="left"><strong>Plan-to-Manifest</strong></td>
+<td align="left">Sequential Intent-Mapping.</td>
+<td align="left">Rigidity; high initial cognitive load.</td>
+</tr>
+<tr>
+<td align="left"><strong>Recursive Sub-Agents</strong></td>
+<td align="left">Task-specific micro-plans.</td>
+<td align="left">Coordination overhead; &quot;lost in translation&quot; errors.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Scientific Verdict: Visibility vs. Governance</h2>
+<p>The Plan-to-Manifest concept is a <strong>Risk Mitigation Strategy</strong>, not a panacea. </p>
+<ol>
+<li><strong>For Novel Systems:</strong> It is essential. Without a Plan, the AI has no &quot;Ground Truth&quot; other than the average of its training data.</li>
+<li><strong>For Standard Systems:</strong> It may be an over-optimization where the token cost of the Plan exceeds the value of the agent&#39;s autonomy.</li>
+</ol>
+<h2>7. Evolution: Toward an &quot;Intent-to-Manifest&quot; Architecture</h2>
+<p>As models evolve throughout 2026 and beyond, the framework is expected to shift from a high-density &quot;Plan&quot; toward a more fluid &quot;Intent&quot; model. This evolution will be driven by improvements in model reasoning and the commoditization of architectural patterns.</p>
+<h3>A. The Transition to Intent-Inference</h3>
+<p>Future iterations of <strong>Claude</strong> and <strong>Codex</strong> are likely to become significantly better at inferring &quot;Tacit Knowledge&quot;-the unspoken requirements that humans currently have to &quot;brain dump&quot; into a Plan.</p>
+<ul>
+<li><strong>The Shift:</strong> Instead of a full-scale architectural Plan, the human provides a high-level <strong>Intent Anchor</strong>. The agent then uses &quot;Simulated Stakeholder Reasoning&quot; to hypothesize the missing requirements, verifying them against the codebase before generating the Manifest.</li>
+<li><strong>The Result:</strong> This reduces the <strong>Token Tax</strong> by moving the heavy lifting of requirements-gathering from the prompt into the agent&#39;s internal reasoning loop.</li>
+</ul>
+<h3>B. Recursive Self-Correction and &quot;Shadow Plans&quot;</h3>
+<p>We expect to see the rise of <strong>Dynamic Shadow Plans</strong>. Rather than a static document, the Plan becomes a living data structure that the agent updates in real-time as it researches.</p>
+<ul>
+<li><strong>Evolution:</strong> If the agent discovers a technical blocker, it autonomously updates its &quot;Shadow Plan&quot; and flags the change in the Manifest. The human no longer reviews a static plan, but a <strong>Versioned Intent Graph</strong> that shows how the mission evolved from start to finish.</li>
+</ul>
+<h3>C. The Manifest as a Training Signal</h3>
+<p>The most significant evolution will be the use of the <strong>Manifest as a feedback loop</strong>.</p>
+<ul>
+<li><strong>Machine-to-Machine Scaling:</strong> As Manifests become standardized, they will serve as the &quot;training data&quot; for future agentic builds. Agents will no longer research raw code alone; they will research the <strong>Manifest Repository</strong> of the company. </li>
+<li><strong>Outcome-Driven Oversight:</strong> This moves the human even further &quot;on-the-loop.&quot; The human will eventually stop reviewing individual Manifests and instead monitor <strong>Outcome Health Metrics</strong>, only diving into the Manifest when the system detects a deviation from the overarching business intent.</li>
+</ul>
+<h3>D. Adaptive Framework Calibration</h3>
+<p>To meet these evolutions, the framework must become <strong>Adaptive</strong>. The level of human &quot;Anchoring&quot; will be inversely proportional to the agent&#39;s &quot;Intent-Certainty&quot; score. </p>
+<ul>
+<li><strong>High-Certainty Tasks:</strong> The agent proceeds with a minimal Intent Anchor and a standard Manifest.</li>
+<li><strong>Low-Certainty/Novel Tasks:</strong> The system automatically triggers a request for a &quot;Classic Plan&quot; (Brain Dump), ensuring that human quirkiness is preserved where the AI&#39;s statistical &quot;Average&quot; is most likely to fail.</li>
+<li></li>
+</ul>
+<p>The ultimate value of this concept in 2026 lies in its ability to provide <strong>Human Oversight at Scale</strong>. It allows one engineer to monitor ten autonomous builds by reviewing the outcome and outputs rather than writing code.</p>
+
+      </main>
+    </div>
+  </body>
+</html>
