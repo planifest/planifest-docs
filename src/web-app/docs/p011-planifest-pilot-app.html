@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planifest Pilot App - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>Planifest Pilot App</h1>
+<hr>
+<blockquote>
+<p>The first initiative built and maintained by Planifest, using Planifest. Purpose TBC - this document covers the confirmed technical decisions and will be updated when the product scope is defined.</p>
+</blockquote>
+<p><em>Related: <a href="p001-planifest-master-plan.html">Master Plan</a> | <a href="p002-planifest-product-concept.html">Product Concept</a> | <a href="p014-planifest-roadmap.html">Roadmap</a></em></p>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#1-status">1. Status</a></li>
+<li><a href="#2-confirmed-technical-decisions">2. Confirmed Technical Decisions</a></li>
+<li><a href="#3-gcp-architecture">3. GCP Architecture</a></li>
+<li><a href="#4-monorepo-structure">4. Monorepo Structure</a></li>
+<li><a href="#5-cicd-pipeline">5. CI/CD Pipeline</a></li>
+<li><a href="#6-what-happens-when-purpose-is-confirmed">6. What Happens When Purpose is Confirmed</a></li>
+</ul>
+<hr>
+<h2>1. Status</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Application purpose</td>
+<td>⏳ TBC</td>
+</tr>
+<tr>
+<td>Frontend stack</td>
+<td>✅ React 19 + TypeScript + shadcn/ui</td>
+</tr>
+<tr>
+<td>Backend stack</td>
+<td>✅ Node.js + TypeScript</td>
+</tr>
+<tr>
+<td>CI/CD platform</td>
+<td>✅ GitHub Actions</td>
+</tr>
+<tr>
+<td>Source control</td>
+<td>✅ GitHub</td>
+</tr>
+<tr>
+<td>Cloud provider</td>
+<td>✅ GCP</td>
+</tr>
+<tr>
+<td>Compute</td>
+<td>✅ Cloud Run</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>✅ Cloud SQL (PostgreSQL)</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td>✅ Cloud Tasks</td>
+</tr>
+<tr>
+<td>Container registry</td>
+<td>✅ Artifact Registry</td>
+</tr>
+<tr>
+<td>Secrets</td>
+<td>✅ Secret Manager</td>
+</tr>
+<tr>
+<td>IaC</td>
+<td>✅ Pulumi (TypeScript)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. Confirmed Technical Decisions</h2>
+<h3>Frontend</h3>
+<p>React 19 with TypeScript, Vite, Tailwind CSS, and shadcn/ui. Served as a containerised static build via Cloud Run - no CDN required at pilot scale, but the container approach makes it straightforward to add one later.</p>
+<p>This is a pilot decision, not a Planifest default. The <a href="p016-planifest-frontend-stack-evaluation.html">Frontend Stack Evaluation</a> assessed 10 frontend frameworks for agent-generated code and found React 19 + Vite + TypeScript the clear leader - 70-80% first-pass functional success rate, the deepest agent skills ecosystem, and the broadest component library coverage. The evaluation recommends specifying shadcn/ui as the component library, TanStack Query + Zustand for state management, and React Hook Form + Zod for form handling - these constrain the codegen-agent&#39;s output and reduce visual inconsistency.</p>
+<h3>Backend</h3>
+<p>Node.js with Fastify and TypeScript. Fastify&#39;s native JSON Schema validation pairs cleanly with the OpenAPI-first approach Planifest uses - the spec defines the contract, Fastify validates against it at runtime. Shared types via Zod schemas in a <code>packages/shared</code> workspace.</p>
+<p>This is a pilot decision, not a Planifest default. The <a href="p013-planifest-backend-stack-evaluation.html">Backend Stack Evaluation</a> assessed 13 frameworks for agent-generated code and found Node.js/TypeScript + Fastify defensible for single-language simplicity, SDK coverage (~95%), and LLM fluency - but noted trade-offs in error handling discipline and type system soundness. For future initiatives, especially those with security-critical or high-performance components, the evaluation recommends considering Go (highest first-pass success rate) or Rust (strongest compile-time guarantees).</p>
+<h3>Database</h3>
+<p>PostgreSQL via Cloud SQL. Drizzle ORM for type-safe queries - no raw SQL, schema migrations tracked in the repo.</p>
+<h3>Source Control &amp; CI</h3>
+<p>GitHub monorepo. GitHub Actions for CI/CD - the reference implementation Planifest is built and validated against first.</p>
+<h3>Cloud</h3>
+<p>GCP throughout. See <a href="#3-gcp-architecture">3. GCP Architecture</a> for the service map.</p>
+<h3>IaC</h3>
+<p>Pulumi with TypeScript. Consistent with the rest of the stack - one language for application code and infrastructure. The Pulumi stack will be parameterised for environment (dev / staging / prod) from day one.</p>
+<hr>
+<h2>3. GCP Architecture</h2>
+<pre><code class="language-mermaid">flowchart TD
+    subgraph INTERNET[&quot;Public&quot;]
+        USER[&quot;👤 User&quot;]
+    end
+
+    subgraph GCP[&quot;GCP Project&quot;]
+        subgraph CR[&quot;Cloud Run Services&quot;]
+            WEB[&quot;web\nReact frontend\n(containerised)&quot;]
+            API[&quot;api\nFastify backend&quot;]
+            REG[&quot;registry\nPlanifest registry&quot;]
+            ORCH[&quot;orchestrator\nPlanifest pipeline&quot;]
+        end
+
+        subgraph DATA[&quot;Data&quot;]
+            DB[&quot;Cloud SQL\nPostgreSQL&quot;]
+            Q[&quot;Cloud Tasks\nAsync job queue&quot;]
+            SEC[&quot;Secret Manager\nApp secrets&quot;]
+        end
+
+        subgraph REGISTRY[&quot;Artifact Registry&quot;]
+            IMGS[&quot;Container images\nweb / api / registry /\norchestrator&quot;]
+        end
+
+        LB[&quot;Cloud Load Balancer\n+ Cloud Armor&quot;]
+    end
+
+    USER --&gt; LB
+    LB --&gt; WEB
+    LB --&gt; API
+    API --&gt; DB
+    API --&gt; Q
+    API --&gt; SEC
+    REG --&gt; DB
+    ORCH --&gt; Q
+    ORCH --&gt; API
+    CR --&gt; IMGS
+
+    style GCP fill:#f0f4ff,stroke:#6c8ebf
+    style CR fill:#fff8e1,stroke:#f0a500
+    style DATA fill:#f9f0ff,stroke:#9b59b6
+    style INTERNET fill:#d4edda,stroke:#28a745
+</code></pre>
+<h3>Service decisions</h3>
+<p><strong>Cloud Run</strong> is the right choice for this pilot for three reasons: no cluster management (no GKE overhead at this stage), scales to zero when idle (cost-efficient while usage is low), and the containerised deployment model is portable - if the pilot outgrows Cloud Run, migrating to GKE is a container re-target, not a rewrite.</p>
+<p><strong>Cloud SQL</strong> over a managed serverless option (Firestore, Spanner) because the stack is PostgreSQL + Drizzle throughout Planifest&#39;s architecture. Consistency matters more than marginal operational savings at pilot scale.</p>
+<p><strong>Cloud Tasks</strong> for async work - background jobs, long-running pipeline steps, webhook processing. Keeps the API response times predictable.</p>
+<p><strong>Cloud Armor</strong> on the load balancer from day one - lightweight WAF rules, not complex security theatre. Easier to have it in place than to retrofit.</p>
+<h3>Environments</h3>
+<table>
+<thead>
+<tr>
+<th>Environment</th>
+<th>Cloud Run config</th>
+<th>Cloud SQL</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dev</td>
+<td>Min instances: 0, scale to 1</td>
+<td>Shared dev instance</td>
+<td>Deployed on every push to <code>main</code></td>
+</tr>
+<tr>
+<td>staging</td>
+<td>Min instances: 1</td>
+<td>Dedicated instance</td>
+<td>Deployed on release tag</td>
+</tr>
+<tr>
+<td>prod</td>
+<td>Min instances: 1, scale to N</td>
+<td>Dedicated instance, HA</td>
+<td>Manual promotion from staging</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Monorepo Structure</h2>
+<p>The pilot app lives inside the Planifest monorepo as its first initiative - eating our own cooking from day one.</p>
+<pre><code>monorepo/
+├── planifest/
+│   ├── skills/                # Agent Skills - the Planifest pipeline
+│   │   ├── orchestrator/SKILL.md
+│   │   ├── spec-agent/SKILL.md
+│   │   ├── adr-agent/SKILL.md
+│   │   ├── codegen-agent/SKILL.md
+│   │   ├── validate-agent/SKILL.md
+│   │   ├── security-agent/SKILL.md
+│   │   ├── docs-agent/SKILL.md
+│   │   ├── change-agent/SKILL.md
+│   │   └── shared/
+│   │       └── default-rules.md
+│   ├── adapters/
+│   │   ├── claude-code/CLAUDE.md
+│   │   ├── cursor/.cursorrules
+│   │   ├── copilot/copilot-instructions.md
+│   │   └── antigravity/planifest.yaml
+│   └── templates/             # Artifact templates
+│
+├── initiatives/
+│   └── pilot/                 # ← The pilot app lives here
+│       ├── planifest.md       # The Planifest - plan for what will be built, manifest of what it builds against
+│       ├── initiative-brief.md
+│       ├── apps/
+│       │   ├── web/           # React + TypeScript + Vite + TailwindCSS
+│       │   └── api/           # Fastify + TypeScript
+│       ├── packages/
+│       │   └── shared/        # Zod schemas, types, API contracts
+│       ├── infra/             # Pulumi - Cloud Run, Cloud SQL, Cloud Tasks
+│       ├── docs/              # Full artifact set per FD-019
+│       │   ├── design-spec.md
+│       │   ├── openapi-spec.yaml
+│       │   ├── domain-glossary.md
+│       │   ├── risk-register.md
+│       │   ├── scope.md
+│       │   ├── operational-model.md
+│       │   ├── slo-definitions.md
+│       │   ├── cost-model.md
+│       │   ├── security-report.md
+│       │   ├── quirks.md
+│       │   ├── recommendations.md
+│       │   ├── adr/
+│       │   ├── components/
+│       │   │   └── {component-id}/
+│       │   │       ├── purpose.md
+│       │   │       ├── interface-contract.md
+│       │   │       ├── data-contract.md
+│       │   │       └── migrations/
+│       │   └── system/
+│       │       ├── component-registry.md
+│       │       └── dependency-graph.md
+│       └── pipeline-run.md    # Latest local pipeline run log
+│
+├── infra/
+│   └── platform/
+│       └── gcp/               # Shared Pulumi modules - Cloud Run, Cloud SQL, Artifact Registry
+└── README.md
+</code></pre>
+<hr>
+<h2>5. CI/CD Pipeline</h2>
+<p>The pilot uses GitHub Actions as the CI/CD platform - Planifest&#39;s reference implementation. Both the initiative pipeline (used once to bootstrap the pilot) and the change pipeline (used for every subsequent change) are stamped from Planifest&#39;s core templates.</p>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph TRIGGER[&quot;Triggers&quot;]
+        T1[&quot;initiative-brief.md\ncommitted&quot;]
+        T2[&quot;Issue / change\nbrief raised&quot;]
+        T3[&quot;Local Claude Code\nsession&quot;]
+    end
+
+    subgraph PIPELINE[&quot;Planifest Pipeline&quot;]
+        P1[&quot;Initiative pipeline\n(GitHub Actions)\nBootstraps pilot app&quot;]
+        P2[&quot;Change pipeline\n(GitHub Actions)\nMaintains pilot app&quot;]
+        P3[&quot;Local pipeline\n(Claude Code)\nDev iteration&quot;]
+    end
+
+    subgraph GCP2[&quot;GCP Deployment&quot;]
+        D1[&quot;Artifact Registry\nContainer images&quot;]
+        D2[&quot;Cloud Run\nDeploy on merge&quot;]
+    end
+
+    T1 --&gt; P1
+    T2 --&gt; P2
+    T3 --&gt; P3
+    P1 --&gt; D1
+    P2 --&gt; D1
+    D1 --&gt; D2
+
+    style TRIGGER fill:#d4edda,stroke:#28a745
+    style PIPELINE fill:#f0f4ff,stroke:#6c8ebf
+    style GCP2 fill:#fff8e1,stroke:#f0a500
+</code></pre>
+<h3>GitHub Actions workflow summary</h3>
+<p>The pilot&#39;s CI jobs run in this order on every PR:</p>
+<ol>
+<li><strong>lint + typecheck</strong> - both <code>apps/web</code> and <code>apps/api</code>, scoped via Nx affected</li>
+<li><strong>unit tests</strong> - Jest / Vitest</li>
+<li><strong>integration tests</strong> - API against a Cloud SQL dev instance (Cloud SQL Auth Proxy in the runner)</li>
+<li><strong>container build</strong> - multi-stage Docker builds for web and api, pushed to Artifact Registry</li>
+<li><strong>deploy to dev</strong> - Cloud Run revision deployed automatically on merge to <code>main</code></li>
+<li><strong>deploy to staging</strong> - triggered on release tag, requires staging integration tests to pass</li>
+</ol>
+<h3>GCP credentials in GitHub Actions</h3>
+<p>Service account key stored as a GitHub Actions secret. The service account has the minimum required roles: Cloud Run Developer, Cloud SQL Client, Artifact Registry Writer, Secret Manager Secret Accessor.</p>
+<p>The Pulumi stack state is stored in a GCP Storage bucket rather than Pulumi Cloud - keeps everything within the GCP project boundary.</p>
+<hr>
+<h2>6. What Happens When Purpose is Confirmed</h2>
+<p>When the pilot&#39;s product scope is defined, an Initiative Brief will be written and committed to the Obsidian vault. Planifest will process it through the full initiative pipeline. The spec-agent and adr-agent are hard gates - development does not begin until the specification is complete. Humans retain approval at the PR, for any schema changes, and for any high/critical risk items.</p>
+<ol>
+<li><strong>spec-agent</strong> coaches for every answer needed - surfaces gaps before proceeding. Derives the design spec, OpenAPI definition, scope, risk register, and domain glossary</li>
+<li><strong>adr-agent</strong> generates ADRs for every significant decision - only proceeds once spec is complete</li>
+<li><strong>codegen-agent</strong> scaffolds the full implementation inside <code>initiatives/pilot/</code></li>
+<li><strong>validate loop</strong> runs CI and self-corrects</li>
+<li><strong>security-agent</strong> produces the security report</li>
+<li><strong>pr-agent</strong> opens the PR</li>
+<li><strong>docs-agent</strong> syncs all artifacts (design spec, ADRs, security report, data contracts, glossary, SLOs, cost model) to the Obsidian vault via the docs-mcp provider</li>
+</ol>
+<p>The <code>component.json</code> for the pilot will be pre-seeded with the confirmed technical decisions from this document - stack, cloud provider, CI platform - so the agents don&#39;t need to derive them from the brief.</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;pilot&quot;,
+  &quot;type&quot;: &quot;initiative&quot;,
+  &quot;initiative_mode&quot;: &quot;greenfield&quot;,
+  &quot;status&quot;: &quot;in-progress&quot;,
+  &quot;stack&quot;: {
+    &quot;frontend&quot;: &quot;react19+typescript+vite+tailwind+shadcn-ui&quot;,
+    &quot;backend&quot;: &quot;fastify+typescript&quot;,
+    &quot;database&quot;: &quot;postgresql&quot;,
+    &quot;orm&quot;: &quot;drizzle&quot;,
+    &quot;iac&quot;: &quot;pulumi&quot;,
+    &quot;cloud&quot;: &quot;gcp&quot;,
+    &quot;compute&quot;: &quot;cloud-run&quot;,
+    &quot;ci&quot;: &quot;github-actions&quot;
+  },
+  &quot;domain_knowledge_path&quot;: &quot;initiatives/pilot/docs&quot;
+}
+</code></pre>
+<p>This pre-seeded manifest ensures the codegen-agent generates Cloud Run-compatible Dockerfiles and Pulumi stacks targeting GCP from the first run - without those decisions appearing in the brief itself.</p>
+<hr>
+<p><em>This document will be updated when the pilot purpose is confirmed.</em></p>
+<p><em><a href="vault-index.html">← All Components</a> | <a href="p001-planifest-master-plan.html">← Architecture</a> | <a href="p002-planifest-product-concept.html">← Concept</a></em></p>
+
+      </main>
+    </div>
+  </body>
+</html>

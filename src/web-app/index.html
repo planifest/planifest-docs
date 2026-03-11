@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Planifest: The Agentic Framework for Software Teams. Plan and manifest AI-native development easily." />
+    <title>Planifest - Agentic Framework</title>
+    <!-- Modern Typography: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <script type="module" src="/src/main.ts"></script>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <div id="app">
+      
+      <!-- Navigation -->
+      <nav class="glass-nav fade-in-down">
+        <div class="nav-content">
+          <div class="logo">Planifest</div>
+          <div class="nav-links">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#structure" class="nav-link">Structure</a>
+            <a href="./docs/p001-planifest-master-plan.html" class="nav-link">Master Plan</a>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+              <!-- Sun Icon -->
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              <!-- Moon Icon -->
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <header class="hero">
+        <div class="hero-content">
+          <div class="badge fade-in-up delay-1">v0.1.0 Agentic spec</div>
+          <h1 class="fade-in-up delay-2">The <span class="gradient-text">Agentic Framework</span> for Software Teams</h1>
+          <p class="subtitle fade-in-up delay-3">
+            Planifest gives agents the domain knowledge to build with purpose — and gives teams the visibility to trust what was built.
+          </p>
+          <div class="cta-group fade-in-up delay-4">
+            <a href="./docs/p001-planifest-master-plan.html" class="btn btn-primary">Read the Docs</a>
+            <a href="#structure" class="btn btn-secondary">Explore Architecture <span class="arrow">↓</span></a>
+          </div>
+        </div>
+        
+        <!-- Abstract Decoration elements -->
+        <div class="abstract-shape shape-1 float-animation"></div>
+        <div class="abstract-shape shape-2 float-animation-alt"></div>
+        <div class="abstract-shape shape-3 float-animation"></div>
+      </header>
+
+      <!-- Value Proposition / 3 Folders -->
+      <section id="structure" class="section">
+        <div class="container reveal">
+          <div class="section-header">
+            <h2>The Canonical Layout</h2>
+            <p>Three top-level folders. Three distinct concerns.</p>
+          </div>
+          
+          <div class="folder-grid">
+            
+            <!-- Card 1 -->
+            <div class="glass-card hover-lift">
+              <div class="card-icon folder-icon">📁</div>
+              <h3><code>planifest-framework/</code></h3>
+              <p class="card-subtitle">The Framework</p>
+              <p>Contains agent instructions, JSON schemas, code standards, and file format templates. Drop this in. Don't modify it per-project.</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="glass-card hover-lift">
+              <div class="card-icon plan-icon">📄</div>
+              <h3><code>plan/</code></h3>
+              <p class="card-subtitle">The Specifications</p>
+              <p>Organized by initiative. Contains briefs, ADRs, risk registers, and scope. Everything that describes <strong>what</strong> to build and <strong>why</strong>.</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="glass-card hover-lift">
+              <div class="card-icon code-icon">💻</div>
+              <h3><code>src/</code></h3>
+              <p class="card-subtitle">The Code</p>
+              <p>Organized by component. Contains the implementation, tests, and component manifests. Everything that <strong>is</strong> the built thing.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="brand">Planifest</div>
+            <p>Generated via Agentic execution • Deployed with GitHub Actions</p>
+          </div>
+        </div>
+      </footer>
+      
+    </div>
+  </body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planifest - Master Plan - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo">Planifest</a>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1>Planifest - Master Plan</h1>
+<hr>
+<blockquote>
+<p>Planifest is a <strong>specification framework for agentic development</strong>. It defines how requirements are captured, how decisions are recorded, and how agents are instructed and verified - across the full span of product, architecture, and engineering. This document is the canonical architecture reference. All sub-documents are linked via standard markdown links and diagrams are rendered as Mermaid.</p>
+</blockquote>
+<blockquote>
+<p><strong>Planifest gives agents the domain knowledge to build with purpose - and gives teams the visibility to trust what was built.</strong></p>
+</blockquote>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#1-what-planifest-is">1. What Planifest Is</a></li>
+<li><a href="#2-system-overview">2. System Overview</a></li>
+<li><a href="#3-the-domain-knowledge-store">3. The Domain Knowledge Store</a></li>
+<li><a href="#4-human-and-agent-responsibilities">4. Human and Agent Responsibilities</a></li>
+<li><a href="#5-pipeline-architecture-new-initiatives">5. Pipeline Architecture - New Initiatives</a></li>
+<li><a href="#6-pipeline-architecture-change-maintenance">6. Pipeline Architecture - Change &amp; Maintenance</a></li>
+<li><a href="#7-agent-orchestration-layer">7. Agent Orchestration Layer</a></li>
+<li><a href="#8-artifact-types">8. Artifact Types</a></li>
+<li><a href="#9-adoption-modes">9. Adoption Modes</a></li>
+<li><a href="#10-monorepo-structure">10. Monorepo Structure</a></li>
+<li><a href="#11-documentation-sync">11. Documentation Sync</a></li>
+<li><a href="#12-build-sequence">12. Build Sequence</a></li>
+<li><a href="p010-planifest-agentic-tool-runbook.html">Local Dev - Agentic Tool Execution Mode</a></li>
+<li><a href="roadmap/p005-planifest-mcp-architecture.html">MCP Design - Tool Server Architecture</a> <em>(roadmap)</em></li>
+<li><a href="p003-planifest-functional-decisions.html">Functional Decisions</a></li>
+<li><a href="p004-the-pathway-to-agentic-development.html">The Pathway to Agentic Development</a></li>
+</ul>
+<hr>
+<h2>1. What Planifest Is</h2>
+<p>Planifest is a specification framework for agentic development. It is not a code generator. It is not a CI/CD tool. It is the layer that gives agents the domain knowledge to build correctly - and gives teams the evidence to verify they did.</p>
+<p>A <strong>Planifest</strong> is the plan and the manifest: the plan is what will be built, the manifest is what it builds against. For every initiative, the orchestrator agent produces a Planifest - a single document that records both. You cannot plan what to build without recording what you&#39;re building against.</p>
+<p><strong>The root problem</strong> Planifest solves is not the absence of good tooling - it is the absence of domain knowledge. Agents cannot acquire domain knowledge implicitly the way an experienced developer does. Without it, they generate code that is technically correct but architecturally wrong. They make decisions that have already been made. They create components that overlap with ones that already exist. They build quickly, and incorrectly, at scale.</p>
+<p>Planifest builds a structured domain for agents to reason within: what the system does, what it is made of, what decisions have been made and why, how each component relates to the whole. When an agent is asked to build something, it works within that domain - not in isolation.</p>
+<p>Planifest specifies three layers of every initiative:</p>
+<ul>
+<li><strong>Product</strong> - Functional requirements. What the system must do. Derived from user stories, acceptance criteria, problem statements. The <em>Why</em> and the <em>What</em>.</li>
+<li><strong>Architecture</strong> - Non-functional requirements. How the system must perform, scale, and operate. SLOs, latency budgets, availability targets, security constraints, cost boundaries. The <em>How it must behave</em>.</li>
+<li><strong>Engineering</strong> - Technical delivery plan. Component design, data contracts, interface contracts, infrastructure, deployment topology. The <em>How it will be built</em>.</li>
+</ul>
+<p>Across all three layers, Scope, Risks, and Dependencies are first-class concerns. Nothing significant is left implicit. See <a href="p003-planifest-functional-decisions.html">Functional Decisions</a> for the full set of functional decisions.</p>
+<p><strong>MCP is the nervous system. Planifest is the brain.</strong> MCP provides agent capabilities and connections. Planifest provides the knowledge, requirements, standards, and procedure that give those capabilities purpose and direction. They are complementary, not overlapping.</p>
+<hr>
+<h2>2. System Overview</h2>
+<pre><code class="language-mermaid">flowchart TD
+    A([👤 Initiative Brief]) --&gt; ORCH[Orchestrator]
+    Z([👤 Adjustment / Bug Report]) --&gt; ORCH
+
+    ORCH --&gt; SA[spec-agent]
+    SA --&gt;|spec complete?| GATE1{Hard gate}
+    GATE1 --&gt;|No - surface gaps| SA
+    GATE1 --&gt;|Yes| AA[adr-agent]
+    AA --&gt; CA[codegen-agent]
+    CA --&gt; VA[validate-loop]
+    VA --&gt; SEC[security-agent]
+    SEC --&gt; PRA[pr-agent]
+    PRA --&gt; HGATE([👤 PR Review])
+    HGATE --&gt; DA[docs-agent]
+    DA --&gt; DKS[(Domain Knowledge Store)]
+
+    subgraph MCP[&quot;MCP Servers&quot;]
+        M1[&quot;domain-knowledge-server&quot;]
+        M2[&quot;filesystem-server&quot;]
+        M3[&quot;ci-server&quot;]
+        M4[&quot;vcs-server&quot;]
+        M5[&quot;docs-server&quot;]
+    end
+
+    SA &lt;--&gt;|tool calls| MCP
+    AA &lt;--&gt;|tool calls| MCP
+    CA &lt;--&gt;|tool calls| MCP
+    VA &lt;--&gt;|tool calls| MCP
+    SEC &lt;--&gt;|tool calls| MCP
+    PRA &lt;--&gt;|tool calls| MCP
+    DA &lt;--&gt;|tool calls| MCP
+
+    style A fill:#d4edda,stroke:#28a745,color:#000
+    style Z fill:#d4edda,stroke:#28a745,color:#000
+    style HGATE fill:#d4edda,stroke:#28a745,color:#000
+    style GATE1 fill:#fff8e1,stroke:#f0a500
+    style MCP fill:#fff3cd,stroke:#ffc107
+    style DKS fill:#cce5ff,stroke:#0066cc
+</code></pre>
+<blockquote>
+<p>Planifest runs in two modes: any <strong>CI/CD platform</strong> (GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, etc.) using an LLM API, and any <strong>agentic coding tool</strong> (Claude Code, Cursor, Codex, Antigravity, GitHub Copilot, etc.) locally on a dev machine. See <a href="p010-planifest-agentic-tool-runbook.html">Agentic Tool Runbook</a>.</p>
+</blockquote>
+<hr>
+<h2>3. The Domain Knowledge Store</h2>
+<p>The Domain Knowledge Store is the most critical component in Planifest. It is a structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query it before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.</p>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph DKS[&quot;Domain Knowledge Store&quot;]
+        Q[&quot;domain_query&quot;]
+        GC[&quot;get_component&quot;]
+        GDG[&quot;get_dependency_graph&quot;]
+        GR[&quot;get_risk&quot;]
+        GG[&quot;get_glossary&quot;]
+        GDC[&quot;get_data_contract&quot;]
+    end
+
+    AG[&quot;Agents&quot;] --&gt;|MCP tool calls| DKS
+    DKS --&gt; STORE[(git docs/ or MCP service)]
+
+    style DKS fill:#fff3cd,stroke:#ffc107
+    style STORE fill:#cce5ff,stroke:#0066cc
+</code></pre>
+<h3>Two access paths</h3>
+<p><strong>MCP-enabled service</strong> - agents call tools and receive scoped, purposeful responses. Keeps agent context tight. Better suited to larger teams, multiple initiatives, or complex domains.</p>
+<p><strong>Git <code>docs/</code> folder</strong> - documents colocated with code. No additional infrastructure. Better suited to smaller teams, single initiatives, or local development.</p>
+<p>Both paths produce and consume the same document structure and honour the same default rules. The choice is operational, not architectural.</p>
+<h3>Agents query before generating</h3>
+<p>Before building any component, an agent must at minimum:</p>
+<ol>
+<li><code>get_component</code> - understand what already exists in the vicinity</li>
+<li><code>domain_query</code> - confirm no existing component has overlapping responsibility</li>
+<li><code>get_risk</code> - understand what risk has already been identified</li>
+<li><code>get_glossary</code> - confirm it is using the correct ubiquitous language</li>
+</ol>
+<h3>Document versioning</h3>
+<p>Every document is versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. Documents carry <code>author: &quot;human&quot; | &quot;agent&quot;</code> - agent-authored documents are always flagged distinctly.</p>
+<p>See <a href="roadmap/p005-planifest-mcp-architecture.html">MCP Design</a>, <a href="roadmap/p007-planifest-domain-knowledge-service-reference.html">MCP Domain Service Spec</a>, and <a href="roadmap/p006-planifest-domain-knowledge-service-interface.html">MCP Interface Spec</a> for the full tool interface and conformance requirements <em>(roadmap)</em>.</p>
+<hr>
+<h2>4. Human and Agent Responsibilities</h2>
+<p>Planifest is not zero human-in-the-loop. It is zero human-in-the-loop <em>for building</em>. Humans retain approval authority over anything that changes intent or carries irreversible consequences.</p>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph HUMAN[&quot;👤 Humans&quot;]
+        H1[&quot;Author Initiative Briefs&quot;]
+        H2[&quot;Review &amp; approve PRs\n(code + docs together)&quot;]
+        H3[&quot;Approve schema changes\n&amp; migrations&quot;]
+        H4[&quot;Review high/critical\nrisk items&quot;]
+        H5[&quot;Decide on agent-raised\nimprovements&quot;]
+    end
+
+    subgraph AGENT[&quot;🤖 Agents&quot;]
+        A1[&quot;Build, test, document\n&amp; raise PRs&quot;]
+        A2[&quot;Self-heal bugs that\ndon&#39;t break requirements&quot;]
+        A3[&quot;Raise issues, quirks\n&amp; tech debt&quot;]
+        A4[&quot;Propose migrations -\nnever apply unilaterally&quot;]
+    end
+
+    style HUMAN fill:#d4edda,stroke:#28a745
+    style AGENT fill:#f0f4ff,stroke:#6c8ebf
+</code></pre>
+<h3>Default rules</h3>
+<p>Conservative by default. Autonomy is earned progressively. Hard limits cannot be overridden under any circumstance. Rules can be relaxed per initiative as confidence grows - except hard limits, which are non-negotiable.</p>
+<p>See <a href="p003-planifest-functional-decisions.md#fd-007--default-rules-are-conservative-autonomy-is-earned-progressively">FD-007 - Default rules</a> for the full default rules table.</p>
+<hr>
+<h2>5. Pipeline Architecture - New Initiatives</h2>
+<p>Triggered when a new Initiative Brief is committed to the document store or vault.</p>
+<p><strong>Specification is a hard gate.</strong> The spec-agent and adr-agent surface every gap, ambiguity, or unresolved decision before passing work to the codegen-agent. The pipeline does not proceed until the specification is complete.</p>
+<pre><code class="language-mermaid">flowchart TD
+    BRIEF([👤 Initiative Brief])
+
+    subgraph PHASE1[&quot;① Specification - hard gate&quot;]
+        S[&quot;spec-agent&quot;]
+        SG{&quot;Spec complete?&quot;}
+        S --&gt; SG
+        SG --&gt;|No - surface gaps| S
+    end
+
+    subgraph PHASE2[&quot;② Architecture Decisions&quot;]
+        A[&quot;adr-agent&quot;]
+    end
+
+    subgraph PHASE3[&quot;③ Code Generation&quot;]
+        C[&quot;codegen-agent&quot;]
+    end
+
+    subgraph PHASE4[&quot;④ Validate &amp; Self-Correct&quot;]
+        V{&quot;CI passes?&quot;}
+        FIX[&quot;Self-correct&quot;]
+        FAIL([&quot;❌ Halt&quot;])
+        RETRY([&quot;Retries left?&quot;])
+    end
+
+    subgraph PHASE5[&quot;⑤ Security&quot;]
+        SEC[&quot;security-agent&quot;]
+    end
+
+    subgraph PHASE6[&quot;⑥ Ship &amp; Document&quot;]
+        PR[&quot;pr-agent&quot;]
+        DOCS[&quot;docs-agent&quot;]
+        DKS[&quot;Update Domain Knowledge Store&quot;]
+    end
+
+    HGATE([👤 PR Review])
+    DONE([✅ Merged · Domain updated])
+
+    BRIEF --&gt; PHASE1
+    SG --&gt;|Yes| PHASE2
+    PHASE2 --&gt; PHASE3
+    PHASE3 --&gt; PHASE4
+    V --&gt;|Yes| PHASE5
+    V --&gt;|No| RETRY
+    RETRY --&gt;|Yes| FIX --&gt; V
+    RETRY --&gt;|No| FAIL
+    PHASE5 --&gt; PHASE6
+    PR --&gt; DOCS --&gt; DKS --&gt; HGATE --&gt; DONE
+
+    style BRIEF fill:#d4edda,stroke:#28a745,color:#000
+    style HGATE fill:#d4edda,stroke:#28a745,color:#000
+    style DONE fill:#d4edda,stroke:#28a745,color:#000
+    style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
+    style PHASE1 fill:#fff8e1,stroke:#f0a500
+    style PHASE2 fill:#f0f4ff,stroke:#6c8ebf
+    style PHASE3 fill:#f0f4ff,stroke:#6c8ebf
+    style PHASE4 fill:#fff8e1,stroke:#f0a500
+    style PHASE5 fill:#f0f4ff,stroke:#6c8ebf
+    style PHASE6 fill:#f0f4ff,stroke:#6c8ebf
+</code></pre>
+<h3>Agent responsibilities</h3>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Domain Knowledge Tools</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>spec-agent</td>
+<td><code>domain_query</code>, <code>get_component</code>, <code>get_glossary</code>, <code>get_risk</code></td>
+<td>design-spec.md, openapi.yaml, scope.md, risk-register.md</td>
+</tr>
+<tr>
+<td>adr-agent</td>
+<td><code>list_adrs</code>, <code>domain_query</code></td>
+<td>docs/adr/*.md</td>
+</tr>
+<tr>
+<td>codegen-agent</td>
+<td><code>get_component</code>, <code>get_data_contract</code>, <code>filesystem.read_file</code>, <code>filesystem.write_file</code></td>
+<td>Full implementation + tests + IaC</td>
+</tr>
+<tr>
+<td>security-agent</td>
+<td><code>get_risk</code>, <code>filesystem.read_file</code>, <code>ci.run_sast</code></td>
+<td>security-report.md</td>
+</tr>
+<tr>
+<td>pr-agent</td>
+<td><code>vcs.create_pr</code></td>
+<td>PR with full description</td>
+</tr>
+<tr>
+<td>docs-agent</td>
+<td><code>create_document</code>, <code>update_document</code>, <code>docs.sync</code></td>
+<td>Domain Knowledge Store updated + docs synced</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Pipeline Architecture - Change &amp; Maintenance</h2>
+<pre><code class="language-mermaid">flowchart TD
+    TRIGGER([👤 Adjustment / Bug Report])
+
+    subgraph PHASE1[&quot;① Domain Context&quot;]
+        DKS[&quot;domain_query + get_component&lt;br/&gt;get_dependency_graph + get_risk&quot;]
+    end
+
+    subgraph PHASE2[&quot;② Targeted Change&quot;]
+        C[&quot;change-codegen-agent&quot;]
+    end
+
+    subgraph PHASE3[&quot;③ Validate &amp; Self-Correct&quot;]
+        V{&quot;CI passes?&quot;}
+        FIX[&quot;Self-correct&quot;]
+        FAIL([&quot;❌ Halt&quot;])
+        RETRY([&quot;Retries left?&quot;])
+    end
+
+    subgraph PHASE4[&quot;④ ADR &amp; Migration Check&quot;]
+        ADR{&quot;Contract changed?&quot;}
+        NEWADR[&quot;adr-agent&quot;]
+        SCHEMA{&quot;Schema changed?&quot;}
+        MIG[&quot;propose_migration\nFlag for human review&quot;]
+    end
+
+    subgraph PHASE5[&quot;⑤ Security&quot;]
+        SEC[&quot;security-agent&quot;]
+    end
+
+    subgraph PHASE6[&quot;⑥ Ship &amp; Update&quot;]
+        PR[&quot;pr-agent&quot;]
+        DOCS[&quot;docs-agent&quot;]
+        UPDK[&quot;Update Domain Knowledge Store&quot;]
+    end
+
+    HGATE([👤 PR Review])
+    DONE([✅ Merged · Domain updated])
+
+    TRIGGER --&gt; PHASE1
+    PHASE1 --&gt; PHASE2
+    PHASE2 --&gt; PHASE3
+    V --&gt;|Yes| PHASE4
+    V --&gt;|No| RETRY
+    RETRY --&gt;|Yes| FIX --&gt; V
+    RETRY --&gt;|No| FAIL
+    ADR --&gt;|Yes| NEWADR --&gt; PHASE5
+    ADR --&gt;|No| SCHEMA
+    SCHEMA --&gt;|Yes| MIG --&gt; PHASE5
+    SCHEMA --&gt;|No| PHASE5
+    PHASE5 --&gt; PHASE6
+    PR --&gt; DOCS --&gt; UPDK --&gt; HGATE --&gt; DONE
+
+    style TRIGGER fill:#d4edda,stroke:#28a745,color:#000
+    style HGATE fill:#d4edda,stroke:#28a745,color:#000
+    style DONE fill:#d4edda,stroke:#28a745,color:#000
+    style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
+    style PHASE1 fill:#fff8e1,stroke:#f0a500
+    style PHASE4 fill:#f9f0ff,stroke:#9b59b6
+</code></pre>
+<hr>
+<h2>7. Agent Orchestration Layer</h2>
+<p>A single containerised orchestrator service (TypeScript, Fastify) that:</p>
+<ul>
+<li>Watches for new Initiative Briefs via webhook, file watcher, or queue trigger</li>
+<li>Runs the pipeline as a <strong>state machine</strong>: Discovery -&gt; Spec -&gt; ADR -&gt; Codegen -&gt; Validate -&gt; Security -&gt; PR -&gt; Docs</li>
+<li>Persists state between steps so retries have full error context</li>
+<li>Is <strong>idempotent</strong> - re-running with the same Initiative Brief produces the same output</li>
+</ul>
+<h3>MCP write model</h3>
+<p>The domain-knowledge-server is the <strong>sole writer</strong> to the document store and git repository. Agents never write directly. All writes are posted to the MCP service and queued for serial processing - one write at a time, in order. This eliminates merge conflicts by design.</p>
+<pre><code class="language-mermaid">flowchart LR
+    AG[&quot;Agent&quot;] --&gt;|propose write| Q[&quot;Write queue\n(serial)&quot;]
+    Q --&gt; L[&quot;Listener&quot;]
+    L --&gt;|atomic commit\ncode + docs together| GIT[&quot;Git repo&quot;]
+
+    style Q fill:#fff8e1,stroke:#f0a500
+    style GIT fill:#f0f4ff,stroke:#6c8ebf
+</code></pre>
+<p>Code and docs are always committed together in a single atomic operation. Neither is ever committed without the other.</p>
+<h3>Agent interface</h3>
+<pre><code class="language-typescript">type AgentContext = {
+  runId: string
+  goal: string
+  initiativeId: string
+  componentId?: string
+}
+
+type AgentResult = {
+  status: &quot;complete&quot; | &quot;blocked&quot; | &quot;failed&quot;
+  blockedReason?: string    // surfaces a spec gap if blocked
+  outputPaths: string[]     // files written via MCP
+}
+</code></pre>
+<hr>
+<h2>8. Artifact Types</h2>
+<p>Planifest defines distinct artifact types. No artifact bleeds into another. Each is maintained and versioned independently.</p>
+<p><strong>Per Initiative:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Initiative Brief</td>
+<td>What needs to be built and why</td>
+</tr>
+<tr>
+<td>Design Specification</td>
+<td>Functional and non-functional requirements</td>
+</tr>
+<tr>
+<td>OpenAPI Specification</td>
+<td>Language-agnostic API contract - generated first</td>
+</tr>
+<tr>
+<td>ADRs</td>
+<td>Every significant decision with context and consequences</td>
+</tr>
+<tr>
+<td>Risk Register</td>
+<td>Technical, operational, security, compliance risks</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>In / out / deferred</td>
+</tr>
+<tr>
+<td>Security Report</td>
+<td>Threat model, dependency audit, auth/authz, network policy</td>
+</tr>
+<tr>
+<td>Quirks</td>
+<td>Known oddities, workarounds, acknowledged tech debt</td>
+</tr>
+<tr>
+<td>Recommendations</td>
+<td>Suggested improvements for future iterations</td>
+</tr>
+<tr>
+<td>Operational Model</td>
+<td>Runbook triggers, on-call expectations, alerting thresholds</td>
+</tr>
+<tr>
+<td>SLO Definitions</td>
+<td>Error budgets, SLIs/SLOs</td>
+</tr>
+<tr>
+<td>Cost Model</td>
+<td>Compute, storage, egress, third-party cost estimates</td>
+</tr>
+<tr>
+<td>Domain Glossary</td>
+<td>Ubiquitous language - agents must respect it</td>
+</tr>
+</tbody></table>
+<p><strong>Per Component:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Component Purpose</td>
+<td>What this component exists to do in the wider system</td>
+</tr>
+<tr>
+<td>Interface Contract</td>
+<td>Inputs, outputs, schema, consumers, breaking change policy</td>
+</tr>
+<tr>
+<td>Dependencies</td>
+<td>What it consumes / what depends on it</td>
+</tr>
+<tr>
+<td>Data Contract</td>
+<td>Schema, invariants, ownership - one owner per dataset</td>
+</tr>
+<tr>
+<td>Migration History</td>
+<td>Full history of schema changes - never destroyed</td>
+</tr>
+<tr>
+<td>ADRs</td>
+<td>Component-level decisions</td>
+</tr>
+<tr>
+<td>Risk</td>
+<td>Component-scoped risk items</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>Component-scoped in / out / deferred</td>
+</tr>
+<tr>
+<td>Quirks</td>
+<td>Component-scoped oddities</td>
+</tr>
+<tr>
+<td>Test Coverage Summary</td>
+<td>Coverage state at point of generation</td>
+</tr>
+<tr>
+<td>Known Tech Debt</td>
+<td>Explicitly acknowledged debt</td>
+</tr>
+</tbody></table>
+<p><strong>System-wide:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Component Registry</td>
+<td>Index of every component - what it is, what it does</td>
+</tr>
+<tr>
+<td>Dependency Graph</td>
+<td>How components relate to each other</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. Adoption Modes</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th><code>initiative_mode</code></th>
+<th>Entry point</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Greenfield</strong></td>
+<td><code>greenfield</code></td>
+<td>Initiative Brief</td>
+<td>New system, no prior codebase. Pipeline runs spec to PR.</td>
+</tr>
+<tr>
+<td><strong>Retrofit</strong></td>
+<td><code>retrofit</code></td>
+<td>Existing codebase</td>
+<td>spec-agent performs codebase ingestion first - scans, infers architecture, generates ADRs from what exists. Surfaces drift and tech debt before any new code.</td>
+</tr>
+<tr>
+<td><strong>Agent Interface Layer</strong></td>
+<td><code>agent-interface</code></td>
+<td>Interface spec</td>
+<td>Large or complex component library. Interface layer specified first; agents develop against it, not the internals.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>10. Monorepo Structure</h2>
+<pre><code>monorepo/
+├── planifest/
+│   ├── skills/
+│   │   ├── orchestrator/SKILL.md   # Entry point - coaching + sequencing
+│   │   ├── spec-agent/SKILL.md     # Produce specification artifacts
+│   │   ├── adr-agent/SKILL.md      # Produce ADRs
+│   │   ├── codegen-agent/SKILL.md  # Implement against spec
+│   │   ├── validate-agent/SKILL.md # Run checks, self-correct
+│   │   ├── security-agent/SKILL.md # Security assessment
+│   │   ├── docs-agent/SKILL.md     # Complete documentation
+│   │   ├── change-agent/SKILL.md   # Change pipeline
+│   │   └── shared/
+│   │       └── default-rules.md    # Referenced by orchestrator
+│   ├── adapters/
+│   │   ├── claude-code/CLAUDE.md
+│   │   ├── cursor/.cursorrules
+│   │   ├── copilot/copilot-instructions.md
+│   │   └── antigravity/planifest.yaml
+│   └── templates/                  # Artifact templates
+│       ├── initiative-brief.md
+│       ├── design-spec.md
+│       ├── adr.md
+│       ├── component-purpose.md
+│       ├── interface-contract.md
+│       ├── data-contract.md
+│       ├── security-report.md
+│       ├── risk-register.md
+│       └── scope.md
+├── initiatives/
+│   └── {initiative-id}/
+│       ├── planifest.md            # The Planifest - plan for what will be built, manifest of what it builds against
+│       ├── initiative-brief.md
+│       ├── apps/
+│       │   ├── web/
+│       │   └── api/
+│       ├── packages/shared/
+│       ├── infra/
+│       ├── docs/                   # Initiative and component artifacts
+│       │   ├── design-spec.md
+│       │   ├── openapi-spec.yaml
+│       │   ├── domain-glossary.md
+│       │   ├── risk-register.md
+│       │   ├── scope.md
+│       │   ├── operational-model.md
+│       │   ├── slo-definitions.md
+│       │   ├── cost-model.md
+│       │   ├── adr/
+│       │   ├── components/
+│       │   │   └── {component-id}/
+│       │   │       ├── purpose.md
+│       │   │       ├── interface-contract.md
+│       │   │       ├── data-contract.md
+│       │   │       ├── migrations/
+│       │   │       ├── risk.md
+│       │   │       ├── scope.md
+│       │   │       └── quirks.md
+│       │   └── system/
+│       │       ├── component-registry.md
+│       │       └── dependency-graph.md
+│       └── pipeline-run.md         # Audit trail for the latest run
+└── README.md
+</code></pre>
+<hr>
+<h2>11. Documentation Sync</h2>
+<p>Every agent output is a markdown document, written to <code>initiatives/{initiative-id}/docs/</code>. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.</p>
+<p>Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see <a href="p014-planifest-roadmap.html">RC-005 - Pluggable Documentation Provider</a> in the roadmap.</p>
+<hr>
+<h2>12. Build Sequence</h2>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph M1[&quot;Milestone 1&quot;]
+        A1[&quot;Domain Knowledge\nMCP server&quot;]
+    end
+    subgraph M2[&quot;Milestone 2&quot;]
+        A2[&quot;Orchestrator\nskeleton&quot;]
+    end
+    subgraph M3[&quot;Milestone 3&quot;]
+        A3[&quot;CI templates\nVCS-MCP\nPulumi modules&quot;]
+    end
+    subgraph M4[&quot;Milestone 4&quot;]
+        B1[&quot;spec-agent\nadr-agent&quot;]
+    end
+    subgraph M5[&quot;Milestone 5&quot;]
+        B2[&quot;codegen-agent\nvalidate loop&quot;]
+    end
+    subgraph M6[&quot;Milestone 6&quot;]
+        B3[&quot;security-agent\npr-agent\ndocs-agent&quot;]
+    end
+    subgraph M7[&quot;Milestone 7+&quot;]
+        C1[&quot;First initiative\nend-to-end&quot;]
+        C2[&quot;Prompt tuning&quot;]
+    end
+
+    M1 --&gt; M2 --&gt; M3 --&gt; M4 --&gt; M5 --&gt; M6 --&gt; M7
+    C1 --&gt; C2
+
+    style M1 fill:#f0f4ff,stroke:#6c8ebf
+    style M2 fill:#f0f4ff,stroke:#6c8ebf
+    style M3 fill:#f0f4ff,stroke:#6c8ebf
+    style M4 fill:#fff8e1,stroke:#f0a500
+    style M5 fill:#fff8e1,stroke:#f0a500
+    style M6 fill:#fff8e1,stroke:#f0a500
+    style M7 fill:#d4edda,stroke:#28a745
+</code></pre>
+<p><strong>Milestone 1 - Domain Knowledge MCP server.</strong> The new foundation. Build <code>apps/domain-knowledge-mcp</code> first: document schema, all query and write tools, the serial write queue. Everything downstream reads from and writes to this service.</p>
+<p><strong>Milestone 2 - Orchestrator skeleton.</strong> State machine with stubbed agents. Prove pipeline wiring, state persistence, retry logic, and idempotency.</p>
+<p><strong>Milestone 3 - Templates.</strong> CI pipeline templates, VCS-MCP, Pulumi modules. Prove a manual scaffold works end-to-end.</p>
+<p><strong>Milestone 4 - spec-agent and adr-agent.</strong> Highest leverage. Implement the hard gate: spec must be complete before proceeding.</p>
+<p><strong>Milestone 5 - codegen-agent and validate loop.</strong> Hardest to tune. Incremental write-to-disk. Self-correct retry loop.</p>
+<p><strong>Milestone 6 - security-agent, pr-agent, docs-agent.</strong> Close the loop.</p>
+<p><strong>Milestone 7 - First real initiative.</strong> The first run surfaces gaps that no upfront planning reveals.</p>
+<hr>
+<p><em>This document is the living Planifest architecture reference. As the system evolves, agents update it.</em></p>
+<p><em>Related: <a href="p003-planifest-functional-decisions.html">Functional Decisions</a> | <a href="p004-the-pathway-to-agentic-development.html">The Pathway to Agentic Development</a> | <a href="p010-planifest-agentic-tool-runbook.html">Agentic Tool Runbook</a> | <a href="p011-planifest-pilot-app.html">Pilot App</a> | <a href="p013-planifest-backend-stack-evaluation.html">Backend Stack Evaluation</a> | <a href="p014-planifest-roadmap.html">Roadmap</a> | <a href="p016-planifest-frontend-stack-evaluation.html">Frontend Stack Evaluation</a> | <a href="p017-research-report-strategic-intent-vs-stochastic-execution.html">Strategic Intent vs Stochastic Execution</a> | <a href="../planifest-framework/standards/code-quality-standards.html">Code Quality Standards</a></em></p>
+
+      </main>
+    </div>
+  </body>
+</html>
