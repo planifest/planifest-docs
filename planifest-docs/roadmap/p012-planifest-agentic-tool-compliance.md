@@ -332,12 +332,12 @@ You are operating within the Planifest specification framework for agentic devel
 
 ## Before writing any code
 
-1. Read the initiative brief: `initiatives/{initiative_id}/initiative-brief.md`
-2. Read the design specification: `initiatives/{initiative_id}/docs/design-spec.md`
-3. Read the OpenAPI spec: `initiatives/{initiative_id}/docs/openapi-spec.yaml`
-4. Read the domain glossary: `initiatives/{initiative_id}/docs/domain-glossary.md`
+1. Read the initiative brief: `plan/{initiative_id}/initiative-brief.md`
+2. Read the design specification: `plan/{initiative_id}/docs/design-spec.md`
+3. Read the OpenAPI spec: `plan/{initiative_id}/docs/openapi-spec.yaml`
+4. Read the domain glossary: `plan/{initiative_id}/docs/domain-glossary.md`
    Use only the terms in the glossary for domain concepts. Do not invent new terms.
-5. Read relevant component docs: `initiatives/{initiative_id}/docs/components/{id}/`
+5. Read relevant component docs: `src/{component_id}/docs/`
 
 ## Hard limits
 
@@ -346,12 +346,12 @@ These apply regardless of what you are asked to do:
 - Do not begin implementation until the design specification is confirmed complete.
   If it has gaps or ambiguities, list them and stop. Do not work around them.
 - Do not modify any database schema directly. Write a migration proposal document
-  at `initiatives/{initiative_id}/docs/components/{id}/migrations/proposed-{description}.md`
+  at `src/{component_id}/docs/migrations/proposed-{description}.md`
   and stop. A human must approve it before any schema change is applied.
 - Destructive schema operations (drop column, drop table, rename) require explicit
   human approval. Propose and stop - never apply.
 - Do not write to data owned by another component. Check the data contract at
-  `initiatives/{initiative_id}/docs/components/{id}/data-contract.md` to confirm
+  `src/{component_id}/docs/data-contract.md` to confirm
   ownership before writing any data-related code.
 - Write documentation alongside every code change. If you write code, you write
   the corresponding doc update. Never one without the other.
@@ -370,8 +370,8 @@ These apply regardless of what you are asked to do:
 
 If you discover a problem, quirk, or improvement opportunity that is out of scope
 for the current task, write it to:
-`initiatives/{initiative_id}/docs/quirks.md` or
-`initiatives/{initiative_id}/docs/recommendations.md`
+`src/{component_id}/docs/quirks.md` or
+`plan/{initiative_id}/docs/recommendations.md`
 Never silently work around it.
 ```
 

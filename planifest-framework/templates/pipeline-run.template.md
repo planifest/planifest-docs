@@ -1,6 +1,6 @@
 # Pipeline Run - {{initiative-id}}
 
-**Skill:** [docs-agent](../skills/docs-agent-SKILL.md) (or whichever agent completes the final phase)
+**Skill:** [docs-agent](../skills/planifest-docs-agent/SKILL.md) (or whichever agent completes the final phase)
 **Date:** {{ISO-8601}}
 **Tool:** {{agentic-tool-name}} (local)
 **Model:** {{model-name-and-version, e.g. claude-sonnet-4-20250514, gpt-4.1, gemini-2.5-pro}}

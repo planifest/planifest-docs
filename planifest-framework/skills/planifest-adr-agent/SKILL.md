@@ -22,15 +22,15 @@ description: Produces Architecture Decision Records for each significant decisio
 
 ## Input
 
-- Design Specification at `initiatives/{initiative-id}/docs/design-spec.md`
-- OpenAPI Specification at `initiatives/{initiative-id}/docs/openapi-spec.yaml`
-- Planifest at `initiatives/{initiative-id}/planifest.md` (for stack declaration)
+- Design Specification at `plan/{initiative-id}/docs/design-spec.md`
+- OpenAPI Specification at `plan/{initiative-id}/docs/openapi-spec.yaml`
+- Planifest at `plan/{initiative-id}/planifest.md` (for stack declaration)
 
 ---
 
 ## What You Produce
 
-One ADR per significant decision, written to `initiatives/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md`.
+One ADR per significant decision, written to `plan/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md`.
 
 ---
 
@@ -80,4 +80,4 @@ What becomes easier. What becomes harder. What is deferred. What risk is introdu
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

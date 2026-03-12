@@ -22,16 +22,16 @@ description: Performs a security review of the implementation, producing a secur
 
 ## Input
 
-- The validated implementation at `initiatives/{initiative-id}/`
-- Design Specification at `initiatives/{initiative-id}/docs/design-spec.md`
-- OpenAPI Specification at `initiatives/{initiative-id}/docs/openapi-spec.yaml`
-- Risk Register at `initiatives/{initiative-id}/docs/risk-register.md`
+- The validated implementation at `src/{component-id}/` (all components in the initiative)
+- Design Specification at `plan/{initiative-id}/docs/design-spec.md`
+- OpenAPI Specification at `plan/{initiative-id}/docs/openapi-spec.yaml`
+- Risk Register at `plan/{initiative-id}/docs/risk-register.md`
 
 ---
 
 ## What You Produce
 
-Security report at `initiatives/{initiative-id}/docs/security-report.md`.
+Security report at `plan/{initiative-id}/docs/security-report.md`.
 
 ---
 
@@ -91,4 +91,4 @@ Top actions before production:
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

@@ -22,7 +22,7 @@ description: Runs CI checks (lint, typecheck, test, build) and self-corrects up 
 
 ## Input
 
-- The implementation at `initiatives/{initiative-id}/`
+- The implementation at `src/{component-id}/` (all components in the initiative)
 - The project's CI check commands (read `package.json`, `Makefile`, or equivalent)
 
 ---
@@ -59,7 +59,7 @@ Maximum **5 self-correct cycles**. If the issue persists after 5 attempts, halt 
 
 - **Fix the actual bug.** Do not suppress linting rules, skip failing tests, or weaken type checks to make errors go away.
 - **Do not widen scope.** Fix the failure. Do not refactor adjacent code, improve test coverage beyond what failed, or restructure the project.
-- **If a test failure reveals a spec ambiguity**, record it in `docs/quirks.md` and note it for the human. Fix the test to match your best interpretation of the spec, but flag the ambiguity.
+- **If a test failure reveals a spec ambiguity**, record it in `src/{component-id}/docs/quirks.md` and note it for the human. Fix the test to match your best interpretation of the spec, but flag the ambiguity.
 - **Track every cycle.** Record what failed and how you fixed it - this goes into `pipeline-run.md`.
 
 ---
@@ -70,4 +70,4 @@ If a capability skill exists for the declared testing framework (e.g. `webapp-te
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*
