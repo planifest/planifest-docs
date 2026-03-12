@@ -53,3 +53,24 @@
 - **Agent**: planifest-docs-agent
 - **Outcome**: Pipeline run documented and component manifest finalized.
 - **Artifacts**: `plan/website/pipeline-run.md`
+
+---
+
+## Change Run - 2026-03-12
+
+**Run type**: Change pipeline
+**Change request**: Remove MCP from v1.0 documentation. MCP is not part of v1.0 (which uses agentskills.io). MCP references must only appear in roadmap sections.
+**Agent**: planifest-change-agent
+**Status**: Complete
+
+### Files changed
+- `planifest-docs/p001-planifest-master-plan.md` — removed MCP Servers diagram subgraph, "MCP is the nervous system" para, MCP write model section, Build Sequence (MCP-first); updated access path to v1.0 (git docs/); updated agent responsibilities table
+- `planifest-docs/p002-planifest-product-concept.md` — replaced "MCP servers" with "Agent Skills" in open source library description
+- `planifest-docs/p003-planifest-functional-decisions.md` — FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap
+- `planifest-docs/p004-the-pathway-to-agentic-development.md` — removed MCP from domain knowledge store versioning note; updated "Accessing the Domain" to v1.0 single path
+- `planifest-docs/p010-planifest-agentic-tool-runbook.md` — MCP column clarified as roadmap; context limit diagram updated
+
+### Contract changed: no
+### Schema changed: no
+### ADR required: no
+### Artifacts produced: `plan/website/docs/change-summary.md`
