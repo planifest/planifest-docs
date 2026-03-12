@@ -22,13 +22,13 @@ description: Generates the full implementation from the specification artifacts 
 
 ## Input
 
-- Component Manifest at `initiatives/{initiative-id}/component.json` - read this first for stack, purpose, scope, and contract. See [Component Manifest Guide](../templates/component-manifest-guide.md)
-- Design Specification at `initiatives/{initiative-id}/docs/design-spec.md`
-- OpenAPI Specification at `initiatives/{initiative-id}/docs/openapi-spec.yaml`
-- ADRs at `initiatives/{initiative-id}/docs/adr/`
-- Planifest at `initiatives/{initiative-id}/planifest.md` (for stack declaration)
-- Domain Glossary at `initiatives/{initiative-id}/docs/domain-glossary.md`
-- Data Contracts at `initiatives/{initiative-id}/docs/components/{id}/data-contract.md` (if they exist)
+- Component Manifest at `src/{component-id}/component.json` - read this first for stack, purpose, scope, and contract. See [Component Manifest Guide](../templates/component-manifest-guide.md)
+- Design Specification at `plan/{initiative-id}/docs/design-spec.md`
+- OpenAPI Specification at `plan/{initiative-id}/docs/openapi-spec.yaml`
+- ADRs at `plan/{initiative-id}/docs/adr/`
+- Planifest at `plan/{initiative-id}/planifest.md` (for stack declaration)
+- Domain Glossary at `plan/{initiative-id}/docs/domain-glossary.md`
+- Data Contracts at `src/{component-id}/docs/data-contract.md` (if they exist)
 - Code Quality Standards at [code-quality-standards.md](../standards/code-quality-standards.md)
 
 ---
@@ -52,7 +52,7 @@ If a relevant capability skill exists, load it. If not, proceed with your own kn
 
 ## What You Produce
 
-Full implementation at `initiatives/{initiative-id}/`:
+Full implementation at `src/{component-id}/`:
 
 - Application source code (structure per the stack and ADRs)
 - Shared types and validation schemas
@@ -75,7 +75,7 @@ Full implementation at `initiatives/{initiative-id}/`:
 
 **Deviation & Escalation Protocol:**
 - Software engineering is inherently discovery-driven. If a fundamental architectural blocker is identified that makes the pre-set specification flawed, you are empowered to manage it. You have two choices:
-  1. **Documented Deviation:** Proceed with an alternative path. Ensure the specific deviation and its justification are explicitly flagged in the final component manifest and `docs/quirks.md`.
+  1. **Documented Deviation:** Proceed with an alternative path. Ensure the specific deviation and its justification are explicitly flagged in the final component manifest and `src/{component-id}/docs/quirks.md`.
   2. **Escalation (Stop-and-Ask):** Pause the build immediately if continuing would be wasteful or deviate too far from the original intent. Request a human review of the Plan and the encountered blocker before proceeding.
 
 **Domain language:**
@@ -83,8 +83,8 @@ Full implementation at `initiatives/{initiative-id}/`:
 - If the glossary defines "Order" and you name a variable "purchase", that is a defect.
 
 **Data contracts:**
-- Before writing any component that owns data, check whether a data contract exists. If one exists, implement against it. If none exists, create one at `docs/components/{component-id}/data-contract.md` before writing any schema code.
-- If the implementation requires a schema change to an existing data contract, write a migration proposal at `docs/components/{component-id}/migrations/proposed-{description}.md` and stop. Do not modify the schema directly. This is a hard limit.
+- Before writing any component that owns data, check whether a data contract exists at `src/{component-id}/docs/data-contract.md`. If one exists, implement against it. If none exists, create one there before writing any schema code.
+- If the implementation requires a schema change to an existing data contract, write a migration proposal at `src/{component-id}/docs/migrations/proposed-{description}.md` and stop. Do not modify the schema directly. This is a hard limit.
 
 **Write incrementally:**
 - Scaffold first, then implement routes/handlers, then tests, then IaC.
@@ -119,9 +119,9 @@ Full implementation at `initiatives/{initiative-id}/`:
 - See the [Component Manifest Template](../templates/component-manifest.template.json) for the full schema.
 
 **Quirks and tech debt:**
-- If something doesn't fit cleanly, write it to `docs/quirks.md` and add it to the `quality.quirks` array in `component.json`. Do not silently work around it.
-- If you discover tech debt, write it to `docs/components/{component-id}/tech-debt.md` and add it to the `quality.techDebt` array in `component.json`.
+- If something doesn't fit cleanly, write it to `src/{component-id}/docs/quirks.md` and add it to the `quality.quirks` array in `component.json`. Do not silently work around it.
+- If you discover tech debt, write it to `src/{component-id}/docs/tech-debt.md` and add it to the `quality.techDebt` array in `component.json`.
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

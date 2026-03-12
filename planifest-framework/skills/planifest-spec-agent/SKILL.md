@@ -22,27 +22,27 @@ description: Produces specification artifacts (design spec, OpenAPI spec, scope,
 
 ## Input
 
-- Confirmed Planifest at `initiatives/{initiative-id}/planifest.md`
-- Initiative Brief at `initiatives/{initiative-id}/initiative-brief.md`
-- Existing Domain Knowledge Store at `initiatives/{initiative-id}/docs/` (if retrofit or change)
+- Confirmed Planifest at `plan/{initiative-id}/planifest.md`
+- Initiative Brief at `plan/{initiative-id}/initiative-brief.md`
+- Existing Domain Knowledge Store at `plan/{initiative-id}/docs/` (if retrofit or change)
 
 ---
 
 ## What You Produce
 
-Write each artifact to `initiatives/{initiative-id}/docs/` as you complete it. Do not accumulate them in memory.
+Write each spec artifact to `plan/{initiative-id}/docs/` as you complete it. Write the component manifest to `src/{component-id}/component.json`. Do not accumulate artifacts in memory.
 
 | Artifact | Path | Purpose |
 |---|---|---|
-| Design Specification | `design-spec.md` | Functional and non-functional requirements |
-| OpenAPI Specification | `openapi-spec.yaml` | Language-agnostic API contract - OpenAPI 3.1 |
-| Component Manifest | `component.json` | Draft manifest - purpose, scope, risk seeded from the brief. Follow the [Component Manifest Template](../templates/component-manifest.template.json) and its [guide](../templates/component-manifest-guide.md). The `stack` section will already be pre-seeded by the human or orchestrator; populate `purpose`, `scope`, `risk`, and `contract` based on your specification |
-| Scope | `scope.md` | In / out / deferred - all three stated explicitly |
-| Risk Register | `risk-register.md` | Technical, operational, security, compliance risks with likelihood and impact |
-| Domain Glossary | `domain-glossary.md` | Ubiquitous language for this initiative - agents and humans use these terms |
-| Operational Model | `operational-model.md` | Runbook triggers, on-call expectations, alerting thresholds |
-| SLO Definitions | `slo-definitions.md` | Error budgets, SLIs/SLOs |
-| Cost Model | `cost-model.md` | Compute, storage, egress, third-party cost estimates |
+| Design Specification | `plan/{initiative-id}/docs/design-spec.md` | Functional and non-functional requirements |
+| OpenAPI Specification | `plan/{initiative-id}/docs/openapi-spec.yaml` | Language-agnostic API contract - OpenAPI 3.1 |
+| Component Manifest | `src/{component-id}/component.json` | Draft manifest - purpose, scope, risk seeded from the brief. Follow the [Component Manifest Template](../templates/component-manifest.template.json) and its [guide](../templates/component-manifest-guide.md). The `stack` section will already be pre-seeded by the human or orchestrator; populate `purpose`, `scope`, `risk`, and `contract` based on your specification |
+| Scope | `plan/{initiative-id}/docs/scope.md` | In / out / deferred - all three stated explicitly |
+| Risk Register | `plan/{initiative-id}/docs/risk-register.md` | Technical, operational, security, compliance risks with likelihood and impact |
+| Domain Glossary | `plan/{initiative-id}/docs/domain-glossary.md` | Ubiquitous language for this initiative - agents and humans use these terms |
+| Operational Model | `plan/{initiative-id}/docs/operational-model.md` | Runbook triggers, on-call expectations, alerting thresholds |
+| SLO Definitions | `plan/{initiative-id}/docs/slo-definitions.md` | Error budgets, SLIs/SLOs |
+| Cost Model | `plan/{initiative-id}/docs/cost-model.md` | Compute, storage, egress, third-party cost estimates |
 
 ---
 
@@ -75,7 +75,9 @@ Write each artifact to `initiatives/{initiative-id}/docs/` as you complete it. D
 - Do not produce generic risks. Every entry must be specific to this initiative.
 
 **Component manifest:**
-- Populate the `purpose`, `scope`, `risk`, and `contract` sections of `component.json` based on the specification you produce. The `stack` section is pre-seeded - do not modify it.
+- Write the draft manifest to `src/{component-id}/component.json`. Create the component folder if it doesn't exist.
+- Populate the `purpose`, `scope`, `risk`, and `contract` sections based on the specification you produce. The `stack` section is pre-seeded - do not modify it.
+- Set `pipeline.domainKnowledgePath` to `plan/{initiative-id}/docs`.
 - `purpose.notResponsibleFor` is mandatory. Derive exclusions from the scope boundaries.
 - Leave `contract.consumedBy` empty - it is unknown at specification time.
 
@@ -91,4 +93,4 @@ When the Planifest indicates `adoption_mode: retrofit`, read the existing codeba
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

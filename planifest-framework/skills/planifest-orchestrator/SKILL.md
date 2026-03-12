@@ -125,7 +125,7 @@ The [Initiative Brief Template](../templates/initiative-brief.template.md) guide
 
 The **Planifest** - the plan for what will be built and the manifest of what it builds against. This is the contract between you and the human before you begin building.
 
-Write this to `initiatives/{initiative-id}/planifest.md`:
+Write this to `plan/{initiative-id}/planifest.md`:
 
 ```markdown
 # Planifest - {initiative-id}
@@ -179,7 +179,7 @@ Invoke the **spec-agent** skill.
 
 **Input:** The confirmed Planifest + the original Initiative Brief
 
-**What it produces:** Design Specification, OpenAPI Specification, Scope, Risk Register, Domain Glossary, Operational Model, SLO Definitions, Cost Model - all written to `initiatives/{initiative-id}/docs/`
+**What it produces:** Design Specification, OpenAPI Specification, Scope, Risk Register, Domain Glossary, Operational Model, SLO Definitions, Cost Model - all written to `plan/{initiative-id}/docs/`
 
 **Gate:** Review the spec-agent's output. Confirm every artifact has been produced. Confirm the OpenAPI spec covers every endpoint implied by the functional requirements. If anything is missing, invoke the spec-agent again with specific instructions.
 
@@ -191,7 +191,7 @@ Invoke the **adr-agent** skill.
 
 **Input:** Design Specification, OpenAPI Specification (from Phase 1)
 
-**What it produces:** ADRs for every significant decision, written to `initiatives/{initiative-id}/docs/adr/`
+**What it produces:** ADRs for every significant decision, written to `plan/{initiative-id}/docs/adr/`
 
 **Gate:** Confirm an ADR exists for every significant decision - stack choice, database selection, auth strategy, deployment topology, component boundaries. If a decision was made but not recorded, invoke the adr-agent for the missing ADR.
 
@@ -207,7 +207,7 @@ Invoke the **codegen-agent** skill.
 
 **Input:** Full specification artifact set from Phases 1 and 2, stack declaration from the Planifest
 
-**What it produces:** Full implementation at `initiatives/{initiative-id}/` - application code, shared types, tests, IaC, Dockerfiles
+**What it produces:** Full implementation at `src/{component-id}/` for each component - application code, shared types, tests, IaC, Dockerfiles
 
 **Gate:** Confirm the implementation exists and the file structure matches what the spec describes. If the codegen-agent halted due to an Escalation (Stop-and-Ask) protocol because of an architectural blocker, review the blocker with the human before updating the plan or proceeding.
 
@@ -231,7 +231,7 @@ Invoke the **security-agent** skill.
 
 **Input:** The validated implementation from Phase 4
 
-**What it produces:** Security report at `initiatives/{initiative-id}/docs/security-report.md`
+**What it produces:** Security report at `plan/{initiative-id}/docs/security-report.md`
 
 **Gate:** Report is produced with specific findings. Critical and high findings are flagged for human attention at the PR gate.
 

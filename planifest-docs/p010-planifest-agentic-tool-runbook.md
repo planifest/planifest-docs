@@ -36,7 +36,7 @@
 The orchestrator skill:
 - Assesses the Initiative Brief against what a complete Planifest specification requires
 - Coaches the human through gaps - one question at a time, in priority order
-- Produces the validated **Planifest** (`initiatives/{initiative-id}/planifest.md`) - the plan for what will be built and the manifest of what it builds against
+- Produces the validated **Planifest** (`plan/{initiative-id}/planifest.md`) - the plan for what will be built and the manifest of what it builds against
 - Sequences the phase skills: spec-agent -> adr-agent -> codegen-agent -> validate-agent -> security-agent -> docs-agent
 
 For changes to existing initiatives, the orchestrator invokes the change-agent skill instead of the full pipeline.
@@ -73,7 +73,7 @@ Paste this instruction into Claude Code:
 ```
 Load the Planifest orchestrator skill at planifest-framework/skills/orchestrator/SKILL.md and execute the Initiative Pipeline.
 
-Initiative brief: initiatives/{{initiative_id}}/initiative-brief.md
+Initiative brief: plan/{{initiative_id}}/initiative-brief.md
 Initiative ID: {{initiative_id}}
 Adoption mode: greenfield | retrofit | agent-interface
 ```
@@ -224,18 +224,18 @@ A local run produces a local branch with the same files a CI platform run would 
 
 ```bash
 # Review what was produced
-cat initiatives/{{initiative_id}}/pipeline-run.md
+cat plan/{{initiative_id}}/pipeline-run.md
 
 # Run the same checks the CI platform will run
-npm run ci:full --workspace=initiatives/{{initiative_id}}
+npm run ci:full --workspace=src/{{component_id}}
 
 # Push and open PR - GitHub
 git push origin initiative/{{initiative_id}}
-gh pr create --title "feat: {{initiative_id}}" --body "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"
+gh pr create --title "feat: {{initiative_id}}" --body "$(cat plan/{{initiative_id}}/pipeline-run.md)"
 
 # Push and open MR - GitLab
 git push origin initiative/{{initiative_id}}
-glab mr create --title "feat: {{initiative_id}}" --description "$(cat initiatives/{{initiative_id}}/pipeline-run.md)"
+glab mr create --title "feat: {{initiative_id}}" --description "$(cat plan/{{initiative_id}}/pipeline-run.md)"
 ```
 
 The CI platform runs the same checks on the PR. If they pass, the output is identical in quality to a full CI platform run. If they fail, the change pipeline self-corrects on the runner as normal.

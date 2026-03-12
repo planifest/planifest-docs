@@ -439,18 +439,16 @@ Planifest defines distinct artifact types. No artifact bleeds into another. Each
 
 ```
 monorepo/
-├── planifest/
+├── planifest-framework/
 │   ├── skills/
-│   │   ├── orchestrator/SKILL.md   # Entry point - coaching + sequencing
-│   │   ├── spec-agent/SKILL.md     # Produce specification artifacts
-│   │   ├── adr-agent/SKILL.md      # Produce ADRs
-│   │   ├── codegen-agent/SKILL.md  # Implement against spec
-│   │   ├── validate-agent/SKILL.md # Run checks, self-correct
-│   │   ├── security-agent/SKILL.md # Security assessment
-│   │   ├── docs-agent/SKILL.md     # Complete documentation
-│   │   ├── change-agent/SKILL.md   # Change pipeline
-│   │   └── shared/
-│   │       └── default-rules.md    # Referenced by orchestrator
+│   │   ├── planifest-orchestrator/SKILL.md   # Entry point - coaching + sequencing
+│   │   ├── planifest-spec-agent/SKILL.md     # Produce specification artifacts
+│   │   ├── planifest-adr-agent/SKILL.md      # Produce ADRs
+│   │   ├── planifest-codegen-agent/SKILL.md  # Implement against spec
+│   │   ├── planifest-validate-agent/SKILL.md # Run checks, self-correct
+│   │   ├── planifest-security-agent/SKILL.md # Security assessment
+│   │   ├── planifest-docs-agent/SKILL.md     # Complete documentation
+│   │   └── planifest-change-agent/SKILL.md   # Change pipeline
 │   ├── adapters/
 │   │   ├── claude-code/CLAUDE.md
 │   │   ├── cursor/.cursorrules
@@ -458,46 +456,43 @@ monorepo/
 │   │   └── antigravity/planifest.yaml
 │   └── templates/                  # Artifact templates
 │       ├── initiative-brief.md
-│       ├── design-spec.md
-│       ├── adr.md
-│       ├── component-purpose.md
-│       ├── interface-contract.md
-│       ├── data-contract.md
-│       ├── security-report.md
-│       ├── risk-register.md
-│       └── scope.md
-├── initiatives/
+│       ├── component-manifest.template.json
+│       ├── pipeline-run.template.md
+│       └── ...
+├── plan/
 │   └── {initiative-id}/
 │       ├── planifest.md            # The Planifest - plan for what will be built, manifest of what it builds against
 │       ├── initiative-brief.md
-│       ├── apps/
-│       │   ├── web/
-│       │   └── api/
-│       ├── packages/shared/
-│       ├── infra/
-│       ├── docs/                   # Initiative and component artifacts
-│       │   ├── design-spec.md
-│       │   ├── openapi-spec.yaml
-│       │   ├── domain-glossary.md
-│       │   ├── risk-register.md
-│       │   ├── scope.md
-│       │   ├── operational-model.md
-│       │   ├── slo-definitions.md
-│       │   ├── cost-model.md
-│       │   ├── adr/
-│       │   ├── components/
-│       │   │   └── {component-id}/
-│       │   │       ├── purpose.md
-│       │   │       ├── interface-contract.md
-│       │   │       ├── data-contract.md
-│       │   │       ├── migrations/
-│       │   │       ├── risk.md
-│       │   │       ├── scope.md
-│       │   │       └── quirks.md
-│       │   └── system/
-│       │       ├── component-registry.md
-│       │       └── dependency-graph.md
-│       └── pipeline-run.md         # Audit trail for the latest run
+│       ├── pipeline-run.md         # Audit trail for the latest run
+│       └── docs/                   # Initiative-level artifacts
+│           ├── design-spec.md
+│           ├── openapi-spec.yaml
+│           ├── domain-glossary.md
+│           ├── risk-register.md
+│           ├── scope.md
+│           ├── operational-model.md
+│           ├── slo-definitions.md
+│           ├── cost-model.md
+│           ├── security-report.md
+│           └── adr/
+│               └── ADR-001-*.md
+├── src/
+│   └── {component-id}/
+│       ├── component.json          # Component manifest
+│       ├── apps/ | packages/ | infra/   # Implementation
+│       └── docs/                   # Component-level artifacts
+│           ├── purpose.md
+│           ├── interface-contract.md
+│           ├── data-contract.md
+│           ├── dependencies.md
+│           ├── risk.md
+│           ├── scope.md
+│           ├── quirks.md
+│           ├── tech-debt.md
+│           └── migrations/
+├── docs/                           # Repo-wide state
+│   ├── component-registry.md
+│   └── dependency-graph.md
 └── README.md
 ```
 
@@ -505,7 +500,7 @@ monorepo/
 
 ## 11. Documentation Sync
 
-Every agent output is a markdown document, written to `initiatives/{initiative-id}/docs/`. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.
+Every agent output is a markdown document, written to `plan/{initiative-id}/docs/` (initiative-level artifacts) or `src/{component-id}/docs/` (component-level artifacts), with repo-wide state in `docs/`. The git repository is the documentation system - markdown and Mermaid render natively on GitHub, GitLab, and Bitbucket. No additional sync infrastructure is required for v1.0.
 
 Teams that want a richer documentation experience (Obsidian, Notion, Confluence) can integrate at the documentation provider level - see [RC-005 - Pluggable Documentation Provider](p014-planifest-roadmap.md) in the roadmap.
 

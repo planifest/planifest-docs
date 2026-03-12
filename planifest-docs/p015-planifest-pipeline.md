@@ -32,7 +32,7 @@ Regardless of which pipeline you are running:
 1. Read this document fully
 2. Read `planifest/hard-limits.md` - these are non-negotiable
 3. Read `planifest/default-rules.md` - these govern your behaviour unless overridden per initiative
-4. If an initiative already exists at `initiatives/{initiative-id}/docs/`, read the existing artifacts to understand the current state
+4. If an initiative already exists at `plan/{initiative-id}/docs/`, read the existing artifacts to understand the current state
 
 ---
 
@@ -118,7 +118,7 @@ Wait for the human to provide the answers. Reassess. Repeat until complete.
 
 You may make documented assumptions for genuinely minor gaps - record these in the Risk Register with `likelihood: medium` and flag them. You must not assume away significant ambiguity.
 
-**Outputs - write each to `initiatives/{initiative-id}/docs/` as you complete it:**
+**Outputs - write each to `plan/{initiative-id}/docs/` as you complete it:**
 
 | Artifact | Path |
 |---|---|
@@ -154,7 +154,7 @@ For every significant decision - framework choice, database selection, auth stra
 
 A significant decision is any choice that has consequences worth recording: what becomes easier, what becomes harder, what is deferred, what risk is introduced or mitigated.
 
-**Output:** One ADR per decision, written to `initiatives/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md`
+**Output:** One ADR per decision, written to `plan/{initiative-id}/docs/adr/ADR-{NNN}-{title}.md`
 
 **ADR format:**
 
@@ -194,7 +194,7 @@ What becomes easier, what becomes harder, what is deferred.
 
 Read the full specification. Implement against it - not beyond it. The OpenAPI spec defines the contract. The ADRs define the decisions. The stack configuration defines the technology. Your job is to produce the implementation that satisfies these constraints.
 
-**Output:** Full implementation at `initiatives/{initiative-id}/`
+**Output:** Full implementation at `src/{component-id}/`
 
 This includes:
 
@@ -211,7 +211,7 @@ This includes:
 - Every component that owns data must have a Data Contract. See [FD-016](p003-planifest-functional-decisions.md#fd-016--data-is-treated-differently-to-code).
 - Write code incrementally. Scaffold first, then implement routes/handlers, then tests, then IaC. Write to disk after each stage.
 - Do not introduce frameworks, libraries, or tools not declared in the stack configuration.
-- If you encounter something that doesn't fit cleanly, write it to `docs/quirks.md` - do not silently work around it.
+- If you encounter something that doesn't fit cleanly, write it to `src/{component-id}/docs/quirks.md` - do not silently work around it.
 
 ---
 
@@ -234,7 +234,7 @@ If checks fail -> read the error output, identify the root cause, fix it, and re
 **Rules:**
 
 - Fix the actual bug. Do not suppress linting rules or skip failing tests.
-- If a test failure reveals a spec ambiguity, record it in `docs/quirks.md` and note it for the human.
+- If a test failure reveals a spec ambiguity, record it in `src/{component-id}/docs/quirks.md` and note it for the human.
 - Track each self-correct cycle in your notes for inclusion in `pipeline-run.md`.
 
 ---
@@ -245,7 +245,7 @@ If checks fail -> read the error output, identify the root cause, fix it, and re
 
 **Input:** Full implementation (from Phase 3, validated in Phase 4)
 
-**Output:** `initiatives/{initiative-id}/docs/security-report.md`
+**Output:** `plan/{initiative-id}/docs/security-report.md`
 
 **The security report must cover:**
 
@@ -272,19 +272,19 @@ If checks fail -> read the error output, identify the root cause, fix it, and re
 
 1. Confirm every artifact defined in [FD-019](p003-planifest-functional-decisions.md#fd-019--artifact-types-are-distinct-and-independently-versioned) has been produced for this initiative
 2. Produce per-component artifacts for each component:
-   - `docs/components/{component-id}/purpose.md`
-   - `docs/components/{component-id}/interface-contract.md`
-   - `docs/components/{component-id}/dependencies.md`
-   - `docs/components/{component-id}/data-contract.md` (if the component owns data)
-   - `docs/components/{component-id}/risk.md`
-   - `docs/components/{component-id}/scope.md`
-   - `docs/components/{component-id}/quirks.md`
-   - `docs/components/{component-id}/tech-debt.md`
+   - `src/{component-id}/docs/purpose.md`
+   - `src/{component-id}/docs/interface-contract.md`
+   - `src/{component-id}/docs/dependencies.md`
+   - `src/{component-id}/docs/data-contract.md` (if the component owns data)
+   - `src/{component-id}/docs/risk.md`
+   - `src/{component-id}/docs/scope.md`
+   - `src/{component-id}/docs/quirks.md`
+   - `src/{component-id}/docs/tech-debt.md`
 3. Produce system-wide artifacts:
-   - `docs/system/component-registry.md`
-   - `docs/system/dependency-graph.md` (as a Mermaid diagram)
-4. Produce `docs/recommendations.md` - suggested improvements for future iterations
-5. Write `pipeline-run.md` at the initiative root - the audit trail for this run
+   - `docs/component-registry.md`
+   - `docs/dependency-graph.md` (as a Mermaid diagram)
+4. Produce `plan/{initiative-id}/docs/recommendations.md` - suggested improvements for future iterations
+5. Write `plan/{initiative-id}/pipeline-run.md` - the audit trail for this run
 
 **`pipeline-run.md` format:**
 
@@ -382,11 +382,11 @@ flowchart TD
 
 Read the existing artifacts for this initiative:
 
-1. `docs/design-spec.md` - understand the full specification
-2. `docs/system/component-registry.md` - understand what components exist
-3. `docs/system/dependency-graph.md` - understand how they relate
-4. `docs/components/{affected-component}/` - read the purpose, interface contract, dependencies, data contract, risk, and quirks for every component the change touches
-5. `docs/domain-glossary.md` - confirm you are using the correct terms
+1. `plan/{initiative-id}/docs/design-spec.md` - understand the full specification
+2. `docs/component-registry.md` - understand what components exist
+3. `docs/dependency-graph.md` - understand how they relate
+4. `src/{affected-component}/docs/` - read the purpose, interface contract, dependencies, data contract, risk, and quirks for every component the change touches
+5. `plan/{initiative-id}/docs/domain-glossary.md` - confirm you are using the correct terms
 
 Identify which components are affected by the change request. Identify the blast radius - which other components depend on the ones you're changing.
 
@@ -402,7 +402,7 @@ Identify which components are affected by the change request. Identify the blast
 - If the change touches data: read the Data Contract first. If schema changes are required, write a migration proposal and stop for human approval. This is a hard limit.
 - If the change modifies an interface contract: note this - an ADR will be required in Phase 4.
 - If the change request is ambiguous, implement the narrowest interpretation and document your reasoning.
-- If you discover tech debt or quirks while working, write them to `docs/quirks.md` or raise them as recommendations - do not fix them as part of this change.
+- If you discover tech debt or quirks while working, write them to `src/{component-id}/docs/quirks.md` or raise them as recommendations - do not fix them as part of this change.
 
 ---
 
@@ -416,7 +416,7 @@ Same as Initiative Pipeline Phase 4. Scope checks to the blast radius of the cha
 
 If the change modified an interface contract -> write a new ADR recording what changed, why, and the consequences for consumers.
 
-If the change requires a schema modification -> write a migration proposal to `docs/components/{component-id}/migrations/proposed-{description}.md` and **stop**. A human must approve before any schema change is applied. This is a hard limit. See [FD-016](p003-planifest-functional-decisions.md#fd-016--data-is-treated-differently-to-code).
+If the change requires a schema modification -> write a migration proposal to `src/{component-id}/docs/migrations/proposed-{description}.md` and **stop**. A human must approve before any schema change is applied. This is a hard limit. See [FD-016](p003-planifest-functional-decisions.md#fd-016--data-is-treated-differently-to-code).
 
 ---
 

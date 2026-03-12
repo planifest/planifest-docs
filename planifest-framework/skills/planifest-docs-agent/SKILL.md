@@ -22,9 +22,9 @@ description: Produces complete per-component documentation, system-wide registry
 
 ## Input
 
-- All artifacts produced by prior phases at `initiatives/{initiative-id}/docs/`
-- The implementation at `initiatives/{initiative-id}/`
-- The Planifest at `initiatives/{initiative-id}/planifest.md`
+- All artifacts produced by prior phases at `plan/{initiative-id}/docs/`
+- The implementation at `src/{component-id}/` (all components in the initiative)
+- The Planifest at `plan/{initiative-id}/planifest.md`
 
 ---
 
@@ -32,7 +32,7 @@ description: Produces complete per-component documentation, system-wide registry
 
 ### Per-component artifacts
 
-For each component in the initiative, write to `initiatives/{initiative-id}/docs/components/{component-id}/`:
+For each component in the initiative, write to `src/{component-id}/docs/`:
 
 | Artifact | File | Purpose |
 |---|---|---|
@@ -48,7 +48,7 @@ For each component in the initiative, write to `initiatives/{initiative-id}/docs
 
 ### System-wide artifacts
 
-Write to `initiatives/{initiative-id}/docs/system/`:
+Write to `docs/` at the repository root:
 
 | Artifact | File | Purpose |
 |---|---|---|
@@ -57,7 +57,7 @@ Write to `initiatives/{initiative-id}/docs/system/`:
 
 ### Initiative-level completeness
 
-Confirm the following exist and are consistent:
+Confirm the following exist at `plan/{initiative-id}/docs/` and are consistent:
 
 - Design Specification (from spec-agent)
 - OpenAPI Specification (from spec-agent)
@@ -67,13 +67,13 @@ Confirm the following exist and are consistent:
 - Operational Model (from spec-agent)
 - SLO Definitions (from spec-agent)
 - Cost Model (from spec-agent)
-- ADRs (from adr-agent)
+- ADRs at `plan/{initiative-id}/docs/adr/` (from adr-agent)
 - Security Report (from security-agent)
-- Recommendations (`docs/recommendations.md` - produce this now if it doesn't exist)
+- Recommendations (`plan/{initiative-id}/docs/recommendations.md` - produce this now if it doesn't exist)
 
 ### Audit trail
 
-Write `initiatives/{initiative-id}/pipeline-run.md`:
+Write `plan/{initiative-id}/pipeline-run.md`:
 
 ```markdown
 # Pipeline Run - {initiative-id}
@@ -109,7 +109,7 @@ Tool: {agent tool used}
 - **Every artifact must be accounted for.** If one is missing, produce it. If one cannot be produced (e.g. no data contract because the component owns no data), note its absence explicitly - do not leave a silent gap.
 - **Cross-references.** The component registry must link to each component's purpose document. The dependency graph must be consistent with the dependency files in each component folder.
 - **Consistency check.** The domain glossary terms should match what appears in the code. The OpenAPI spec endpoints should match what was implemented. Flag any drift you find - do not silently fix it.
-- **Recommendations.** Produce `docs/recommendations.md` - suggested improvements for future iterations. Be constructive and specific. Reference concrete files or decisions.
+- **Recommendations.** Produce `plan/{initiative-id}/docs/recommendations.md` - suggested improvements for future iterations. Be constructive and specific. Reference concrete files or decisions.
 
 ---
 
@@ -119,4 +119,4 @@ If a capability skill exists for document generation formats needed by the initi
 
 ---
 
-*This skill is invoked by the orchestrator. See [Orchestrator Skill](../orchestrator/SKILL.md)*
+*This skill is invoked by the orchestrator. See [Orchestrator Skill](../planifest-orchestrator/SKILL.md)*

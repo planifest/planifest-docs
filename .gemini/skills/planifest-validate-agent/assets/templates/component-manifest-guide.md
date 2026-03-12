@@ -21,7 +21,7 @@ From that point forward, every change-agent reads it before modifying the compon
 ## File location
 
 ```
-initiatives/{{component-id}}/component.json
+src/{{component-id}}/component.json
 ```
 
 ---

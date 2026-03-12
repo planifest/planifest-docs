@@ -105,11 +105,11 @@ jobs:
           git config user.email "pipeline@internal"
           git checkout -b initiative/${{ inputs.component_id }}
           echo "${{ steps.spec.outputs.design_spec }}" | base64 -d \
-            > initiatives/${{ inputs.component_id }}/docs/design-spec.md
+            > plan/${{ inputs.component_id }}/docs/design-spec.md
           echo "${{ steps.spec.outputs.openapi }}" | base64 -d \
-            > initiatives/${{ inputs.component_id }}/docs/openapi.yaml
+            > plan/${{ inputs.component_id }}/docs/openapi.yaml
           echo "${{ steps.spec.outputs.component_json }}" | base64 -d \
-            > initiatives/${{ inputs.component_id }}/component.json
+            > src/${{ inputs.component_id }}/component.json
           git add . && git commit -m "feat({{component_id}}): add design spec and openapi"
           git push origin initiative/${{ inputs.component_id }}
 
@@ -137,7 +137,7 @@ jobs:
         run: |
           echo "${{ steps.adrs.outputs.adrs }}" | base64 -d \
             | node .github/scripts/write-adrs.js \
-                --output initiatives/${{ inputs.component_id }}/docs/adr/
+                --output plan/${{ inputs.component_id }}/docs/adr/
           git add . && git commit -m "feat({{component_id}}): add ADRs"
           git push origin initiative/${{ inputs.component_id }}
 
@@ -195,12 +195,12 @@ jobs:
         run: |
           MAX_RETRIES=5
           RETRY=0
-          until npm run ci:full --workspace=initiatives/${{ inputs.component_id }} || \
+          until npm run ci:full --workspace=src/${{ inputs.component_id }} || \
                 [ $RETRY -ge $MAX_RETRIES ]; do
             RETRY=$((RETRY + 1))
             echo "CI failed - retry $RETRY of $MAX_RETRIES"
             ERROR_OUTPUT=$(npm run ci:full \
-              --workspace=initiatives/${{ inputs.component_id }} 2>&1 || true)
+              --workspace=src/${{ inputs.component_id }} 2>&1 || true)
 
             # Call codegen-agent with error context
             node .github/scripts/self-correct.js \
@@ -238,7 +238,7 @@ jobs:
 
       - name: Commit security report
         run: |
-          git add initiatives/${{ inputs.component_id }}/docs/security-report.md
+          git add plan/${{ inputs.component_id }}/docs/security-report.md
           git commit -m "docs({{component_id}}): add security report"
           git push origin initiative/${{ inputs.component_id }}
 
@@ -281,7 +281,7 @@ jobs:
         run: |
           curl -X POST ${{ secrets.REGISTRY_URL }}/components \
             -H "Content-Type: application/json" \
-            -d @initiatives/${{ inputs.component_id }}/component.json
+            -d @src/${{ inputs.component_id }}/component.json
 ```
 
 ---
@@ -376,12 +376,12 @@ jobs:
           MAX_RETRIES=5
           RETRY=0
           until npm run ci:scoped \
-                  --workspace=initiatives/{{component_id}} \
+                  --workspace=src/{{component_id}} \
                   --blast-radius='${{ needs.context.outputs.blast_radius }}' || \
                 [ $RETRY -ge $MAX_RETRIES ]; do
             RETRY=$((RETRY + 1))
             ERROR_OUTPUT=$(npm run ci:scoped \
-              --workspace=initiatives/{{component_id}} 2>&1 || true)
+              --workspace=src/{{component_id}} 2>&1 || true)
             node .github/scripts/self-correct.js \
               --component {{component_id}} \
               --error "$ERROR_OUTPUT" \
@@ -461,7 +461,7 @@ jobs:
           node .github/scripts/update-docs.js --component {{component_id}}
           curl -X PATCH ${{ secrets.REGISTRY_URL }}/components/{{component_id}} \
             -H "Content-Type: application/json" \
-            -d @initiatives/{{component_id}}/component.json
+            -d @src/{{component_id}}/component.json
 ```
 
 ---
@@ -550,7 +550,7 @@ function stampTemplate(
 }
 ```
 
-The stamped files are committed to `initiatives/{{component_id}}/ci/` as part of the scaffold commit, regardless of platform. For GitHub Actions, they are additionally symlinked or copied to `.github/workflows/` as required by the platform. From that point they are owned by the component and evolve independently of the template - except when a template migration is applied.
+The stamped files are committed to `src/{{component_id}}/ci/` as part of the scaffold commit, regardless of platform. For GitHub Actions, they are additionally symlinked or copied to `.github/workflows/` as required by the platform. From that point they are owned by the component and evolve independently of the template - except when a template migration is applied.
 
 **Template migration:** When `templateVersion` is incremented in the master template, a migration script (`apps/orchestrator/src/migrate-templates.ts`) re-stamps all components that are behind the current version, opens a PR per component, and updates `pipeline.templateVersion` in `component.json`.
 

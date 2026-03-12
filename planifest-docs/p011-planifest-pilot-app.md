@@ -165,39 +165,43 @@ monorepo/
 │   │   └── antigravity/planifest.yaml
 │   └── templates/             # Artifact templates
 │
-├── initiatives/
-│   └── pilot/                 # ← The pilot app lives here
+├── plan/
+│   └── pilot/                 # ← The pilot initiative lives here
 │       ├── planifest.md       # The Planifest - plan for what will be built, manifest of what it builds against
 │       ├── initiative-brief.md
+│       ├── pipeline-run.md    # Latest local pipeline run log
+│       └── docs/              # Full artifact set per FD-019
+│           ├── design-spec.md
+│           ├── openapi-spec.yaml
+│           ├── domain-glossary.md
+│           ├── risk-register.md
+│           ├── scope.md
+│           ├── operational-model.md
+│           ├── slo-definitions.md
+│           ├── cost-model.md
+│           ├── security-report.md
+│           ├── recommendations.md
+│           └── adr/
+│
+├── src/
+│   └── pilot/                 # ← The pilot implementation lives here
+│       ├── component.json     # Component manifest
 │       ├── apps/
 │       │   ├── web/           # React + TypeScript + Vite + TailwindCSS
 │       │   └── api/           # Fastify + TypeScript
 │       ├── packages/
 │       │   └── shared/        # Zod schemas, types, API contracts
 │       ├── infra/             # Pulumi - Cloud Run, Cloud SQL, Cloud Tasks
-│       ├── docs/              # Full artifact set per FD-019
-│       │   ├── design-spec.md
-│       │   ├── openapi-spec.yaml
-│       │   ├── domain-glossary.md
-│       │   ├── risk-register.md
-│       │   ├── scope.md
-│       │   ├── operational-model.md
-│       │   ├── slo-definitions.md
-│       │   ├── cost-model.md
-│       │   ├── security-report.md
-│       │   ├── quirks.md
-│       │   ├── recommendations.md
-│       │   ├── adr/
-│       │   ├── components/
-│       │   │   └── {component-id}/
-│       │   │       ├── purpose.md
-│       │   │       ├── interface-contract.md
-│       │   │       ├── data-contract.md
-│       │   │       └── migrations/
-│       │   └── system/
-│       │       ├── component-registry.md
-│       │       └── dependency-graph.md
-│       └── pipeline-run.md    # Latest local pipeline run log
+│       └── docs/              # Component-level artifacts
+│           ├── purpose.md
+│           ├── interface-contract.md
+│           ├── data-contract.md
+│           ├── quirks.md
+│           └── migrations/
+│
+├── docs/                      # Repo-wide state
+│   ├── component-registry.md
+│   └── dependency-graph.md
 │
 ├── infra/
 │   └── platform/
@@ -267,7 +271,7 @@ When the pilot's product scope is defined, an Initiative Brief will be written a
 
 1. **spec-agent** coaches for every answer needed - surfaces gaps before proceeding. Derives the design spec, OpenAPI definition, scope, risk register, and domain glossary
 2. **adr-agent** generates ADRs for every significant decision - only proceeds once spec is complete
-3. **codegen-agent** scaffolds the full implementation inside `initiatives/pilot/`
+3. **codegen-agent** scaffolds the full implementation inside `src/pilot/`
 4. **validate loop** runs CI and self-corrects
 5. **security-agent** produces the security report
 6. **pr-agent** opens the PR
@@ -291,7 +295,7 @@ The `component.json` for the pilot will be pre-seeded with the confirmed technic
     "compute": "cloud-run",
     "ci": "github-actions"
   },
-  "domain_knowledge_path": "initiatives/pilot/docs"
+  "domain_knowledge_path": "plan/pilot/docs"
 }
 ```
 

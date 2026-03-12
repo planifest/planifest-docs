@@ -102,16 +102,16 @@ RULES:
 - Do not include implementation detail in the design spec. That is for the codegen-agent.
 
 OUTPUT PATHS:
-- initiatives/{{component_id}}/docs/design-spec.md
-- initiatives/{{component_id}}/docs/openapi.yaml
-- initiatives/{{component_id}}/component.json
+- plan/{{component_id}}/docs/design-spec.md
+- plan/{{component_id}}/docs/openapi.yaml
+- src/{{component_id}}/component.json
 ```
 
 **Orchestrator trigger message:**
 
 ```
 Execute the spec-agent for a new initiative.
-Brief path: initiatives/{{component_id}}/initiative-brief.md
+Brief path: plan/{{component_id}}/initiative-brief.md
 Component ID: {{component_id}}
 Cloud provider: {{cloud_provider}} (gcp | aws | azure)
 Stack: {{stack_declaration}}
@@ -201,7 +201,7 @@ STEPS:
 4. Do not hold all files in memory before writing - write incrementally.
 
 MONOREPO STRUCTURE - scaffold exactly this layout:
-initiatives/{{component_id}}/
+src/{{component_id}}/
   apps/
     web/          # React 18 + Vite + TailwindCSS
     api/          # Fastify + TypeScript
@@ -230,7 +230,7 @@ RULES:
 Execute the codegen-agent for component {{component_id}}.
 Component ID: {{component_id}}
 Cloud provider: {{cloud_provider}} (gcp | aws | azure)
-All spec documents are at initiatives/{{component_id}}/docs/
+All spec documents are at plan/{{component_id}}/docs/
 ```
 
 ---
@@ -396,7 +396,7 @@ RULES:
 ```
 Execute the docs-agent for component {{component_id}}.
 Component ID: {{component_id}}
-All pipeline outputs are committed at initiatives/{{component_id}}/docs/
+All pipeline outputs are committed at plan/{{component_id}}/docs/ (initiative artifacts) and src/{{component_id}}/docs/ (component artifacts)
 ```
 
 ---

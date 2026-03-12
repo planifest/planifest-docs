@@ -2,7 +2,7 @@
 
 > How to write an Initiative Brief that gives the orchestrator everything it needs to coach you and build your system.
 
-*Related: [Orchestrator Skill](../skills/orchestrator-SKILL.md) | [Initiative Structure](../../plan/initiative-structure.md)*
+*Related: [Orchestrator Skill](../skills/planifest-orchestrator/SKILL.md) | [Initiative Structure](../../plan/initiative-structure.md)*
 
 ---
 
