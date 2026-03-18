@@ -34,3 +34,28 @@ Blast radius: documentation content only - no code affected
 
 ### p010-planifest-agentic-tool-runbook.md
 - §8 Context Limit Strategy diagram: Removed "via filesystem MCP" from write-to-disk node
+
+---
+
+# Change Summary - 2026-03-18
+
+Change request: Repository hygiene cleanup — exclude tool-specific AI agent config directories from version control.
+Interpretation: Added `.gitignore` to the repository root excluding `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, and `.copilot/`. Untracked 436 previously committed files from `.claude/`, `.gemini/`, and `.agent/`. Generic, tool-agnostic configuration continues to live in `planifest-framework/`.
+Components affected: none (repository infrastructure only)
+Contract changed: no
+Schema changed: no
+Migration proposed: no
+Consumers affected: none
+Blast radius: repository structure only — no product code, contracts, or schemas affected
+
+## Files changed
+
+### .gitignore (new)
+- Added exclusions for `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`
+
+### Untracked from index
+- 436 files removed from git tracking across `.claude/skills/`, `.gemini/skills/`, and `.agent/workflows/`
+- Files remain on disk; `.gitignore` prevents re-commitment
+
+### plan/website/planifest.md
+- Engineering Layer: added `Repository conventions` note documenting the `.gitignore` policy
