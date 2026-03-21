@@ -74,3 +74,21 @@
 ### Schema changed: no
 ### ADR required: no
 ### Artifacts produced: `plan/website/docs/change-summary.md`
+
+---
+
+## Change Run - 2026-03-18
+
+**Run type**: Change pipeline
+**Change request**: Repository hygiene cleanup — exclude tool-specific AI agent config directories from version control. Configuration should live generically in `planifest-framework/`.
+**Agent**: planifest-change-agent
+**Status**: Complete
+
+### Files changed
+- `.gitignore` (new) — excludes `.claude/`, `.gemini/`, `.agent/`, `.cursor/`, `.windsurf/`, `.copilot/`
+- `.claude/`, `.gemini/`, `.agent/` — 436 files removed from git index (untracked, not deleted)
+
+### Contract changed: no
+### Schema changed: no
+### ADR required: no
+### Artifacts produced: `plan/website/docs/change-summary.md`

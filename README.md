@@ -1,1 +1,1 @@
-# planifest-website
+# planifest-docs

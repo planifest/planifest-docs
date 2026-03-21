@@ -19,7 +19,7 @@
 
 ## Engineering Layer
 - Stack: HTML/JS/CSS / Vite / GitHub Actions / GitHub Pages
-- Components: 
+- Components:
   - `web-app`: static site displaying the Planifest landing page
 - Data ownership: none
 - Deployment: GitHub Actions workflow deploying to `gh-pages` branch
