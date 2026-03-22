@@ -87,7 +87,7 @@
     E -->|Fail| D
     E -->|Pass| F[security-agent\nSecurity Report]
     F --> G[Auto PR to main]
-    G --> H[docs-agent\nDomain Knowledge Store sync]</pre><h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
+    G --> H[docs-agent\nUpdate SDLC Folders]</pre><h3>Phase 1 - Human-Led Discovery <em>(the initiating step)</em></h3>
 <p>A product owner or tech lead writes an <strong>Initiative Brief</strong> - a structured markdown document covering: problem statement, user stories, acceptance criteria, constraints, and known integrations. This is the seed that initiates the pipeline. Everything downstream is autonomous in execution, but humans retain approval authority at defined gates: the PR review, schema changes and migrations, high/critical risk items, and agent-raised improvements.</p>
 <h3>Phase 2 - Agentic Specification Generation</h3>
 <p>A <code>spec-agent</code> ingests the Initiative Brief and produces the full initiative artifact set:</p>
@@ -120,7 +120,7 @@
 <h3>Phase 7 - PR to Main</h3>
 <p>Once CI is green, the pipeline auto-creates a PR from the feature branch to main. The PR description includes: summary of changes, links to Design Spec, ADRs, and security report, a &quot;quirks&quot; section (known oddities, workarounds, tech debt), and recommendations for improvement.</p>
 <h3>Phase 8 - Documentation Sync</h3>
-<p>All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the Domain Knowledge Store and synced to the configured documentation provider. The documentation destination is pluggable: git <code>docs/</code> is the default, with Obsidian, Notion, and Confluence as supported alternatives.</p>
+<p>All artifacts - Design Spec, ADRs, Security Report, Quirks, Recommendations, Domain Glossary, Data Contracts, SLO Definitions, Cost Model - are written to the <code>plan/</code> and <code>docs/</code> folders as part of the SDLC and synced to the configured documentation provider. The documentation destination is pluggable: git <code>docs/</code> is the default, with Obsidian, Notion, and Confluence as supported alternatives.</p>
 <hr>
 <h2>Stack Configuration</h2>
 <p>Planifest does not default a stack. Per FD-015, stack is a requirement - declared explicitly at system or initiative level, traceable to an ADR, never assumed by the pipeline. Agents implement against whatever is declared; any deviation requires a justification.</p>
@@ -147,7 +147,7 @@
 <p>Worth considering when: your component library is extensive enough that agents keep making redundant or conflicting choices, or your domain logic is complex enough that a full codebase spec creates more noise than signal.</p>
 <p><code>initiative_mode: agent-interface</code></p>
 <hr>
-<h2>The Domain Knowledge Store</h2>
+<h2>The SDLC Collaboration Folders</h2>
 <p>The domain Planifest builds isn&#39;t held in memory - it&#39;s written to a structured document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. The documents are granular, standard, and machine-readable. Agents querying the domain get consistent, predictable answers.</p>
 <p>Documents are versioned. Updates create new versions rather than overwriting. History is never destroyed - only superseded. This is enforced naturally by version control in the git <code>docs/</code> folder.</p>
 <p>Three concerns appear at every level - initiative, component, and system-wide:</p>
@@ -202,8 +202,8 @@
 <li>Destructive operations (drop column, drop table, rename) require human approval with no override</li>
 </ol>
 <h3>Accessing the Domain</h3>
-<p>In v1.0, agents access the domain knowledge store by reading the <code>docs/</code> folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.</p>
-<p>A queryable MCP service wrapping the Domain Knowledge Store - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See <a href="p014-planifest-roadmap.html">RC-001</a>. It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
+<p>In the SDLC, agents access domain context by reading the <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - works locally and in CI.</p>
+<p>A dedicated Domain Knowledge Store MCP service - allowing agents to ask targeted questions and receive scoped, structured responses - is a roadmap item. See <a href="p014-planifest-roadmap.html">RC-001</a>. It becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
 <hr>
 <h2>Component Granularity</h2>
 <p>The granularity of a component is defined in the specification - it is a design decision, not a framework constraint. Planifest supports three component types:</p>
@@ -268,8 +268,8 @@
 <td>Architecture Decision Record. One per significant decision. Lives in <code>docs/adr/</code>.</td>
 </tr>
 <tr>
-<td><strong>Domain Knowledge Store</strong></td>
-<td>The structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide.</td>
+<td><strong>SDLC Folders</strong></td>
+<td>The structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide.</td>
 </tr>
 <tr>
 <td><strong>Component Registry</strong></td>

@@ -51,7 +51,7 @@ For changes to existing initiatives, the orchestrator invokes the change-agent s
 | MCP support | Native - stdio *(roadmap - see RC-001 to RC-004)* | Via MCP extension *(roadmap)* | Native *(roadmap)* | Limited / via extensions *(roadmap)* |
 | Authentication | Claude Code session - no API key needed | API key or Cursor account | Antigravity account | GitHub account |
 | Runs full pipeline | Yes - loads orchestrator skill, executes phases | Yes - with adapter + skills | Yes - pipeline-native | Partial - prompt-driven per phase |
-| Domain Knowledge Store | Reads `docs/` folder directly | Reads `docs/` folder directly | Reads `docs/` folder directly | Reads `docs/` folder via workspace indexing |
+| Domain Knowledge | Reads `plan/` and `docs/` directly | Reads `plan/` and `docs/` directly | Reads `plan/` and `docs/` directly | Reads `docs/` folder via workspace indexing |
 | PR creation | Manual push + pipeline-run.md | Manual push + pipeline-run.md | Native | Via CLI or extension |
 | Rules file | `planifest-framework/adapters/claude-code/CLAUDE.md` | `planifest-framework/adapters/cursor/.cursorrules` | Antigravity config | `planifest-framework/adapters/copilot/copilot-instructions.md` |
 | Context management | Manual chunking per session | Per-file context, references by path | Managed by Antigravity | Limited - per-file or workspace |
@@ -164,7 +164,7 @@ Antigravity reads the workflow config and sequences the phase skills. Each phase
 GitHub Copilot has more limited agent capabilities than the other tools in this set. The Planifest framework can be applied with Copilot, but with constraints:
 
 - Hard limits are enforced via the instructions file and human discipline rather than structurally
-- The Domain Knowledge Store is not queryable via tools - agents must read the `docs/` folder directly or rely on Copilot's workspace indexing
+- Domain knowledge is not currently queryable via tools - agents must read the `plan/` and `docs/` folders directly or rely on Copilot's workspace indexing
 - The pipeline runs phase by phase with explicit prompting per phase rather than skill-driven execution
 
 ### Setup

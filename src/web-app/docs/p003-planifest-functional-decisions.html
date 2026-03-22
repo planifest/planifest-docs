@@ -164,7 +164,7 @@
 <p><strong>Decision:</strong> Planifest encodes functional and non-functional requirements, SDLC procedure, technical strategy, component purpose, domain knowledge, and standards. Implementation details - languages, frameworks, validation libraries - are below Planifest&#39;s concern. They are the codegen agent&#39;s domain, guided by stack configuration artifacts.</p>
 <p><strong>Rationale:</strong> Planifest&#39;s value is the discipline and repeatability it enforces, not the specific tools used to implement any given initiative. Coupling Planifest to implementation choices would limit its applicability and longevity.</p>
 <hr>
-<h2>FD-009 - The Domain Knowledge Store is a first-class component</h2>
+<h2>FD-009 - SDLC documentation folders are first-class components</h2>
 <p><strong>Decision:</strong> The domain Planifest builds is written to a structured, versioned document store as the system is built. Every component produces documentation as a first-class output, not an afterthought. Documents are granular, standard, and machine-readable. History is never destroyed - only superseded.</p>
 <p>Agents query before generating. Before building any component, an agent must at minimum:</p>
 <ol>
@@ -173,11 +173,11 @@
 <li>Understand what risk has already been identified for this domain</li>
 <li>Confirm it is using the correct ubiquitous language from the domain glossary</li>
 </ol>
-<p><strong>Rationale:</strong> Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The Domain Knowledge Store is what separates purposeful generation from plausible generation.</p>
+<p><strong>Rationale:</strong> Without a queryable domain, agents work in isolation - producing output that is technically correct but architecturally wrong. The structured SDLC documentation is what separates purposeful generation from plausible generation.</p>
 <hr>
-<h2>FD-010 - The Domain Knowledge Store is accessed via the git <code>docs/</code> folder in v1.0</h2>
-<p><strong>Decision:</strong> In v1.0, agents access the domain knowledge store by reading and writing the <code>docs/</code> folder directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the store works locally and in CI.</p>
-<p>A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item (see <a href="p014-planifest-roadmap.html">RC-001</a>). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.</p>
+<h2>FD-010 - Domain context is accessed via the git <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders</h2>
+<p><strong>Decision:</strong> Agents access domain context by reading and writing the <code>docs/</code>, <code>plan/</code>, and <code>manifest/</code> folders directly via Agent Skills. Documents are colocated with the code they describe. No additional infrastructure is required - the documentation works locally and in CI.</p>
+<p>A dedicated queryable Domain Knowledge Store MCP service is a roadmap item (see <a href="p014-planifest-roadmap.html">RC-001</a>). It will provide tighter agent context and structured query responses suited to larger teams or complex domains.</p>
 <p><strong>Rationale:</strong> The git <code>docs/</code> folder provides sufficient queryability for single-agent, single-initiative work. The standardised file paths and artifact structure mean agents can navigate the store efficiently. The MCP service becomes valuable when the domain grows large enough that file-based navigation creates context bloat, or when multiple agents need concurrent access.</p>
 <hr>
 <h2>FD-011 - Code and docs are always committed atomically</h2>

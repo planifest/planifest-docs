@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 1 | Initial document | 02 MAR 2026 | Martin Mayer |
 | 2 | Added MCP architecture, dual-runtime model, CI platform agnosticism | 02 MAR 2026 | Martin Mayer |
-| 3 | Reframed as specification framework; added Domain Knowledge Store, adoption modes, human gates, data contracts, artifact types, default rules | 05 MAR 2026 | Martin Mayer |
+| 3 | Reframed as specification framework; added SDLC documentation architecture, adoption modes, human gates, data contracts, artifact types, default rules | 05 MAR 2026 | Martin Mayer |
 | 4 | Added Roadmap (p014) to related links | 07 MAR 2026 | Martin Mayer |
 | 5 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
 | 6 | Added Planifest name etymology; replaced monorepo structure with v1.0 skills-based layout; replaced docs sync with v1.0 git-native framing | 07 MAR 2026 | Martin Mayer (via agent) |
@@ -25,7 +25,7 @@
 
 - [1. What Planifest Is](#1-what-planifest-is)
 - [2. System Overview](#2-system-overview)
-- [3. The Domain Knowledge Store](#3-the-domain-knowledge-store)
+- [3. SDLC Documentation Architecture](#3-sdlc-documentation-architecture)
 - [4. Human and Agent Responsibilities](#4-human-and-agent-responsibilities)
 - [5. Pipeline Architecture - New Initiatives](#5-pipeline-architecture-new-initiatives)
 - [6. Pipeline Architecture - Change & Maintenance](#6-pipeline-architecture-change-maintenance)
@@ -78,7 +78,7 @@ flowchart TD
     SEC --> PRA[pr-agent]
     PRA --> HGATE([ðŸ‘¤ PR Review])
     HGATE --> DA[docs-agent]
-    DA --> DKS[(Domain Knowledge Store)]
+    DA --> DKS[(plan/, manifest/, docs/)]
 
     style A fill:#d4edda,stroke:#28a745,color:#000
     style Z fill:#d4edda,stroke:#28a745,color:#000
@@ -91,13 +91,13 @@ flowchart TD
 
 ---
 
-## 3. The Domain Knowledge Store
+## 3. SDLC Documentation Architecture
 
-The Domain Knowledge Store is the most critical component in Planifest. It is a structured, versioned document store that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query it before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.
+The overarching SDLC folder structure (consisting of the `plan/`, `manifest/`, and `docs/` folders) is the most critical concept in Planifest. It acts as a structured, versioned file tree that captures everything Planifest knows about a system - per initiative, per component, and system-wide. Agents query these files before building anything. It is the mechanism by which the domain is made available to agents that cannot acquire it implicitly.
 
 ```mermaid
 flowchart LR
-    subgraph DKS["Domain Knowledge Store"]
+    subgraph DKS["SDLC Collaboration Folders"]
         Q["domain_query"]
         GC["get_component"]
         GDG["get_dependency_graph"]
@@ -117,7 +117,7 @@ flowchart LR
 
 **Git `docs/` folder** - agents read and write documents directly via Agent Skills. Documents are colocated with code. No additional infrastructure required. Works locally and in CI.
 
-A queryable MCP service wrapping the Domain Knowledge Store is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
+A dedicated queryable Domain Knowledge Store MCP service is a roadmap item - see [RC-001](p014-planifest-roadmap.md).
 
 ### Agents query before generating
 
@@ -207,7 +207,7 @@ flowchart TD
     subgraph PHASE6["â‘¥ Ship & Document"]
         PR["pr-agent"]
         DOCS["docs-agent"]
-        DKS["Update Domain Knowledge Store"]
+        DKS["Update plan/ and docs/"]
     end
 
     HGATE([ðŸ‘¤ PR Review])
@@ -245,7 +245,7 @@ flowchart TD
 | codegen-agent | Reads component files; writes via filesystem | Full implementation + tests + IaC |
 | security-agent | Reads source files directly | security-report.md |
 | pr-agent | Via git push + CLI | PR with full description |
-| docs-agent | Writes to `docs/` and `plan/` folders directly | Domain Knowledge Store updated |
+| docs-agent | Writes to `docs/` and `plan/` folders directly | SDLC folders updated |
 
 ---
 
@@ -284,7 +284,7 @@ flowchart TD
     subgraph PHASE6["â‘¥ Ship & Update"]
         PR["pr-agent"]
         DOCS["docs-agent"]
-        UPDK["Update Domain Knowledge Store"]
+        UPDK["Update plan/ and docs/"]
     end
 
     HGATE([ðŸ‘¤ PR Review])

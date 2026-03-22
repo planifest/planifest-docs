@@ -94,10 +94,10 @@
 <td>Partial - prompt-driven per phase</td>
 </tr>
 <tr>
-<td>Domain Knowledge Store</td>
-<td>Reads <code>docs/</code> folder directly</td>
-<td>Reads <code>docs/</code> folder directly</td>
-<td>Reads <code>docs/</code> folder directly</td>
+<td>Domain Knowledge</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
+<td>Reads <code>plan/</code> and <code>docs/</code> directly</td>
 <td>Reads <code>docs/</code> folder via workspace indexing</td>
 </tr>
 <tr>
@@ -191,7 +191,7 @@ git push origin initiative/{{initiative_id}}</code></pre><hr>
 <p>GitHub Copilot has more limited agent capabilities than the other tools in this set. The Planifest framework can be applied with Copilot, but with constraints:</p>
 <ul>
 <li>Hard limits are enforced via the instructions file and human discipline rather than structurally</li>
-<li>The Domain Knowledge Store is not queryable via tools - agents must read the <code>docs/</code> folder directly or rely on Copilot&#39;s workspace indexing</li>
+<li>Domain knowledge is not currently queryable via tools - agents must read the <code>plan/</code> and <code>docs/</code> folders directly or rely on Copilot&#39;s workspace indexing</li>
 <li>The pipeline runs phase by phase with explicit prompting per phase rather than skill-driven execution</li>
 </ul>
 <h3>Setup</h3>

@@ -69,20 +69,20 @@ flowchart LR
 
 **Most agentic coding tools make agents smarter at writing code. Planifest makes agents smarter about the system they are writing code for.**
 
-The differentiating layer is the Domain Knowledge Store - a structured, versioned document store covering every initiative, component, and system-level concern. It answers the questions a human engineer would ask before touching anything: what does this component exist to do, who depends on it, what data does it own, what decisions have been made about it, and what is the blast radius of a mistake.
+The differentiating layer is the structured SDLC documentation architecture (plan, manifest, and docs folders) covering every initiative, component, and system-level concern. It answers the questions a human engineer would ask before touching anything: what does this component exist to do, who depends on it, what data does it own, what decisions have been made about it, and what is the blast radius of a mistake.
 
 Without this layer, agents are powerful but blind. They produce code that is technically plausible but architecturally wrong - making decisions already made, creating components that overlap with existing ones, breaking contracts they didn't know existed. Planifest gives agents the same situational awareness a senior engineer builds up over months on a codebase - encoded in a structured store, always current, always queryable.
 
 ```mermaid
 flowchart LR
-    subgraph WITHOUT["Without the Domain Knowledge Store"]
+    subgraph WITHOUT["Without the SDLC Folders"]
         direction TB
         A1["Agent"] -->|"change payments-api"| B1["❓ What does it promise?"]
         B1 --> C1["❓ Who depends on it?"]
         C1 --> D1["🎲 Best guess"]
     end
 
-    subgraph WITH["With the Domain Knowledge Store"]
+    subgraph WITH["With the SDLC Folders"]
         direction TB
         A2["Agent"] -->|"domain_query / get_component"| B2["✅ Purpose & contract"]
         B2 --> C2["✅ Dependencies & risk"]
@@ -101,7 +101,7 @@ The third differentiator is documentation as a first-class output. Every pipelin
 
 ## What This Could Become
 
-**As an open source library**, Planifest could be a composable specification framework and set of Agent Skills that any team drops into their monorepo. The document schema is the API surface - teams adopt it, and the rest of the tooling builds on top. The Domain Knowledge Store, the pipeline templates, the agent prompts, and the documentation sync are all independently useful and independently adoptable. Teams bring their own CI platform, their own cloud, and their own documentation system - Planifest adapts to each. Three adoption modes cover the full spectrum: greenfield, retrofit of an existing system, and the Agent Interface Layer for complex domains.
+**As an open source library**, Planifest could be a composable specification framework and set of Agent Skills that any team drops into their monorepo. The document schema is the API surface - teams adopt it, and the rest of the tooling builds on top. The SDLC folder structure, the pipeline templates, the agent prompts, and the documentation sync are all independently useful and independently adoptable. Teams bring their own CI platform, their own cloud, and their own documentation system - Planifest adapts to each. Three adoption modes cover the full spectrum: greenfield, retrofit of an existing system, and the Agent Interface Layer for complex domains.
 
 **As a product**, the opportunity is the intelligence layer itself. The Component Registry becomes a SaaS service - teams connect their repos, manifests are indexed, and agents across any tool (Claude Code, Copilot, Cursor, CI pipelines) can query the registry to understand the codebase before acting. The value compounds as more components are registered and more change history is accumulated. The observability store - tracking which components fail most, which briefs are consistently underspecified, how many retries a given agent needs - becomes a product analytics layer for engineering quality.
 
