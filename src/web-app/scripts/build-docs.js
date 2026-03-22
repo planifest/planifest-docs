@@ -110,9 +110,9 @@ files.forEach(file => {
   console.log(`Generated: ${outHtmlPath}`);
 });
 
-const sitemapPath = path.resolve(__dirname, '../src/sitemap-data.json');
-fs.writeFileSync(sitemapPath, JSON.stringify(sitemapData, null, 2), 'utf-8');
-console.log(`Generated Sitemap Data to: ${sitemapPath}`);
+const sitemapDataPath = path.join(__dirname, '../public/sitemap-data.json');
+fs.writeFileSync(sitemapDataPath, JSON.stringify(sitemapData, null, 2), 'utf-8');
+console.log(`Wrote JSON sitemap to: ${sitemapDataPath}`);
 
 // Generate Sitemap HTML
 let sitemapContent = '<h1>Planifest Document Sitemap</h1>\n<ul>\n';
