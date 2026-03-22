@@ -1,17 +1,5 @@
 # Planifest - Functional Decisions
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Corrected FD-003 - Initiative Brief is the initiating input, not the only point of human intervention | 05 MAR 2026 | Martin Mayer |
-| 3 | Added FQ-007 - should Planifest agents be packaged as Agent Skills | 05 MAR 2026 | Planifest Agent (instructed by Martin Mayer) |
-| 4 | Added FD-021 (Planifest as plan and manifest), FD-022 (delivered as Agent Skills); resolved FQ-007; updated FD-003 with coaching loop and Planifest confirmation gate; updated FD-004 with orchestrator reference | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Updated FD-015 with reference to Backend Stack Evaluation (p013) and agent-suitability guidance for stack selection | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Updated FD-015 with reference to Frontend Stack Evaluation (p016) for frontend stack selection guidance | 09 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Updated FD-021 with reference to Strategic Intent vs Stochastic Execution (p017) | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 decisions - FD-010, FD-011, FD-012, FD-013, FD-020 updated to reflect agentskills.io as v1.0 delivery; MCP noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

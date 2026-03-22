@@ -1,12 +1,5 @@
 # Planifest - Agentic Tool Runbook
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Created from local dev runbook - expanded to cover Claude Code, Cursor, Antigravity, and GitHub Copilot | 05 MAR 2026 | Martin Mayer |
-| 2 | Reframed for v1.0 skills-based delivery - pipeline-manifest.md replaced by orchestrator skill; MCP server setup replaced by direct file access; added Planifest name concept | 07 MAR 2026 | Martin Mayer (via agent) |
-| 3 | MCP column in tool comparison table clarified as roadmap; context limit diagram updated to remove filesystem MCP reference | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

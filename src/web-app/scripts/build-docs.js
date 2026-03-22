@@ -76,13 +76,8 @@ renderer.code = function({text, lang, escaped}) {
 marked.use({ renderer });
 
 function stripMetadata(markdown) {
-  // Strip lines starting with `> Planifest - ` to remove raw file IDs/redundant doc titles if heavily present
-  // Also strip the Version Log table strictly
-  const versionLogRegex = /## Version Log[\s\S]*?(?=\n---|\n##)/;
-  let cleaned = markdown.replace(versionLogRegex, '');
-  
   // Replace .md cross-references with .html references
-  cleaned = cleaned.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
+  let cleaned = markdown.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
   cleaned = cleaned.replace(/\]\(([^)]+)\.md\)/g, ']($1.html)');
   
   return cleaned;

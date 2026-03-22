@@ -1,13 +1,5 @@
 # Planifest - Product Concept
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Reframed as specification framework; corrected human gate language; added domain knowledge, adoption modes, data contracts | 05 MAR 2026 | Martin Mayer |
-| 3 | Added Planifest name etymology; reframed solution as Agent Skills delivery; removed TypeScript-specific language and pluggable docs provider | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Replaced MCP servers with Agent Skills in open source library description | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 

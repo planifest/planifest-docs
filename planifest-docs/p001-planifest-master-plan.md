@@ -1,17 +1,5 @@
 # Planifest - Master Plan
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial document | 02 MAR 2026 | Martin Mayer |
-| 2 | Added MCP architecture, dual-runtime model, CI platform agnosticism | 02 MAR 2026 | Martin Mayer |
-| 3 | Reframed as specification framework; added SDLC documentation architecture, adoption modes, human gates, data contracts, artifact types, default rules | 05 MAR 2026 | Martin Mayer |
-| 4 | Added Roadmap (p014) to related links | 07 MAR 2026 | Martin Mayer |
-| 5 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Added Planifest name etymology; replaced monorepo structure with v1.0 skills-based layout; replaced docs sync with v1.0 git-native framing | 07 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Added Strategic Intent vs Stochastic Execution (p017) to related links | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 content - MCP is roadmap only; v1.0 uses agentskills.io; removed Build Sequence (MCP-first future plan) | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
@@ -156,7 +144,7 @@ flowchart LR
         A4["Propose migrations -\nnever apply unilaterally"]
     end
 
-    style HUMAN fill:#d4edda,stroke:#28a745
+    style HUMAN fill:transparent,stroke:#28a745,stroke-width:2px
     style AGENT fill:#f0f4ff,stroke:#6c8ebf
 ```
 
@@ -305,7 +293,7 @@ flowchart TD
     PR --> DOCS --> UPDK --> HGATE --> DONE
 
     style TRIGGER fill:#d4edda,stroke:#28a745,color:#000
-    style HGATE fill:#d4edda,stroke:#28a745,color:#000
+    style HGATE fill:transparent,stroke:#28a745,stroke-width:2px
     style DONE fill:#d4edda,stroke:#28a745,color:#000
     style FAIL fill:#f8d7da,stroke:#dc3545,color:#000
     style PHASE1 fill:#fff8e1,stroke:#f0a500

@@ -1,17 +1,5 @@
 # The Pathway to Agentic Development for Real-World Systems
 
-## Version Log
-
-| Version | Change Description | Date | Changed By |
-|---|---|---|---|
-| 1 | Initial Document | 05 MAR 2026 | Martin Mayer |
-| 2 | Corrected "only manual step" language - Initiative Brief initiates the pipeline; humans retain approval authority at defined gates throughout | 05 MAR 2026 | Martin Mayer |
-| 3 | Deduplicated default rules table - now references canonical table in p003 FD-007 | 07 MAR 2026 | Martin Mayer (via agent) |
-| 4 | Added Planifest name etymology; updated Specification Before Development with orchestrator coaching concept and Planifest confirmation gate | 07 MAR 2026 | Martin Mayer (via agent) |
-| 5 | Updated Stack Configuration section with Backend Stack Evaluation (p013) reference and polyglot guidance | 07 MAR 2026 | Martin Mayer (via agent) |
-| 6 | Updated Stack Configuration section with Frontend Stack Evaluation (p016) reference | 09 MAR 2026 | Martin Mayer (via agent) |
-| 7 | Added Research Report: Strategic Intent vs Stochastic Execution (p017) reference | 11 MAR 2026 | Martin Mayer |
-| 8 | Removed MCP from v1.0 content - accessing the domain section updated to git docs/ only; MCP service noted as roadmap | 12 MAR 2026 | Martin Mayer (via agent) |
 
 ---
 
