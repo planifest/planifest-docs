@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadDocsIntoNav() {
     try {
       const isInDocsDir = window.location.pathname.includes('/docs/');
-      const fetchPath = isInDocsDir ? '../src/sitemap-data.json' : './src/sitemap-data.json';
+      const fetchPath = isInDocsDir ? '../sitemap-data.json' : './sitemap-data.json';
       const res = await fetch(fetchPath);
       const data = await res.json();
 
