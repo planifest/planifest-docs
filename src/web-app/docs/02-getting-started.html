@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Getting Started - Planifest Docs</title>
+    <!-- We reference main CSS here; Vite will resolve and built it -->
+    <link rel="stylesheet" href="../src/style.css">
+    <script type="module" src="../src/main.ts"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="glass-nav">
+        <div class="nav-content">
+          <a href="../index.html" class="logo"><img src="../img/planifest-logo.svg" alt="Planifest Logo"></a>
+          <div class="nav-links">
+            <a href="../index.html#about" class="nav-link">About</a>
+            <a href="../index.html#structure" class="nav-link">Structure</a>
+            <a href="01-overview.html" class="nav-link">Overview</a>
+          </div>
+          <div class="nav-actions">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+              <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+            <a href="https://github.com/planifest/planifest-framework" class="code-icon-link" aria-label="GitHub Repository" title="GitHub Repository" target="_blank" rel="noopener noreferrer">
+              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="code-icon"><polyline points="20 18 24 12 20 6"></polyline><polyline points="4 6 0 12 4 18"></polyline><line x1="14" y1="2" x2="10" y2="22"></line></svg>
+            </a>
+            <button class="hamburger-btn" aria-label="Toggle menu" title="Menu">
+              <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" class="menu-icon" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <main class="doc-container glass-panel">
+        <h1 id="getting-started">Getting Started</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>An AI coding tool compatible with Planifest:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Claude Code</td>
+<td>Full support including enforcement hooks</td>
+</tr>
+<tr>
+<td>Cursor</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td>GitHub Copilot</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td>Windsurf</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td>Cline</td>
+<td>Full support</td>
+</tr>
+<tr>
+<td>Codex (OpenAI)</td>
+<td>Full support</td>
+</tr>
+</tbody></table>
+<p>No other dependencies. The setup scripts use only built-in OS tools.</p>
+<h2 id="new-project">New Project</h2>
+<h3 id="1-add-the-framework">1. Add the framework</h3>
+<p>Copy the <code>planifest-framework/</code> folder into your repository root. This folder contains everything: skills, templates, standards, hooks, and setup scripts.</p>
+<h3 id="2-create-the-project-structure">2. Create the project structure</h3>
+<pre><code class="language-bash">mkdir plan plan/changelog src docs</code></pre><table>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>plan/current/</code></td>
+<td>The active pipeline run: confirmed design, requirements, ADRs</td>
+</tr>
+<tr>
+<td><code>plan/archive/</code></td>
+<td>Historical plans filed after merge</td>
+</tr>
+<tr>
+<td><code>plan/changelog/</code></td>
+<td>Record of all changes (<code>{feature-id}-{YYYY-MM-DD}.md</code>)</td>
+</tr>
+<tr>
+<td><code>src/</code></td>
+<td>Component source code, tests, and component manifests (<code>component.yml</code>)</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>Living repository documentation — component registry, dependency graph</td>
+</tr>
+</tbody></table>
+<h3 id="3-run-the-setup-script">3. Run the setup script</h3>
+<pre><code class="language-bash"># macOS / Linux
+chmod +x planifest-framework/setup.sh
+./planifest-framework/setup.sh claude-code
+# other options: cursor  codex  copilot  windsurf  cline  all</code></pre><pre><code class="language-powershell"># Windows (PowerShell)
+.\planifest-framework\setup.ps1 claude-code
+# other options: cursor  codex  copilot  windsurf  cline  all</code></pre><p>The script installs:</p>
+<ul>
+<li>Skill files into the directory your tool expects</li>
+<li>Supporting files (templates, standards)</li>
+<li>A boot file for your tool (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, etc.)</li>
+<li>Git hooks for the Progressive Guardrail System</li>
+</ul>
+<h3 id="git-guardrails">Git Guardrails</h3>
+<p>Setup activates a three-tier guardrail system automatically:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>When</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Advisory pre-commit</strong></td>
+<td>Every local commit</td>
+<td>Warns if code was staged without docs. Commit succeeds.</td>
+</tr>
+<tr>
+<td><strong>Enforcing pre-push</strong></td>
+<td>Every <code>git push</code></td>
+<td>Fails if <code>src/</code> changed with no corresponding update to <code>plan/</code>, <code>docs/</code>, or <code>component.yml</code>.</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>Every pull request</td>
+<td>Same check in GitHub Actions. Blocks merge on violation.</td>
+</tr>
+</tbody></table>
+<p>The enforcing tiers recognise the <code>fix(fast-path):</code> commit prefix and apply a relaxed rule — only <code>component.yml</code> or <code>plan/changelog/</code> must be updated.</p>
+<h2 id="optional-context-mode-mcp">Optional: Context-Mode MCP</h2>
+<p><a href="https://github.com/mksglu/context-mode">context-mode</a> routes large command output — search results, file analysis, web fetches — into a sandboxed knowledge base. Only summaries enter the context window, keeping agents fast and focused on large codebases.</p>
+<p>Install context-mode first, then pass <code>--context-mode-mcp</code> to the setup script:</p>
+<pre><code class="language-bash">./planifest-framework/setup.sh claude-code --context-mode-mcp</code></pre><pre><code class="language-powershell">.\planifest-framework\setup.ps1 claude-code --context-mode-mcp</code></pre><p>This adds routing rules (<code>AGENTS.md</code>) and, for Claude Code, enforcement hooks that physically prevent the agent from bypassing context-mode with direct Bash or Grep calls.</p>
+<h2 id="optional-full-external-skill-library">Optional: Full External Skill Library</h2>
+<p>Planifest ships with a curated library of 200+ open-source skills (MIT/Apache-2.0 licensed). Not installed by default:</p>
+<pre><code class="language-bash">./planifest-framework/setup.sh claude-code --include-full-skill-library</code></pre><p>See <a href="08-agent-skills-reference.html">Agent Skills Reference</a> for details on what&#39;s included.</p>
+<h2 id="updating-the-framework">Updating the Framework</h2>
+<p>After updating any files in <code>planifest-framework/</code>:</p>
+<pre><code class="language-bash"># Re-run setup to sync changes to your tool's directory
+./planifest-framework/setup.sh claude-code
+.\planifest-framework\setup.ps1 claude-code   # Windows</code></pre><p>The setup script overwrites generated copies. The source of truth is always <code>planifest-framework/</code>.</p>
+<h2 id="first-run">First Run</h2>
+<ol>
+<li>Open your AI tool in the repository</li>
+<li>Write a Feature Brief at <code>plan/current/feature-brief.md</code>, or simply describe what you want to build</li>
+<li>The orchestrator skill loads automatically and begins Phase 0 — Assess and Coach</li>
+</ol>
+<p>The orchestrator will ask you questions about the feature — one at a time — until it has everything it needs to produce the confirmed design. Once you confirm the design, the pipeline runs.</p>
+
+      </main>
+      <footer class="footer">
+        <div class="container">
+          <div class="footer-content">
+            <div class="brand"><img src="../img/planifest-logo.svg" alt="Planifest Logo" style="height: 32px;"></div>
+            <p>Generated via Agentic execution • Deployed with GitHub Actions</p>
+            <div class="footer-links">
+              <a href="sitemap.html">Sitemap</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

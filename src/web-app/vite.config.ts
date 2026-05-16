@@ -7,17 +7,17 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        p001: resolve(__dirname, 'docs/p001-planifest-master-plan.html'),
-        p002: resolve(__dirname, 'docs/p002-planifest-product-concept.html'),
-        p003: resolve(__dirname, 'docs/p003-planifest-functional-decisions.html'),
-        p004: resolve(__dirname, 'docs/p004-the-pathway-to-agentic-development.html'),
-        p010: resolve(__dirname, 'docs/p010-planifest-agentic-tool-runbook.html'),
-        p011: resolve(__dirname, 'docs/p011-planifest-pilot-app.html'),
-        p013: resolve(__dirname, 'docs/p013-planifest-backend-stack-evaluation.html'),
-        p014: resolve(__dirname, 'docs/p014-planifest-roadmap.html'),
-        p015: resolve(__dirname, 'docs/p015-planifest-pipeline.html'),
-        p016: resolve(__dirname, 'docs/p016-planifest-frontend-stack-evaluation.html'),
-        p017: resolve(__dirname, 'docs/p017-research-report-strategic-intent-vs-stochastic-execution.html')
+        doc01: resolve(__dirname, 'docs/01-overview.html'),
+        doc02: resolve(__dirname, 'docs/02-getting-started.html'),
+        doc03: resolve(__dirname, 'docs/03-pipeline.html'),
+        doc04: resolve(__dirname, 'docs/04-routing.html'),
+        doc05: resolve(__dirname, 'docs/05-change-pipeline.html'),
+        doc06: resolve(__dirname, 'docs/06-fast-path.html'),
+        doc07: resolve(__dirname, 'docs/07-retrofit.html'),
+        doc08: resolve(__dirname, 'docs/08-agent-skills-reference.html'),
+        doc09: resolve(__dirname, 'docs/09-standards.html'),
+        doc10: resolve(__dirname, 'docs/10-templates.html'),
+        sitemap: resolve(__dirname, 'docs/sitemap.html'),
       }
     }
   }
