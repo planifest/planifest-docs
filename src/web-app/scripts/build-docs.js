@@ -9,12 +9,32 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DOCS_DIR = path.resolve(__dirname, '../../../planifest-docs');
 const OUT_DIR = path.resolve(__dirname, '../docs');
 const TEMPLATE_FILE = path.resolve(__dirname, '../doc-template.html');
+const MANIFEST_FILE = path.resolve(__dirname, '../docs.manifest.json');
 
 if (!fs.existsSync(OUT_DIR)) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 }
 
-const template = fs.existsSync(TEMPLATE_FILE)
+// --- Page order manifest (REQ-001) ---
+if (!fs.existsSync(MANIFEST_FILE)) {
+  console.error(`ERROR: docs.manifest.json not found at ${MANIFEST_FILE}`);
+  process.exit(1);
+}
+let manifest;
+try {
+  manifest = JSON.parse(fs.readFileSync(MANIFEST_FILE, 'utf-8'));
+} catch (e) {
+  console.error(`ERROR: docs.manifest.json is not valid JSON: ${e.message}`);
+  process.exit(1);
+}
+if (!Array.isArray(manifest.pages) || manifest.pages.length === 0) {
+  console.error('ERROR: docs.manifest.json must have a non-empty "pages" array');
+  process.exit(1);
+}
+const manifestPages = manifest.pages;
+
+// --- Template ---
+const rawTemplate = fs.existsSync(TEMPLATE_FILE)
   ? fs.readFileSync(TEMPLATE_FILE, 'utf-8')
   : `<!DOCTYPE html>
 <html lang="en">
@@ -34,7 +54,7 @@ const template = fs.existsSync(TEMPLATE_FILE)
           <div class="nav-links">
             <a href="../index.html#about" class="nav-link">About</a>
             <a href="../index.html#structure" class="nav-link">Structure</a>
-            <a href="01-overview.html" class="nav-link">Overview</a>
+            {{DOC_NAV_LINKS}}
           </div>
           <div class="nav-actions">
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
@@ -52,6 +72,7 @@ const template = fs.existsSync(TEMPLATE_FILE)
       </nav>
       <main class="doc-container glass-panel">
         {{CONTENT}}
+        {{PREV_NEXT_NAV}}
       </main>
       <footer class="footer">
         <div class="container">
@@ -68,6 +89,24 @@ const template = fs.existsSync(TEMPLATE_FILE)
   </body>
 </html>`;
 
+// Validate required placeholders (REQ-002, R-004)
+if (!rawTemplate.includes('{{DOC_NAV_LINKS}}')) {
+  console.error('ERROR: Template is missing {{DOC_NAV_LINKS}} placeholder. Add it to doc-template.html inside <div class="nav-links">.');
+  process.exit(1);
+}
+if (!rawTemplate.includes('{{PREV_NEXT_NAV}}')) {
+  console.error('ERROR: Template is missing {{PREV_NEXT_NAV}} placeholder. Add it inside <main> after {{CONTENT}}.');
+  process.exit(1);
+}
+
+// --- Generate doc nav links from manifest (REQ-002) ---
+const docNavLinksHtml = manifestPages
+  .map(p => `<a href="${p.file}" class="nav-link">${p.title}</a>`)
+  .join('\n            ');
+
+const template = rawTemplate.replace('{{DOC_NAV_LINKS}}', docNavLinksHtml);
+
+// --- Helpers ---
 const renderer = new marked.Renderer();
 renderer.heading = function({ text, depth }) {
   const id = text.toLowerCase()
@@ -87,36 +126,57 @@ renderer.code = function({text, lang, escaped}) {
 marked.use({ renderer });
 
 function stripMetadata(markdown) {
-  // Replace .md cross-references with .html references
   let cleaned = markdown.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
   cleaned = cleaned.replace(/\]\(([^)]+)\.md\)/g, ']($1.html)');
-  
   return cleaned;
 }
 
-const files = fs.readdirSync(DOCS_DIR).filter(file => file.endsWith('.md'));
+function buildPrevNextNav(index) {
+  const prev = index > 0 ? manifestPages[index - 1] : null;
+  const next = index < manifestPages.length - 1 ? manifestPages[index + 1] : null;
+  if (!prev && !next) return '';
+  return `
+<nav class="doc-pagination">
+  ${prev ? `<a href="${prev.file}" class="doc-pagination__prev">← Previous<span class="doc-pagination__title">${prev.title}</span></a>` : '<span class="doc-pagination__spacer"></span>'}
+  ${next ? `<a href="${next.file}" class="doc-pagination__next">Next →<span class="doc-pagination__title">${next.title}</span></a>` : '<span class="doc-pagination__spacer"></span>'}
+</nav>`;
+}
 
+// --- Warn on undeclared pages (R-002) ---
+const manifestFileSet = new Set(manifestPages.map(p => p.file.replace('.html', '.md')));
+const allMdFiles = fs.readdirSync(DOCS_DIR).filter(f => f.endsWith('.md'));
+for (const f of allMdFiles) {
+  if (!manifestFileSet.has(f)) {
+    console.warn(`WARN: ${f} exists in planifest-docs but is not listed in docs.manifest.json — it will not appear in navigation`);
+  }
+}
+
+// --- Process pages in manifest order (REQ-001, REQ-002, REQ-003) ---
 const sitemapData = [];
 
-files.forEach(file => {
-  const mdPath = path.join(DOCS_DIR, file);
+manifestPages.forEach(({ file, title }, index) => {
+  const mdFile = file.replace('.html', '.md');
+  const mdPath = path.join(DOCS_DIR, mdFile);
+
+  if (!fs.existsSync(mdPath)) {
+    console.warn(`WARN: Manifest references ${mdFile} but file not found in ${DOCS_DIR} — skipping`);
+    return;
+  }
+
   const rawMarkdown = fs.readFileSync(mdPath, 'utf-8');
   const cleanedMarkdown = stripMetadata(rawMarkdown);
   const htmlContent = marked.parse(cleanedMarkdown);
 
-  const titleMatch = cleanedMarkdown.match(/^#\s+(.+)$/m);
-  let title = titleMatch ? titleMatch[1] : file.replace('.md', '');
-  
-  // Clean off the ID prefix if present (e.g., "p015-planifest-pipeline - ")
-  title = title.replace(/^p\d{3}[-\w]*\s*-\s*/, '').trim();
-  
-  sitemapData.push({ file: file.replace('.md', '.html'), title });
+  sitemapData.push({ file, title });
+
+  const prevNextNav = buildPrevNextNav(index);
 
   const finalHtml = template
     .replace('{{TITLE}}', title)
-    .replace('{{CONTENT}}', htmlContent);
+    .replace('{{CONTENT}}', htmlContent)
+    .replace('{{PREV_NEXT_NAV}}', prevNextNav);
 
-  const outHtmlPath = path.join(OUT_DIR, file.replace('.md', '.html'));
+  const outHtmlPath = path.join(OUT_DIR, file);
   fs.writeFileSync(outHtmlPath, finalHtml, 'utf-8');
   console.log(`Generated: ${outHtmlPath}`);
 });
@@ -134,7 +194,20 @@ sitemapContent += '</ul>';
 
 const sitemapHtml = template
   .replace('{{TITLE}}', 'Sitemap')
-  .replace('{{CONTENT}}', sitemapContent);
+  .replace('{{CONTENT}}', sitemapContent)
+  .replace('{{PREV_NEXT_NAV}}', '');
 
 fs.writeFileSync(path.join(OUT_DIR, 'sitemap.html'), sitemapHtml, 'utf-8');
 console.log('Generated Sitemap HTML.');
+
+// --- REQ-004 safeguard: patch index.html CTA if stale href detected ---
+const indexHtmlPath = path.resolve(__dirname, '../index.html');
+if (fs.existsSync(indexHtmlPath)) {
+  const indexHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
+  const staleHref = './docs/p001-planifest-master-plan.html';
+  if (indexHtml.includes(staleHref)) {
+    const patched = indexHtml.replace(staleHref, './docs/01-overview.html');
+    fs.writeFileSync(indexHtmlPath, patched, 'utf-8');
+    console.log('Patched stale CTA href in index.html');
+  }
+}

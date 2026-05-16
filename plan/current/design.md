@@ -1,51 +1,73 @@
-# Confirmed Design — docs-rewrite
+# Design - 0000001-doc-nav
 
-## Summary
+## Feature
+- Problem: Doc site navigation is hardcoded and incomplete — homepage CTA is a 404, top nav links only one doc page, and no prev/next navigation exists between pages.
+- Adoption mode: retrofit
+- Feature ID: 0000001-doc-nav
 
-Rewrite `planifest-docs/` from scratch for Planifest v0.10. Replace 10 early-stage planning documents with 10 user-facing documentation pages covering what the framework is, how to install it, and how to use it. Update the web-app build pipeline to serve the new docs correctly.
+## Product Layer
+- User stories confirmed: 4
+- Acceptance criteria confirmed: 4
+- Constraints: No new runtime dependencies; build time increase < 5s
+- Integrations: none
 
-## Adoption Mode
+## Architecture Layer
+- Latency target: not applicable (static site)
+- Availability target: not applicable (static site, served via GitHub Pages)
+- Scalability target: not applicable
+- Security: no auth; public static site; no PII
+- Data privacy: no regulated data
+- Observability: standard defaults (build script console output)
+- Cost boundary: not constrained
 
-Change Pipeline — targeted content and build change across two components. No schema changes, no new external dependencies.
-
-## Component Paths
-
-- planifest-docs/
-- src/web-app/
+## Engineering Layer
+- Stack: frontend: plain HTML/CSS | build: Node.js (ESM) | bundler: Vite | language: TypeScript | IaC: none | cloud: GitHub Pages | compute: static | CI: GitHub Actions | Build target: static HTML
+- Components:
+  - web-app: existing Vite app — extended to support manifest-driven nav generation
+- Data ownership: web-app owns docs/manifest and all HTML output
+- Deployment: GitHub Pages via dist/ output of `npm run build`
+- API versioning: not applicable
 
 ## Scope
+- In:
+  - Page order manifest file (`src/web-app/docs.manifest.json`) — defines page order, titles, filenames
+  - `build-docs.js` extended to read manifest and inject top nav links into all doc pages
+  - `build-docs.js` extended to inject prev/next nav at bottom of all doc pages
+  - Fix broken CTA link in `src/web-app/index.html` via build-docs.js (applied at build time)
+- Out:
+  - sitemap.html changes
+  - Mobile hamburger menu changes
+  - Search functionality
+- Deferred:
+  - Active-page highlight in nav (requires runtime JS or per-page class; can follow as fast-path change)
 
-### In Scope
+## Assumptions
+- build-docs.js already processes all doc HTML files — impact if wrong: injection logic needs a new file-discovery step
+- dist/ is fully regenerated on build — impact if wrong: dist/ fixes may be stale; always rebuild before deploying
 
-- Delete 10 old planning docs (`p001`–`p017`) from `planifest-docs/`
-- Write 10 new user-facing docs in `planifest-docs/` (`01-overview` through `10-templates`)
-- Update `src/web-app/scripts/build-docs.js`: heading ID generation, nav-actions button order, fixed `p001` hardcoded nav link → `01-overview`
-- Update `src/web-app/src/style.css`: `scroll-margin-top: 72px` on headings (fixed nav offset), wider `doc-container` (`max-width: 1400px`, `width: 94%`)
-- Update `src/web-app/src/main.ts`: Mermaid post-render hash re-scroll, nav dedup filter updated from `p001` → `01-overview`
-- Update `src/web-app/vite.config.ts`: entry points updated from old `p001`–`p017` to new `doc01`–`doc10`
-- Update `src/web-app/index.html`: fixed stale `p001` nav link → `01-overview`
-- Delete 11 stale pre-built HTML files from `src/web-app/docs/`
+## Risks
+- Top nav injection may conflict with existing nav markup if pages have varying structures (likelihood: low; impact: malformed nav on affected pages)
+- dist/index.html link fix applied directly may be overwritten by Vite build (likelihood: medium; impact: 404 CTA persists post-build) — mitigate by applying fix in build-docs.js
 
-### Out of Scope
+## Dependencies
+- Upstream: none
+- Downstream: none
 
-- Changes to homepage content or hero section
-- New doc site features (search, versioning, interactive playground)
+## Active Skills
+None
 
-### Deferred
+## Skill Map
+| Requirement | Best-fit Skill | Rationale |
+|-------------|----------------|-----------|
+| REQ-001 - page-manifest | planifest-codegen-agent | New config file authoring |
+| REQ-002 - top-nav-injection | planifest-codegen-agent | Build script extension |
+| REQ-003 - prev-next-injection | planifest-codegen-agent | Build script extension |
+| REQ-004 - fix-cta-link | planifest-codegen-agent | Isolated HTML fix via build script |
 
-- Nothing
+## Repo Instructions
+None
 
-## Documents Written
-
-| File | Title |
-|------|-------|
-| `planifest-docs/01-overview.md` | What is Planifest |
-| `planifest-docs/02-getting-started.md` | Getting Started |
-| `planifest-docs/03-pipeline.md` | The Pipeline |
-| `planifest-docs/04-routing.md` | Routing & Tracks |
-| `planifest-docs/05-change-pipeline.md` | Change Pipeline |
-| `planifest-docs/06-fast-path.md` | Fast Path |
-| `planifest-docs/07-retrofit.md` | Retrofit |
-| `planifest-docs/08-agent-skills-reference.md` | Agent Skills Reference |
-| `planifest-docs/09-standards.md` | Standards Reference |
-| `planifest-docs/10-templates.md` | Templates Reference |
+## Confirmation
+Human confirmed this design before proceeding: yes
+Date confirmed: 16 May 2026
+continuous_run: true

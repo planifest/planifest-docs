@@ -1,8 +1,8 @@
 # Planifest Component Manifest
 id: "planifest-docs"
 name: "Planifest Documentation"
-feature: "docs-rewrite"
-version: "0.1.0"
+feature: "getting-started-gaps"
+version: "0.2.0"
 status: "active"
 type: "component-pack"
 domain: "documentation"
@@ -92,7 +92,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-16"
-  updatedAt: "2026-05-16"
+  updatedAt: "2026-05-16 (v0.2.0)"
   createdBy: "agent"
   lastModifiedBy: "agent"
   skill: "planifest-docs-agent"
