@@ -69,6 +69,44 @@ Setup activates a three-tier guardrail system automatically:
 
 The enforcing tiers recognise the `fix(fast-path):` commit prefix and apply a relaxed rule — only `component.yml` or `plan/changelog/` must be updated.
 
+## Optional: Telemetry
+
+Planifest can emit structured pipeline events (`phase_start`, `phase_end`) to a backend of your choice for team dashboards, audit trails, or CI integration.
+
+Telemetry is **off by default**. It activates only when both of the following are in place:
+
+1. **`PLANIFEST_TELEMETRY_URL` environment variable** — the URL of your telemetry receiver (e.g. `https://telemetry.yourco.com`). Events are POSTed to `{PLANIFEST_TELEMETRY_URL}/emit`.
+2. **`.claude/telemetry-enabled` sentinel file** — create this empty file in your project root to opt in.
+
+If either is absent, emission is silently skipped — no errors, no warnings.
+
+```bash
+# Opt in
+touch .claude/telemetry-enabled
+export PLANIFEST_TELEMETRY_URL=https://telemetry.yourco.com
+```
+
+Each event is a JSON envelope carrying the phase name, agent skill, tool, model, session ID, and timestamp. The orchestrator emits these — phase skills do not. See `planifest-framework/hooks/telemetry/` for the event schema.
+
+## Optional: Strict Mode
+
+By default the orchestrator presence check is **advisory**: it injects a reminder banner on each prompt when a pipeline is active, but never blocks.
+
+**Strict mode** upgrades this to a hard gate: the agent cannot process any prompt until it has loaded the orchestrator skill and confirmed the session by writing its session ID to `plan/.orchestrator-ack`. Once confirmed, future prompts in that session pass silently.
+
+Enable strict mode by creating the sentinel file:
+
+```bash
+touch plan/.orchestrator-strict
+```
+
+| Mode | Behaviour |
+|------|-----------|
+| Advisory (default) | Banner injected on every prompt — agent may still proceed |
+| Strict (`plan/.orchestrator-strict` present) | Agent blocked until `plan/.orchestrator-ack` contains current session ID |
+
+Remove `plan/.orchestrator-strict` to return to advisory mode. The `.orchestrator-ack` file is session-scoped and can be left in place between sessions — a new session ID will trigger re-acknowledgement.
+
 ## Optional: Context-Mode MCP
 
 [context-mode](https://github.com/mksglu/context-mode) routes large command output — search results, file analysis, web fetches — into a sandboxed knowledge base. Only summaries enter the context window, keeping agents fast and focused on large codebases.
