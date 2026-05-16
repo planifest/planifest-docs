@@ -17,16 +17,23 @@ setTheme(getPreferredTheme());
 
 // Initialize Mermaid
 mermaid.initialize({
-  startOnLoad: true,
+  startOnLoad: false,
   theme: getPreferredTheme() === 'dark' ? 'dark' : 'default',
-  securityLevel: 'loose',
+  securityLevel: 'antiscript',
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Re-run theme check for mermaid if needed
+  // Run mermaid, then re-scroll to hash so layout shift doesn't lose position
   const theme = getPreferredTheme();
   mermaid.initialize({ theme: theme === 'dark' ? 'dark' : 'default' });
-  mermaid.run();
+  mermaid.run().then(() => {
+    if (window.location.hash) {
+      try {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView({ behavior: 'instant' });
+      } catch {}
+    }
+  });
   // Theme Toggle Button Logic
   const toggleBtn = document.getElementById('theme-toggle');
   
@@ -102,12 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(fetchPath);
       const data = await res.json();
 
+      const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       let extraLinksHTML = '<hr style="border:0; height:1px; background:var(--glass-border); width:100%; margin: 0.5rem 0;">';
       data.forEach((item: any) => {
-        // Skip Master Plan if it's already hardcoded
-        if (item.file.includes('p001')) return; 
-        const href = isInDocsDir ? `./${item.file}` : `./docs/${item.file}`;
-        extraLinksHTML += `<a href="${href}" class="nav-link">${item.title}</a>`;
+        // Skip Overview — already hardcoded in the nav
+        if (item.file.includes('01-overview')) return;
+        const href = isInDocsDir ? `./${esc(item.file)}` : `./docs/${esc(item.file)}`;
+        extraLinksHTML += `<a href="${href}" class="nav-link">${esc(item.title)}</a>`;
       });
       if (navLinks) navLinks.innerHTML += extraLinksHTML;
     } catch(e) {

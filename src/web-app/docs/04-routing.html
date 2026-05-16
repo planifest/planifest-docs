@@ -1,27 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import { resolve } from 'path';
-import { marked } from 'marked';
-
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const DOCS_DIR = path.resolve(__dirname, '../../../planifest-docs');
-const OUT_DIR = path.resolve(__dirname, '../docs');
-const TEMPLATE_FILE = path.resolve(__dirname, '../doc-template.html');
-
-if (!fs.existsSync(OUT_DIR)) {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
-}
-
-const template = fs.existsSync(TEMPLATE_FILE)
-  ? fs.readFileSync(TEMPLATE_FILE, 'utf-8')
-  : `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{TITLE}} - Planifest Docs</title>
+    <title>Routing & Tracks - Planifest Docs</title>
     <!-- We reference main CSS here; Vite will resolve and built it -->
     <link rel="stylesheet" href="../src/style.css">
     <script type="module" src="../src/main.ts"></script>
@@ -51,7 +33,73 @@ const template = fs.existsSync(TEMPLATE_FILE)
         </div>
       </nav>
       <main class="doc-container glass-panel">
-        {{CONTENT}}
+        <h1 id="routing-tracks">Routing & Tracks</h1>
+<p>Not every change needs the full pipeline. Planifest routes each request to one of three tracks based on the nature and scope of the change. The orchestrator evaluates the request and selects the track before doing any other work.</p>
+<h2 id="decision-tree">Decision Tree</h2>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Track</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UI styling, copy/text changes, or an isolated pure-function bug</td>
+<td>Fast Path — if all four criteria are met</td>
+</tr>
+<tr>
+<td>Dependency version bump with no API changes</td>
+<td>Fast Path — if all four criteria are met</td>
+</tr>
+<tr>
+<td>Bug fix or targeted change to 1–2 existing components</td>
+<td>Change Pipeline</td>
+</tr>
+<tr>
+<td>Adds a new component to an existing feature</td>
+<td>Change Pipeline</td>
+</tr>
+<tr>
+<td>New user stories that fit within an existing feature&#39;s scope (&lt; 3 stories)</td>
+<td>Change Pipeline</td>
+</tr>
+<tr>
+<td>New features, new user stories (≥ 3), or new problem statement</td>
+<td>Feature Pipeline</td>
+</tr>
+<tr>
+<td>Touches &gt; 3 components or requires new infrastructure</td>
+<td>Feature Pipeline</td>
+</tr>
+<tr>
+<td>Requires a new stack choice</td>
+<td>Feature Pipeline</td>
+</tr>
+<tr>
+<td>New target users or different domain</td>
+<td>Feature Pipeline</td>
+</tr>
+</tbody></table>
+<h2 id="fast-path">Fast Path</h2>
+<p>For trivial, low-risk changes. <strong>All four criteria must be met.</strong> If any criterion fails, the orchestrator routes to the Change Pipeline — no exceptions.</p>
+<ol>
+<li>Does <strong>not</strong> introduce new external dependencies</li>
+<li>Does <strong>not</strong> alter, add, or remove database schemas or data models</li>
+<li>Does <strong>not</strong> change security parameters, authentication, or routing logic</li>
+<li>Confined to: UI styling, copy changes, or isolated pure-function logic bugs</li>
+</ol>
+<p>See <a href="06-fast-path.html">Fast Path</a> for execution steps.</p>
+<h2 id="change-pipeline">Change Pipeline</h2>
+<p>For targeted modifications to existing features: bug fixes, small additions, updates to 1–2 components, or fewer than three new user stories.</p>
+<p>The <code>planifest-change-agent</code> loads domain context for the affected component before acting — its manifest, contracts, consumers, and change policy — then implements the minimum necessary change.</p>
+<p>See <a href="05-change-pipeline.html">Change Pipeline</a>.</p>
+<h2 id="feature-pipeline">Feature Pipeline</h2>
+<p>For new features, significant additions, or changes spanning multiple components. Runs the full P0–P8 pipeline starting with Phase 0 coaching. A Feature Brief is required (or written interactively during coaching).</p>
+<p>See <a href="03-pipeline.html">The Pipeline</a>.</p>
+<h2 id="retrofit">Retrofit</h2>
+<p>For onboarding an existing codebase into Planifest without a greenfield Feature Brief. The orchestrator reads the codebase first — inferring architecture, patterns, and existing decisions — then proceeds with an informed coaching conversation.</p>
+<p>See <a href="07-retrofit.html">Retrofit</a>.</p>
+
       </main>
       <footer class="footer">
         <div class="container">
@@ -66,75 +114,4 @@ const template = fs.existsSync(TEMPLATE_FILE)
       </footer>
     </div>
   </body>
-</html>`;
-
-const renderer = new marked.Renderer();
-renderer.heading = function({ text, depth }) {
-  const id = text.toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-  return `<h${depth} id="${id}">${text}</h${depth}>\n`;
-};
-renderer.code = function({text, lang, escaped}) {
-  if (lang === 'mermaid') {
-    return `<pre class="mermaid">${text}</pre>`;
-  }
-  return `<pre><code class="language-${lang}">${escaped ? text : text}</code></pre>`;
-};
-
-marked.use({ renderer });
-
-function stripMetadata(markdown) {
-  // Replace .md cross-references with .html references
-  let cleaned = markdown.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
-  cleaned = cleaned.replace(/\]\(([^)]+)\.md\)/g, ']($1.html)');
-  
-  return cleaned;
-}
-
-const files = fs.readdirSync(DOCS_DIR).filter(file => file.endsWith('.md'));
-
-const sitemapData = [];
-
-files.forEach(file => {
-  const mdPath = path.join(DOCS_DIR, file);
-  const rawMarkdown = fs.readFileSync(mdPath, 'utf-8');
-  const cleanedMarkdown = stripMetadata(rawMarkdown);
-  const htmlContent = marked.parse(cleanedMarkdown);
-
-  const titleMatch = cleanedMarkdown.match(/^#\s+(.+)$/m);
-  let title = titleMatch ? titleMatch[1] : file.replace('.md', '');
-  
-  // Clean off the ID prefix if present (e.g., "p015-planifest-pipeline - ")
-  title = title.replace(/^p\d{3}[-\w]*\s*-\s*/, '').trim();
-  
-  sitemapData.push({ file: file.replace('.md', '.html'), title });
-
-  const finalHtml = template
-    .replace('{{TITLE}}', title)
-    .replace('{{CONTENT}}', htmlContent);
-
-  const outHtmlPath = path.join(OUT_DIR, file.replace('.md', '.html'));
-  fs.writeFileSync(outHtmlPath, finalHtml, 'utf-8');
-  console.log(`Generated: ${outHtmlPath}`);
-});
-
-const sitemapDataPath = path.join(__dirname, '../public/sitemap-data.json');
-fs.writeFileSync(sitemapDataPath, JSON.stringify(sitemapData, null, 2), 'utf-8');
-console.log(`Wrote JSON sitemap to: ${sitemapDataPath}`);
-
-// Generate Sitemap HTML
-let sitemapContent = '<h1>Planifest Document Sitemap</h1>\n<ul>\n';
-sitemapData.forEach(item => {
-  sitemapContent += `<li><a href="${item.file}">${item.title}</a></li>\n`;
-});
-sitemapContent += '</ul>';
-
-const sitemapHtml = template
-  .replace('{{TITLE}}', 'Sitemap')
-  .replace('{{CONTENT}}', sitemapContent);
-
-fs.writeFileSync(path.join(OUT_DIR, 'sitemap.html'), sitemapHtml, 'utf-8');
-console.log('Generated Sitemap HTML.');
+</html>

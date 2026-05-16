@@ -1,46 +1,42 @@
 [
   {
-    "file": "p001-planifest-master-plan.html",
-    "title": "Planifest - Master Plan"
+    "file": "01-overview.html",
+    "title": "What is Planifest"
   },
   {
-    "file": "p002-planifest-product-concept.html",
-    "title": "Planifest - Product Concept"
+    "file": "02-getting-started.html",
+    "title": "Getting Started"
   },
   {
-    "file": "p003-planifest-functional-decisions.html",
-    "title": "Planifest - Functional Decisions"
+    "file": "03-pipeline.html",
+    "title": "The Pipeline"
   },
   {
-    "file": "p004-the-pathway-to-agentic-development.html",
-    "title": "The Pathway to Agentic Development for Real-World Systems"
+    "file": "04-routing.html",
+    "title": "Routing & Tracks"
   },
   {
-    "file": "p010-planifest-agentic-tool-runbook.html",
-    "title": "Planifest - Agentic Tool Runbook"
+    "file": "05-change-pipeline.html",
+    "title": "Change Pipeline"
   },
   {
-    "file": "p011-planifest-pilot-app.html",
-    "title": "Planifest Pilot App"
+    "file": "06-fast-path.html",
+    "title": "Fast Path"
   },
   {
-    "file": "p013-planifest-backend-stack-evaluation.html",
-    "title": "Planifest - Backend Stack Evaluation"
+    "file": "07-retrofit.html",
+    "title": "Retrofit"
   },
   {
-    "file": "p014-planifest-roadmap.html",
-    "title": "Planifest - Roadmap"
+    "file": "08-agent-skills-reference.html",
+    "title": "Agent Skills Reference"
   },
   {
-    "file": "p015-planifest-pipeline.html",
-    "title": "Planifest Pipeline"
+    "file": "09-standards.html",
+    "title": "Standards Reference"
   },
   {
-    "file": "p016-planifest-frontend-stack-evaluation.html",
-    "title": "Planifest Frontend Stack Evaluation"
-  },
-  {
-    "file": "p017-research-report-strategic-intent-vs-stochastic-execution.html",
-    "title": "Research Report: Strategic Intent vs. Stochastic Execution"
+    "file": "10-templates.html",
+    "title": "Templates Reference"
   }
 ]

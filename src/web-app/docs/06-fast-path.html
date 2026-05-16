@@ -1,27 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import { resolve } from 'path';
-import { marked } from 'marked';
-
-import { fileURLToPath } from 'url';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const DOCS_DIR = path.resolve(__dirname, '../../../planifest-docs');
-const OUT_DIR = path.resolve(__dirname, '../docs');
-const TEMPLATE_FILE = path.resolve(__dirname, '../doc-template.html');
-
-if (!fs.existsSync(OUT_DIR)) {
-  fs.mkdirSync(OUT_DIR, { recursive: true });
-}
-
-const template = fs.existsSync(TEMPLATE_FILE)
-  ? fs.readFileSync(TEMPLATE_FILE, 'utf-8')
-  : `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{TITLE}} - Planifest Docs</title>
+    <title>Fast Path - Planifest Docs</title>
     <!-- We reference main CSS here; Vite will resolve and built it -->
     <link rel="stylesheet" href="../src/style.css">
     <script type="module" src="../src/main.ts"></script>
@@ -51,7 +33,56 @@ const template = fs.existsSync(TEMPLATE_FILE)
         </div>
       </nav>
       <main class="doc-container glass-panel">
-        {{CONTENT}}
+        <h1 id="fast-path">Fast Path</h1>
+<p>The Fast Path is for trivial, low-risk changes that do not warrant the full pipeline. It bypasses Feature Briefs, Execution Plans, and ADRs entirely.</p>
+<h2 id="criteria">Criteria</h2>
+<p><strong>All four must be met.</strong> The orchestrator verifies this before engaging the Fast Path. If any criterion fails, the request is routed to the Change Pipeline instead — there are no exceptions.</p>
+<ol>
+<li>Does <strong>not</strong> introduce new external dependencies</li>
+<li>Does <strong>not</strong> alter, add, or remove database schemas or data models</li>
+<li>Does <strong>not</strong> change security parameters, authentication, or routing logic</li>
+<li>Confined to: UI styling, copy changes, or isolated pure-function logic bugs</li>
+</ol>
+<h2 id="steps">Steps</h2>
+<ol>
+<li><p><strong>Implement</strong> the fix directly — minimum change only, no surrounding refactoring</p>
+</li>
+<li><p><strong>Validate</strong> — run CI checks (lint, typecheck, test, build). Self-correct up to three times. If CI still fails after three attempts, escalate to the Change Pipeline.</p>
+</li>
+<li><p><strong>Update <code>component.yml</code></strong> — increment the patch version (<code>1.2.3</code> → <code>1.2.4</code>), update <code>metadata.updatedAt</code> to today&#39;s date</p>
+</li>
+<li><p><strong>Log the change</strong> — append an entry to <code>plan/changelog/{feature-id}-{YYYY-MM-DD}.md</code>:</p>
+<pre><code class="language-">## {YYYY-MM-DD} - Fast Path: {description}
+- Change: {what was changed}
+- Component: {component-id}
+- Reason: {why}</code></pre></li>
+<li><p><strong>Commit</strong> using the Fast Path convention:</p>
+<pre><code class="language-">fix(fast-path): {description}</code></pre></li>
+</ol>
+<h2 id="relaxed-documentation-check">Relaxed Documentation Check</h2>
+<p>The pre-push hook and CI workflow recognise the <code>fix(fast-path):</code> prefix and require only <code>component.yml</code> or <code>plan/changelog/</code> to be updated — not a full <code>plan/</code> or <code>docs/</code> change.</p>
+<h2 id="what-is-not-touched">What Is Not Touched</h2>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>plan/current/design.md</code></td>
+<td>No design change — the fix is within existing scope</td>
+</tr>
+<tr>
+<td><code>plan/current/adr/</code></td>
+<td>No new architectural decisions</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>No structural change to document (unless the fix directly corrects a documentation error)</td>
+</tr>
+</tbody></table>
+
       </main>
       <footer class="footer">
         <div class="container">
@@ -66,75 +97,4 @@ const template = fs.existsSync(TEMPLATE_FILE)
       </footer>
     </div>
   </body>
-</html>`;
-
-const renderer = new marked.Renderer();
-renderer.heading = function({ text, depth }) {
-  const id = text.toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-  return `<h${depth} id="${id}">${text}</h${depth}>\n`;
-};
-renderer.code = function({text, lang, escaped}) {
-  if (lang === 'mermaid') {
-    return `<pre class="mermaid">${text}</pre>`;
-  }
-  return `<pre><code class="language-${lang}">${escaped ? text : text}</code></pre>`;
-};
-
-marked.use({ renderer });
-
-function stripMetadata(markdown) {
-  // Replace .md cross-references with .html references
-  let cleaned = markdown.replace(/href="([^"]+)\.md"/g, 'href="$1.html"');
-  cleaned = cleaned.replace(/\]\(([^)]+)\.md\)/g, ']($1.html)');
-  
-  return cleaned;
-}
-
-const files = fs.readdirSync(DOCS_DIR).filter(file => file.endsWith('.md'));
-
-const sitemapData = [];
-
-files.forEach(file => {
-  const mdPath = path.join(DOCS_DIR, file);
-  const rawMarkdown = fs.readFileSync(mdPath, 'utf-8');
-  const cleanedMarkdown = stripMetadata(rawMarkdown);
-  const htmlContent = marked.parse(cleanedMarkdown);
-
-  const titleMatch = cleanedMarkdown.match(/^#\s+(.+)$/m);
-  let title = titleMatch ? titleMatch[1] : file.replace('.md', '');
-  
-  // Clean off the ID prefix if present (e.g., "p015-planifest-pipeline - ")
-  title = title.replace(/^p\d{3}[-\w]*\s*-\s*/, '').trim();
-  
-  sitemapData.push({ file: file.replace('.md', '.html'), title });
-
-  const finalHtml = template
-    .replace('{{TITLE}}', title)
-    .replace('{{CONTENT}}', htmlContent);
-
-  const outHtmlPath = path.join(OUT_DIR, file.replace('.md', '.html'));
-  fs.writeFileSync(outHtmlPath, finalHtml, 'utf-8');
-  console.log(`Generated: ${outHtmlPath}`);
-});
-
-const sitemapDataPath = path.join(__dirname, '../public/sitemap-data.json');
-fs.writeFileSync(sitemapDataPath, JSON.stringify(sitemapData, null, 2), 'utf-8');
-console.log(`Wrote JSON sitemap to: ${sitemapDataPath}`);
-
-// Generate Sitemap HTML
-let sitemapContent = '<h1>Planifest Document Sitemap</h1>\n<ul>\n';
-sitemapData.forEach(item => {
-  sitemapContent += `<li><a href="${item.file}">${item.title}</a></li>\n`;
-});
-sitemapContent += '</ul>';
-
-const sitemapHtml = template
-  .replace('{{TITLE}}', 'Sitemap')
-  .replace('{{CONTENT}}', sitemapContent);
-
-fs.writeFileSync(path.join(OUT_DIR, 'sitemap.html'), sitemapHtml, 'utf-8');
-console.log('Generated Sitemap HTML.');
+</html>
