@@ -86,6 +86,7 @@ scope:
     - "planifest-optimise-agent skill for interactive skill file review"
     - "design.template.md extracted from orchestrator inline block"
     - "setup.sh/.ps1 .planifest-manifest tracking for idempotent re-runs"
+    - "Three-file docs structure: lean getting-started.md, project-operations.md (brief ops reference), pipeline-reference.md (detailed step-by-step)"
   outOfScope:
     - "Application-level code generation (handled by planifest-codegen-agent)"
     - "CI pipeline configuration for consumer projects"
@@ -116,7 +117,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-05-04"
+  updatedAt: "2026-05-17"
   createdBy: "agent"
   lastModifiedBy: "agent"
   skill: "planifest-docs-agent"
