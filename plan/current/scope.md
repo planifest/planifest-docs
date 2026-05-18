@@ -41,4 +41,4 @@ version: "0.1.0"
 
 ## Deferred
 
-Nothing deferred.
+- **Orchestrator skill commit directives (planifest-framework release)** — Hard Limit 7 and per-phase-gate commit steps added to the vendored `planifest-framework/skills/planifest-orchestrator/SKILL.md` in this repo. These changes will be retrofitted into the upstream framework source ([github.com/planifest/planifest-framework](https://github.com/planifest/planifest-framework)) under a dedicated planifest-framework release by the framework maintainer.
