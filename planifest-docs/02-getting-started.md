@@ -14,7 +14,6 @@ An AI coding tool compatible with Planifest:
 | Codex (OpenAI) | `codex` | Full support |
 | Google Antigravity | `antigravity` | Full support — installs into `.gemini/skills/` and `GEMINI.md` |
 | OpenCode | `opencode` | Tier 2 — separate setup path, requires Bun |
-| Roo-Code | `roo-code` | Tier 2 — separate setup path |
 
 No other dependencies. The setup scripts use only built-in OS tools.
 
@@ -35,7 +34,7 @@ mkdir plan plan/changelog src docs
 | Directory | Purpose |
 |-----------|---------|
 | `plan/current/` | The active pipeline run — confirmed design, requirements, ADRs |
-| `plan/archive/` | Completed plans filed after merge |
+| `plan/_archive/` | Completed plans filed after merge |
 | `plan/changelog/` | Record of all changes (`{feature-id}-{YYYY-MM-DD}.md`) |
 | `src/` | Component source code, tests, and manifests (`component.yml`) |
 | `docs/` | Living repository documentation |
@@ -65,38 +64,18 @@ Setup configures four things:
 
 **Boot file** — A project-level instruction file your tool reads at session start. For Claude Code this is `CLAUDE.md`; for Cursor it is `.cursorrules`; for Gemini it is `GEMINI.md`. The boot file enforces the hard limits (no code without a confirmed design, no credentials in context, etc.).
 
-**Git hooks** — Four hooks installed via `git config core.hooksPath planifest-framework/hooks`:
+**Git hooks** — Hooks installed via `git config core.hooksPath planifest-framework/hooks`:
 
 | Hook | Trigger | What it does |
 |------|---------|--------------|
 | `gate-write` | PreToolUse (Write, Edit) | Blocks writes to `src/` unless `plan/current/design.md` exists and the target path is in scope |
 | `auto-trigger-orchestrator` | Session start | Loads the orchestrator skill automatically when a pipeline is active |
 | `check-design` | Every prompt | Injects active component scope from `design.md` as context |
-| `commit-msg` | `git commit` | Blocks commits that violate the commit standard (see below) |
+| `commit-msg` | `git commit` | Blocks commits that violate the commit standard |
 
-**CI workflow** — `.github/workflows/planifest.yml` is created, enforcing the same doc-sync check on every pull request.
+**CI workflow** — `.github/workflows/planifest.yml` is created, enforcing the doc-sync check on every pull request.
 
-### Commit standard
-
-The `commit-msg` hook enforces these rules on every commit. Violations block the commit with exit 1:
-
-- Subject line ≤ 72 characters total
-- Format: `type(scope): short description` — e.g. `feat(auth-service): add token refresh`
-- Imperative mood: "add", "fix", "remove" — not "added", "fixed"
-- No AI attribution — `Co-Authored-By: Claude`, `AI-assisted`, model names in an authorship context are all blocked
-- No confirmatory language — "Done!", "Fixed!", "Working now"
-
-Use `git commit --no-verify` to bypass intentionally (e.g. for WIP commits on a personal branch).
-
-### Git guardrails (three tiers)
-
-| Tier | When | What happens |
-|------|------|--------------|
-| **Advisory pre-commit** | Every local commit | Warns if code was staged without docs. Commit succeeds. |
-| **Enforcing pre-push** | Every `git push` | Fails if `src/` changed with no corresponding update to `plan/`, `docs/`, or `component.yml` |
-| **CI/CD** | Every pull request | Same check in GitHub Actions. Blocks merge on violation. |
-
-The enforcing tiers recognise the `fix(fast-path):` commit prefix and apply a relaxed rule — only `component.yml` or `plan/changelog/` must be updated.
+→ For git guardrails, the commit standard, and how the orchestrator sentinel works: [Project Operations](11-project-operations.md)
 
 ---
 
@@ -112,42 +91,19 @@ See [Retrofit](07-retrofit.md) for the step-by-step process.
 
 ## Optional: Telemetry
 
-Planifest can emit structured pipeline events (`phase_start`, `phase_end`) to a backend of your choice for team dashboards, audit trails, or CI integration.
+Planifest emits structured pipeline events (`phase_start`, `phase_end`) via [structured-telemetry-mcp](https://github.com/planifest/structured-telemetry-mcp).
 
-Telemetry is **off by default**. It activates only when both of the following are in place:
-
-1. **`PLANIFEST_TELEMETRY_URL` environment variable** — the URL of your telemetry receiver. Events are POSTed to `{PLANIFEST_TELEMETRY_URL}/emit`.
-2. **`.claude/telemetry-enabled` sentinel file** — create this empty file in your project root to opt in.
-
-If either is absent, emission is silently skipped — no errors, no warnings.
+Telemetry is **off by default**. To enable it, install [structured-telemetry-mcp](https://github.com/planifest/structured-telemetry-mcp) first, then pass `--structured-telemetry-mcp` to the setup script:
 
 ```bash
-touch .claude/telemetry-enabled
-export PLANIFEST_TELEMETRY_URL=https://telemetry.yourco.com
+./planifest-framework/setup.sh claude-code --structured-telemetry-mcp
 ```
 
-Each event is a JSON envelope carrying the phase name, agent skill, tool, model, session ID, and timestamp. The orchestrator emits these — phase skills do not. See `planifest-framework/hooks/telemetry/` for the event schema.
-
----
-
-## Optional: Strict Mode
-
-By default the orchestrator presence check is **advisory**: it injects a reminder banner on each prompt when a pipeline is active, but never blocks the agent.
-
-**Strict mode** upgrades this to a hard gate: the agent cannot process any prompt until it has loaded the orchestrator skill and confirmed the session by writing its session ID to `plan/.orchestrator-ack`. Once confirmed, future prompts in that session pass silently.
-
-Enable strict mode by creating the sentinel file:
-
-```bash
-touch plan/.orchestrator-strict
+```powershell
+.\planifest-framework\setup.ps1 claude-code --structured-telemetry-mcp
 ```
 
-| Mode | Behaviour |
-|------|-----------|
-| Advisory (default) | Banner injected on every prompt — agent may still proceed |
-| Strict (`plan/.orchestrator-strict` present) | Agent blocked until `plan/.orchestrator-ack` contains current session ID |
-
-Remove `plan/.orchestrator-strict` to return to advisory mode. The `.orchestrator-ack` file is session-scoped — a new session will trigger re-acknowledgement even if the file already exists.
+The setup script writes the opt-in sentinel and wires the emission hooks automatically. See the [structured-telemetry-mcp](https://github.com/planifest/structured-telemetry-mcp) repo for installation and configuration.
 
 ---
 
@@ -165,51 +121,61 @@ Install context-mode first, then pass `--context-mode-mcp` to the setup script:
 .\planifest-framework\setup.ps1 claude-code --context-mode-mcp
 ```
 
-This adds routing rules (`AGENTS.md`) and, for Claude Code, enforcement hooks that physically prevent the agent from bypassing context-mode with direct Bash or Grep calls.
-
 ---
 
-## Updating the Framework
+## Optional: Full External Skill Library
 
-After pulling a new version of `planifest-framework/`, re-run setup to sync the updated skills and hooks:
+Planifest ships with a curated library of 200+ open-source agent skills (MIT/Apache-2.0 licensed) covering frontend design, testing strategies, infrastructure patterns, and more. Not installed by default — add them with:
 
 ```bash
-./planifest-framework/setup.sh claude-code
-.\planifest-framework\setup.ps1 claude-code   # Windows
+./planifest-framework/setup.sh claude-code --include-full-skill-library
 ```
 
-The setup script overwrites generated copies. The source of truth is always `planifest-framework/`.
+```powershell
+.\planifest-framework\setup.ps1 claude-code --include-full-skill-library
+```
+
+See [Agent Skills Reference](08-agent-skills-reference.md) for the full list and what each skill provides.
 
 ---
 
-## First Run
+## 4. Open your tool and describe what you want to build
 
-### 1. Open your tool in the repository
+Open your AI tool in the repository. The orchestrator skill loads automatically on session start — you do not need to invoke it manually.
 
-The orchestrator skill loads automatically on session start (via the `auto-trigger-orchestrator` hook). You do not need to invoke it manually.
+Describe what you want to build in plain language. For example:
 
-### 2. Describe what you want to build
+```
+I want to add a user authentication system with email/password login and JWT tokens.
+```
 
-You can either:
-- Write a Feature Brief at `plan/current/feature-brief.md` before opening your tool, or
-- Simply describe the feature directly in the chat
+The orchestrator begins **Phase 0 — Assess and Coach**. It will ask you questions one at a time — about the problem, the users, the acceptance criteria, your stack, and non-functional requirements — until it has everything it needs. You do not need to prepare a feature brief in advance; the orchestrator coaches you through it.
 
-### 3. Phase 0 — Assess and Coach
+**If you prefer to prepare in advance**, copy the feature brief template and fill it in before opening your tool:
 
-The orchestrator begins by assessing your request against the three layers Planifest requires every feature to cover: **Product** (what and why), **Architecture** (non-functional requirements and standards), and **Engineering** (stack, components, data ownership).
+```bash
+cp planifest-framework/templates/feature-brief.template.md plan/current/feature-brief.md
+```
 
-It asks one question at a time, in priority order, until every required concern has been addressed or explicitly deferred. Typical questions:
+The orchestrator reads it at session start and skips questions you have already answered.
 
-- "What problem does this solve, and for whom?"
-- "What are the acceptance criteria for each story — how do you know it's done?"
-- "What is the latency target for the primary endpoint?"
-- "Which component owns this data?"
+---
 
-When the requirements are complete, the orchestrator produces a **confirmed design** at `plan/current/design.md` and asks you to confirm it before any code is written.
+## 5. Confirm the design and run the pipeline
 
-### 4. Pipeline phases
+When the orchestrator has gathered enough information, it produces a **confirmed design** at `plan/current/design.md` and presents it for your approval. No code is written until you confirm.
 
-Every response from a Planifest skill begins with a phase prefix so you always know where you are:
+After confirmation, the orchestrator asks:
+
+```
+Do you want to review and confirm after each phase completes, or authorise a
+continuous run for this session?
+
+  [1] Check after each phase
+  [2] Continuous run — proceed without phase confirmations
+```
+
+The pipeline then runs through all phases. Every response begins with a phase prefix so you always know where you are:
 
 | Prefix | Phase |
 |--------|-------|
@@ -224,13 +190,20 @@ Every response from a Planifest skill begins with a phase prefix so you always k
 | `P8:` | Build Assessment |
 | `PC:` | Change Pipeline |
 
-### 5. Pause and resume
+If you need to stop mid-pipeline, say **"pause"**. The orchestrator writes `plan/current/pause.md` capturing the exact in-progress state and stops all pipeline work. In the next session it resumes from the exact point and deletes the file.
 
-If you need to stop mid-pipeline, say **"pause"**. The orchestrator writes a `plan/current/pause.md` file capturing the exact in-progress state, then stops all pipeline work. In the next session it detects the pause file, resumes from the exact point, and deletes the file.
+---
 
-### 6. After the pipeline
+## Next Steps
 
-When the pipeline completes:
-- A changelog entry is written to `plan/changelog/{feature-id}-{YYYY-MM-DD}.md`
-- `plan/current/` artifacts are archived to `plan/archive/{feature-id}/`
-- A commit is prepared for your review before push
+| Topic | Where to look |
+|-------|---------------|
+| Git guardrails and how enforcement works | [Project Operations](11-project-operations.md#git-guardrails) |
+| Commit message standard | [Project Operations](11-project-operations.md#commit-standard) |
+| Orchestrator sentinel and strict mode | [Project Operations](11-project-operations.md#orchestrator-sentinel) |
+| Customising with planifest-overrides | [Project Operations](11-project-operations.md#customising-with-planifest-overrides) |
+| Updating the framework | [Project Operations](11-project-operations.md#updating-the-framework) |
+| What to commit | [Project Operations](11-project-operations.md#what-to-commit) |
+| Retrofit an existing project | [Retrofit](07-retrofit.md) |
+| Fast Path and Change Pipeline | [The Pipeline](03-pipeline.md#fast-path) |
+| Phase mechanics and confirmation gates | [The Pipeline](03-pipeline.md) |

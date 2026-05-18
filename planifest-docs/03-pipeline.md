@@ -70,8 +70,8 @@ Say "pause" at any point. The orchestrator writes `plan/current/pause.md` with t
 | P4 | `plan/current/test-report.md` |
 | P5 | `plan/current/security-report.md` |
 | P6 | `docs/`, `src/{component-id}/docs/` |
-| P7 | PR raised, `plan/changelog/{feature-id}-{date}.md`, `plan/archive/{feature-id}-{date}/` |
-| P8 | `plan/archive/{feature-id}-{date}/build-report.md` |
+| P7 | PR raised, `plan/changelog/{feature-id}-{date}.md`, `plan/_archive/{feature-id}-{date}/` |
+| P8 | `plan/_archive/{feature-id}-{date}/build-report.md` |
 
 ## Build Log
 

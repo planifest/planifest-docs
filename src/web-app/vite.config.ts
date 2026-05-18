@@ -17,6 +17,7 @@ export default defineConfig({
         doc08: resolve(__dirname, 'docs/08-agent-skills-reference.html'),
         doc09: resolve(__dirname, 'docs/09-standards.html'),
         doc10: resolve(__dirname, 'docs/10-templates.html'),
+        doc11: resolve(__dirname, 'docs/11-project-operations.html'),
         sitemap: resolve(__dirname, 'docs/sitemap.html'),
       }
     }
