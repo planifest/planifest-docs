@@ -6,7 +6,7 @@ Planifest is delivered as **Agent Skills** — structured files that compatible 
 
 ### Pipeline Skills
 
-These nine skills drive the pipeline. The orchestrator invokes them in sequence.
+These ten skills drive the pipeline. The orchestrator invokes them in sequence.
 
 | Skill | Phase | What it does |
 |-------|-------|--------------|
@@ -17,8 +17,8 @@ These nine skills drive the pipeline. The orchestrator invokes them in sequence.
 | `planifest-validate-agent` | P4 | Runs CI checks (lint, typecheck, test, build). Self-corrects up to five times. Halts and reports context if resolution is not possible within the limit. |
 | `planifest-security-agent` | P5 | Produces a security report with a STRIDE threat model and specific findings categorised by severity (critical / high / medium / low). |
 | `planifest-docs-agent` | P6 | Produces living documentation: per-component docs at `src/{component-id}/docs/`, system-wide component registry and dependency graph at `docs/`. |
-| `planifest-ship-agent` | P7 | Raises the PR via `gh pr create`, writes the changelog entry, processes skip records, archives `plan/current/` to `plan/_archive/`. Invokes the build-assessment-agent. |
-| `planifest-build-assessment-agent` | P8 | Reads the archived build log and produces an efficiency report: model routing decisions, parallelism usage, self-correction count, context window behaviour. |
+| `planifest-ship-agent` | P7–P9 | Owns the complete close-out sequence. P7: writes the changelog, processes skip records, archives `plan/current/`. P8: spawns build-assessment-agent as a sub-agent. P9: creates a local git tag, then raises the PR via `gh pr create` or outputs a PR description for manual use. |
+| `planifest-build-assessment-agent` | P8 | Runs as a sub-agent spawned by ship-agent. Reads the archived build log and produces an efficiency report: model routing decisions, parallelism usage, self-correction count, context window behaviour. |
 
 ### Specialist Skills
 

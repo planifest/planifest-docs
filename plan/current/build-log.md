@@ -33,6 +33,46 @@ summary: "Working telemetry file maintained by the orchestrator throughout the p
 | Parallel task batches | `4` |
 | Notes | Resume detection clean. Archive dirname migration resolved. PR #34 diff analysed. Docs gaps identified. |
 
+### P1 — Spec
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T14:00:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-spec-agent |
+| Agents spawned | `0` |
+| MCP calls | `3` |
+| Parallel task batches | `1` |
+| Notes | 7 requirement files, execution plan, scope, risk register, domain glossary, operational model, SLO definitions, cost model. Component manifest created for planifest-docs. |
+
+---
+
+### P2 — ADRs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T14:15:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-adr-agent |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | ADR-001: planifest-docs manifest. ADR-002: remove broken anchors. Both independent, written in parallel. |
+
+---
+
+### P3 — Codegen
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T14:30:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-codegen-agent |
+| Agents spawned | `0` |
+| MCP calls | `2` |
+| Parallel task batches | `2` |
+| Notes | Docs-only. No TDD loop. Batch 1: 03-pipeline.md (REQ-001–004) + 08-agent-skills-reference.md (REQ-005) in parallel. Batch 2: 11-project-operations.md (REQ-006–007). |
+
 ---
 
 <!-- Copy and fill in this block at each phase boundary:

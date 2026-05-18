@@ -1,6 +1,6 @@
 # The Pipeline
 
-Planifest's pipeline takes a confirmed design from requirements to a production-ready pull request in nine phases. Each phase is driven by a dedicated skill, invoked by the orchestrator.
+Planifest's pipeline takes a confirmed design from requirements to a production-ready pull request in ten phases. Each phase is driven by a dedicated skill, invoked by the orchestrator.
 
 ## Phase Overview
 
@@ -13,8 +13,9 @@ Planifest's pipeline takes a confirmed design from requirements to a production-
 | `P4:` | Validate | validate-agent runs CI checks (lint, typecheck, test, build) and self-corrects up to five times. Halts and reports if checks cannot be resolved. |
 | `P5:` | Security | security-agent produces a security report with STRIDE threat model and findings categorised by severity. |
 | `P6:` | Docs | docs-agent produces living documentation: per-component docs, system-wide component registry, dependency graph. |
-| `P7:` | Ship | ship-agent raises the PR, writes the changelog, processes skip records, archives `plan/current/`. |
-| `P8:` | Build Assessment | build-assessment-agent reads the archived build log and produces an efficiency report: model routing, parallelism, self-corrections, context behaviour. |
+| `P7:` | Archive | ship-agent writes the changelog, processes skip records, confirms regressions, and archives `plan/current/` to `plan/_archive/`. |
+| `P8:` | Build Assessment | ship-agent spawns build-assessment-agent as a sub-agent; reads the archived build log and produces an efficiency report: model routing, parallelism, self-corrections, context behaviour. |
+| `P9:` | Ship | ship-agent creates a local git tag, then either raises the PR via `gh pr create` or outputs a PR description for manual use. Always stops for human confirmation. |
 
 ## Phase Indicators
 
@@ -43,7 +44,7 @@ continuous run for this session?
 
 Per-phase gates may be skipped automatically in continuous run mode if there is genuinely nothing to review (e.g. P5 with zero security findings, P4 with all checks passing first attempt).
 
-**P7 always stops.** Raising a PR is external and irreversible — it is never auto-confirmed, even in continuous run mode.
+**P9 always stops.** Raising a PR is external and irreversible — it is never auto-confirmed, even in continuous run mode.
 
 ## Skipping a Phase
 
@@ -70,9 +71,12 @@ Say "pause" at any point. The orchestrator writes `plan/current/pause.md` with t
 | P4 | `plan/current/test-report.md` |
 | P5 | `plan/current/security-report.md` |
 | P6 | `docs/`, `src/{component-id}/docs/` |
-| P7 | PR raised, `plan/changelog/{feature-id}-{date}.md`, `plan/_archive/{feature-id}-{date}/` |
+| P7 | `plan/changelog/{feature-id}-{date}.md`, `plan/_archive/{feature-id}-{date}/` |
 | P8 | `plan/_archive/{feature-id}-{date}/build-report.md` |
+| P9 | Local git tag (`v{version}`), PR raised via `gh pr create` or PR description output |
 
 ## Build Log
 
 Every pipeline run produces `plan/current/build-log.md` — a structured record of phases executed, model tiers used, skills invoked, MCP call counts, and parallel task batches. The build-assessment-agent reads this at P8 to produce the efficiency report.
+
+The build log is **mandatory** (Hard Limit 8). The orchestrator appends a phase block before starting any phase work. A missing phase block is a pipeline error — the orchestrator stops and writes the entry before proceeding.
