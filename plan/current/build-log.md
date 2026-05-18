@@ -75,6 +75,48 @@ summary: "Working telemetry file maintained by the orchestrator throughout the p
 
 ---
 
+### P4 — Validate
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T15:00:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-validate-agent |
+| Agents spawned | `0` |
+| MCP calls | `1` |
+| Parallel task batches | `1` |
+| Notes | 1 self-correct cycle — stale P7=Ship row in 02-getting-started.md:189 caught and fixed. Semantic check: all 7 requirements met by content changes. No test suite (docs-only). |
+
+---
+
+### P5 — Security
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T15:15:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-security-agent |
+| Agents spawned | `0` |
+| MCP calls | `0` |
+| Parallel task batches | `1` |
+| Notes | Overall risk: Low. No new vulnerabilities. Pre-existing Vite dev-server vulns noted (not introduced by this feature). |
+
+---
+
+### P6 — Docs
+
+| Field | Value |
+|-------|-------|
+| Start | `2026-05-18T15:30:00Z` |
+| Model tier | primary |
+| Skills loaded | planifest-docs-agent |
+| Agents spawned | `0` |
+| MCP calls | `2` |
+| Parallel task batches | `2` |
+| Notes | Per-component docs (7 files), architecture-overview.md (new), decisions-index.md (new), component-registry and dependency-graph updated, recommendations.md, iteration log. Drift checks clean. |
+
+---
+
 <!-- Copy and fill in this block at each phase boundary:
 
 ### Px — {Phase Name}
