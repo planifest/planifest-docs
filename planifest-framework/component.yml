@@ -1,7 +1,7 @@
 id: "planifest-framework"
 name: "Planifest Framework"
-feature: "0000007-agent-optimisation"
-version: "0.7.0"
+feature: "0000013-codegen-component-version-bump"
+version: "0.13.0"
 status: "active"
 type: "component-pack"
 domain: "developer-tooling"
@@ -86,7 +86,6 @@ scope:
     - "planifest-optimise-agent skill for interactive skill file review"
     - "design.template.md extracted from orchestrator inline block"
     - "setup.sh/.ps1 .planifest-manifest tracking for idempotent re-runs"
-    - "Three-file docs structure: lean getting-started.md, project-operations.md (brief ops reference), pipeline-reference.md (detailed step-by-step)"
   outOfScope:
     - "Application-level code generation (handled by planifest-codegen-agent)"
     - "CI pipeline configuration for consumer projects"
@@ -117,7 +116,7 @@ pipeline:
 
 metadata:
   createdAt: "2026-05-02"
-  updatedAt: "2026-05-17"
+  updatedAt: "2026-05-04"
   createdBy: "agent"
   lastModifiedBy: "agent"
   skill: "planifest-docs-agent"

@@ -44,7 +44,7 @@
       </nav>
       <main class="doc-container glass-panel">
         <h1 id="the-pipeline">The Pipeline</h1>
-<p>Planifest&#39;s pipeline takes a confirmed design from requirements to a production-ready pull request in nine phases. Each phase is driven by a dedicated skill, invoked by the orchestrator.</p>
+<p>Planifest&#39;s pipeline takes a confirmed design from requirements to a production-ready pull request in ten phases. Each phase is driven by a dedicated skill, invoked by the orchestrator.</p>
 <h2 id="phase-overview">Phase Overview</h2>
 <table>
 <thead>
@@ -91,13 +91,18 @@
 </tr>
 <tr>
 <td><code>P7:</code></td>
-<td>Ship</td>
-<td>ship-agent raises the PR, writes the changelog, processes skip records, archives <code>plan/current/</code>.</td>
+<td>Archive</td>
+<td>ship-agent writes the changelog, processes skip records, confirms regressions, and archives <code>plan/current/</code> to <code>plan/_archive/</code>.</td>
 </tr>
 <tr>
 <td><code>P8:</code></td>
 <td>Build Assessment</td>
-<td>build-assessment-agent reads the archived build log and produces an efficiency report: model routing, parallelism, self-corrections, context behaviour.</td>
+<td>ship-agent spawns build-assessment-agent as a sub-agent; reads the archived build log and produces an efficiency report: model routing, parallelism, self-corrections, context behaviour.</td>
+</tr>
+<tr>
+<td><code>P9:</code></td>
+<td>Ship</td>
+<td>ship-agent creates a local git tag, then either raises the PR via <code>gh pr create</code> or outputs a PR description for manual use. Always stops for human confirmation.</td>
 </tr>
 </tbody></table>
 <h2 id="phase-indicators">Phase Indicators</h2>
@@ -141,7 +146,7 @@ continuous run for this session?
 
   [1] Check after each phase
   [2] Continuous run — proceed without phase confirmations</code></pre><p>Per-phase gates may be skipped automatically in continuous run mode if there is genuinely nothing to review (e.g. P5 with zero security findings, P4 with all checks passing first attempt).</p>
-<p><strong>P7 always stops.</strong> Raising a PR is external and irreversible — it is never auto-confirmed, even in continuous run mode.</p>
+<p><strong>P9 always stops.</strong> Raising a PR is external and irreversible — it is never auto-confirmed, even in continuous run mode.</p>
 <h2 id="skipping-a-phase">Skipping a Phase</h2>
 <p>To skip a phase, tell the orchestrator explicitly (e.g. &quot;skip security&quot; or &quot;skip ADRs&quot;). It will:</p>
 <ol>
@@ -190,15 +195,20 @@ continuous run for this session?
 </tr>
 <tr>
 <td>P7</td>
-<td>PR raised, <code>plan/changelog/{feature-id}-{date}.md</code>, <code>plan/_archive/{feature-id}-{date}/</code></td>
+<td><code>plan/changelog/{feature-id}-{date}.md</code>, <code>plan/_archive/{feature-id}-{date}/</code></td>
 </tr>
 <tr>
 <td>P8</td>
 <td><code>plan/_archive/{feature-id}-{date}/build-report.md</code></td>
 </tr>
+<tr>
+<td>P9</td>
+<td>Local git tag (<code>v{version}</code>), PR raised via <code>gh pr create</code> or PR description output</td>
+</tr>
 </tbody></table>
 <h2 id="build-log">Build Log</h2>
 <p>Every pipeline run produces <code>plan/current/build-log.md</code> — a structured record of phases executed, model tiers used, skills invoked, MCP call counts, and parallel task batches. The build-assessment-agent reads this at P8 to produce the efficiency report.</p>
+<p>The build log is <strong>mandatory</strong> (Hard Limit 8). The orchestrator appends a phase block before starting any phase work. A missing phase block is a pipeline error — the orchestrator stops and writes the entry before proceeding.</p>
 
         
 <nav class="doc-pagination">

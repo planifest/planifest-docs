@@ -186,8 +186,9 @@ The pipeline then runs through all phases. Every response begins with a phase pr
 | `P4:` | Validation |
 | `P5:` | Security Review |
 | `P6:` | Documentation |
-| `P7:` | Ship |
+| `P7:` | Archive |
 | `P8:` | Build Assessment |
+| `P9:` | Ship |
 | `PC:` | Change Pipeline |
 
 If you need to stop mid-pipeline, say **"pause"**. The orchestrator writes `plan/current/pause.md` capturing the exact in-progress state and stops all pipeline work. In the next session it resumes from the exact point and deletes the file.

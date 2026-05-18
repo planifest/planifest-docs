@@ -70,10 +70,6 @@ By default, `check-orchestrator-presence` is advisory — it injects a reminder 
 
 This writes `plan/.orchestrator-strict`. When present, the hook injects a **hard-block banner** on every new session until the orchestrator loads and writes a session acknowledgement to `plan/.orchestrator-ack`. Subsequent prompts in the same session pass silently. The ack file is deleted at Phase 7 so each new pipeline starts clean.
 
-→ [Strict mode internals and ack file lifecycle](03-pipeline.md#strict-orchestrator-mode)
-
----
-
 ## Customising with planifest-overrides
 
 `planifest-overrides/` is your team's customisation layer — committed to the repo, never overwritten by setup scripts.
@@ -84,7 +80,11 @@ This writes `plan/.orchestrator-strict`. When present, the hook injects a **hard
 | `instructions/` | Project-specific instructions appended to the boot file on every setup run. Files sorted alphabetically and injected between HTML comment markers. |
 | `capability-skills/` | Permanent agent skills installed alongside built-in Planifest skills on every setup run. |
 
-→ [Full directory structure and examples](03-pipeline.md#customising-with-planifest-overrides)
+### local-git-only
+
+Place a file containing `local-git-only` (or `no remote` or `no push`) anywhere in `planifest-overrides/instructions/` to signal to the ship-agent that remote git operations are not available in agent context. For example: `planifest-overrides/instructions/custom-001-local-git-only.md`.
+
+When detected at P9, the ship-agent skips the push/PR prompt and outputs a PR title and description as a markdown block for you to use manually. Use this when your team enforces a human-in-the-loop for `git push`, or when the agent does not have a remote passphrase.
 
 ---
 
