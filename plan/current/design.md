@@ -44,6 +44,7 @@
   - `planifest-docs/08-agent-skills-reference.md` — ship-agent row (P7 only → P7–P9)
   - `planifest-docs/11-project-operations.md` — remove two broken anchor links, add local-git-only override documentation
   - `planifest-docs/02-getting-started.md` — scan for stale P7/P8 references (likely clean)
+  - `src/planifest-docs/` — component manifest (new)
 - Out:
   - New documentation pages
   - Changes to website manifest or nav
