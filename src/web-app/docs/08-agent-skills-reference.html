@@ -47,7 +47,7 @@
 <p>Planifest is delivered as <strong>Agent Skills</strong> — structured files that compatible AI tools discover and load automatically. There are two categories: Planifest&#39;s built-in pipeline skills, and an optional curated library of external skills.</p>
 <h2 id="planifest-built-in-skills">Planifest Built-in Skills</h2>
 <h3 id="pipeline-skills">Pipeline Skills</h3>
-<p>These nine skills drive the pipeline. The orchestrator invokes them in sequence.</p>
+<p>These ten skills drive the pipeline. The orchestrator invokes them in sequence.</p>
 <table>
 <thead>
 <tr>
@@ -93,13 +93,13 @@
 </tr>
 <tr>
 <td><code>planifest-ship-agent</code></td>
-<td>P7</td>
-<td>Raises the PR via <code>gh pr create</code>, writes the changelog entry, processes skip records, archives <code>plan/current/</code> to <code>plan/_archive/</code>. Invokes the build-assessment-agent.</td>
+<td>P7–P9</td>
+<td>Owns the complete close-out sequence. P7: writes the changelog, processes skip records, archives <code>plan/current/</code>. P8: spawns build-assessment-agent as a sub-agent. P9: creates a local git tag, then raises the PR via <code>gh pr create</code> or outputs a PR description for manual use.</td>
 </tr>
 <tr>
 <td><code>planifest-build-assessment-agent</code></td>
 <td>P8</td>
-<td>Reads the archived build log and produces an efficiency report: model routing decisions, parallelism usage, self-correction count, context window behaviour.</td>
+<td>Runs as a sub-agent spawned by ship-agent. Reads the archived build log and produces an efficiency report: model routing decisions, parallelism usage, self-correction count, context window behaviour.</td>
 </tr>
 </tbody></table>
 <h3 id="specialist-skills">Specialist Skills</h3>
